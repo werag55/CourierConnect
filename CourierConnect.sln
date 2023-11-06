@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CourierConnectWeb", "CourierHubWeb\CourierConnectWeb.csproj", "{3190D70B-D1BF-40D3-8518-34CEE565FD37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CourierConnectWeb", "CourierConnectWeb\CourierConnectWeb.csproj", "{10201EFF-C18F-4179-9821-140DF8B8E496}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3190D70B-D1BF-40D3-8518-34CEE565FD37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3190D70B-D1BF-40D3-8518-34CEE565FD37}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3190D70B-D1BF-40D3-8518-34CEE565FD37}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3190D70B-D1BF-40D3-8518-34CEE565FD37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10201EFF-C18F-4179-9821-140DF8B8E496}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10201EFF-C18F-4179-9821-140DF8B8E496}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10201EFF-C18F-4179-9821-140DF8B8E496}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10201EFF-C18F-4179-9821-140DF8B8E496}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
