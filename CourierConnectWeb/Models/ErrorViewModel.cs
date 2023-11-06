@@ -1,4 +1,4 @@
-namespace CourierHubWeb.Models
+namespace CourierConnectWeb.Models
 {
     public class ErrorViewModel
     {

@@ -1,8 +1,8 @@
-﻿using CourierHubWeb.Models;
+﻿using CourierConnectWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace CourierHubWeb.Controllers
+namespace CourierConnectWeb.Controllers
 {
     public class HomeController : Controller
     {
