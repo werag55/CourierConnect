@@ -14,8 +14,20 @@ namespace CourierConnect.Models
         public int Id { get; set; }
 
         [Required]
+        [DisplayName("Package")]
+        public Package Package { get; set; }
+
+        [Required]
         [DisplayName("Delivery date")]
         public DateTime DeliveryDate { get; set; }
+
+        [Required]
+        [DisplayName("Destination adress")]
+        public Address destinationAddress { get; set; }
+
+        [Required]
+        [DisplayName("Source adress")]
+        public Address sourceAddress { get; set; }
 
         [Required]
         [DisplayName("Priority")]
@@ -28,5 +40,8 @@ namespace CourierConnect.Models
         [Required]
         [DisplayName("Company")]
         public bool isCompany { get; set; }
+
+        [DisplayName("Client")]
+        public Client client { get; set; }
     }
 }
