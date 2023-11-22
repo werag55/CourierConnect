@@ -2,6 +2,7 @@ using CourierConnect.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using CourierConnect.DataAccess.Repository.IRepository;
+using CourierConnect.DataAccess.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
