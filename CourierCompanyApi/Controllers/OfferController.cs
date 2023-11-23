@@ -8,11 +8,13 @@ using System.Net;
 using System.Text.Json;
 using CourierCompanyApi.Models;
 using CourierCompanyApi.Models.Dto;
+using CourierCompanyApi.Authentication;
 
 namespace CourierCompanyApi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [ServiceFilter(typeof(ApiKeyAuthFilter))]
     public class OfferController : ControllerBase
     {
 
