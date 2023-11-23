@@ -1,4 +1,5 @@
 ﻿using CourierConnect.Models;
+using CourierConnectWeb.Email;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -17,6 +18,7 @@ namespace CourierConnectWeb.Controllers
         {
             return View();
         }
+        
 
         public IActionResult Privacy()
         {

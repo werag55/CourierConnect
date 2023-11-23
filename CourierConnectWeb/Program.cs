@@ -2,8 +2,11 @@ using CourierConnect.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using CourierConnect.DataAccess.Repository.IRepository;
+using CourierConnectWeb.Email;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

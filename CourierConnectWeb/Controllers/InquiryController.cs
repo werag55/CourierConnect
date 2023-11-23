@@ -4,15 +4,18 @@ using CourierConnect.Models;
 using CourierConnect.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using CourierConnectWeb.Email;
 
 namespace CourierConnectWeb.Controllers
 {
     public class InquiryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public InquiryController(IUnitOfWork unitOfWork)
+        private readonly IEmailSender _emailsender;
+        public InquiryController(IUnitOfWork unitOfWork, IEmailSender emailSender)
         {
             _unitOfWork = unitOfWork;
+            _emailsender = emailSender;
         }
         public IActionResult Index()
         {
@@ -24,6 +27,33 @@ namespace CourierConnectWeb.Controllers
         {
             return View();
         }
+
+        //public IActionResult Create(Inquiry obj)
+        //{
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        _unitOfWork.Inquiry.Add(obj);
+        //        _unitOfWork.Save();
+        //        TempData["success"] = "Inquiry created successfully";
+        //        return RedirectToAction("Index");
+        //    }
+        //    return View();
+
+        //}
+
+        public async Task<IActionResult> SendEmail(Inquiry obj)
+        {
+            var receiver = "gina.grant@ethereal.email";
+            var subject = "New Inquiry was created";
+            var message = "hello!\n u have just created new inquiry at CourierConnect!\n" +
+                "Delivery Date: ";
+            message += obj.DeliveryDate.ToShortDateString();
+
+            await _emailsender.SendEmailAsync(receiver, subject, message);
+
+            return View();
+        }
         [HttpPost]
         public IActionResult Create(Inquiry obj)
         {
@@ -33,6 +63,7 @@ namespace CourierConnectWeb.Controllers
                 _unitOfWork.Inquiry.Add(obj);
                 _unitOfWork.Save();
                 TempData["success"] = "Inquiry created successfully";
+                _ = SendEmail(obj);
                 return RedirectToAction("Index");
             }
             return View();
