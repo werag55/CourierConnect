@@ -1,0 +1,30 @@
+﻿@model IEnumerable<OfferDTO>
+<br />
+<div class="container p-4 border">
+    <div>
+            <h1 class="text-primary">Offer List</h1>
+    </div>
+
+    <table class="table">
+		<thead>
+			<tr>
+				<th>
+					Id
+				</th>
+				<th>
+					Price
+				</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach(var item in Model){
+				<tr>
+					<td>@item.Id</td>
+					<td>@((item.price).ToString("c"))</td>
+				</tr>
+			}
+		</tbody>
+    </table>
+
+</div>
