@@ -1,4 +1,5 @@
 ﻿using System;
+using CourierConnect.Models;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -20,7 +21,7 @@ namespace CourierConnect.DataAccess.Migrations
                     DeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     isPriority = table.Column<bool>(type: "bit", nullable: false),
                     weekendDelivery = table.Column<bool>(type: "bit", nullable: false),
-                    isCompany = table.Column<bool>(type: "bit", nullable: false)
+                    isCompany = table.Column<bool>(type: "bit", nullable: false),
                 },
                 constraints: table =>
                 {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CourierConnect.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace CourierConnect.DataAccess.Repository.IRepository
 {
-    public interface IUnitOfWork
+    public interface IAddressRepository : IRepository<Address>
     {
-        IInquiryRepository Inquiry { get; }
-        IAddressRepository Address { get; }
-        void Save();
+        void Update(Address obj);
     }
 }

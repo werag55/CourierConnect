@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CourierConnect.Models
 {
@@ -28,5 +29,12 @@ namespace CourierConnect.Models
         [Required]
         [DisplayName("Company")]
         public bool isCompany { get; set; }
+
+        //[ForeignKey("Address")]
+        //[Required]
+        public int descAddressID { get; set; }
+        //[DisplayName("Destination address")]
+        [ForeignKey("descAddressID")]
+        public Address descAddress { get; set; }
     }
 }

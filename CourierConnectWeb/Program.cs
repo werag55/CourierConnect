@@ -2,12 +2,14 @@ using CourierConnect.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using CourierConnect.DataAccess.Repository.IRepository;
+using CourierConnectWeb.Email;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
-//using CourierConnectWeb.Email;
 
 var builder = WebApplication.CreateBuilder(args);
-//builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
