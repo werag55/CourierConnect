@@ -6,10 +6,13 @@ using CourierConnect.DataAccess.Repository;
 using CourierConnectWeb.Services.IServices;
 using CourierConnectWeb.Services;
 using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using CourierConnectWeb.Email;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.AddAuthentication(options =>
 {

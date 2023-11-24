@@ -8,6 +8,7 @@ namespace CourierConnect.DataAccess.Data
     public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public DbSet<Inquiry> Inquiries { get; set; }
+        public DbSet<Address> Addresses { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

@@ -19,7 +19,7 @@ namespace CourierConnect.DataAccess.Repository
 
         public void Update(Inquiry obj)
         {
-            _db.SaveChanges();
+            _db.Inquiries.Update(obj);
         }
     }
 }

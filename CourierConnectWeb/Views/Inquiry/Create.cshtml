@@ -18,6 +18,26 @@
                     <span asp-validation-for="DeliveryDate" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-2 col-12">
+                    <input asp-for="descAddress.streetName" class="form-control border-0 shadow" />
+                    <label asp-for="descAddress.streetName" class="ms-2"></label>
+                    <span asp-validation-for="descAddress.streetName" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="descAddress.houseNumber" class="form-control border-0 shadow" />
+                    <label asp-for="descAddress.houseNumber" class="ms-2"></label>
+                    <span asp-validation-for="descAddress.houseNumber" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="descAddress.flatNumber" class="form-control border-0 shadow" />
+                    <label asp-for="descAddress.flatNumber" class="ms-2"></label>
+                    <span asp-validation-for="descAddress.flatNumber" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="descAddress.postcode" class="form-control border-0 shadow" />
+                    <label asp-for="descAddress.postcode" class="ms-2"></label>
+                    <span asp-validation-for="descAddress.postcode" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
                     <input asp-for="isPriority" class="form-control border-0 shadow" />
                     <label asp-for="isPriority" class="ms-2"></label>
                     <span asp-validation-for="isPriority" class="text-danger"></span>

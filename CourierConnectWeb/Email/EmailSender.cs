@@ -8,8 +8,8 @@ namespace CourierConnectWeb.Email
     {
         public Task SendEmailAsync(string email, string subject, string message)
         {
-            var mail = "gina.grant@ethereal.email";
-            var pw = "TuhBmP7t1FF3cM1NXb";
+            var mail = "riley.fritsch@ethereal.email";
+            var pw = "SDvt19edpD3k7pNmE8";
 
             var client = new SmtpClient("smtp.ethereal.email", 587)
             {
