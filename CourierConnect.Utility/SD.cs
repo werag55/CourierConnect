@@ -8,5 +8,12 @@ namespace CourierConnect.Utility
 {
     public static class SD //all the constans 
     {
+        public enum ApiType
+        {
+            GET,
+            POST,
+            PUT,
+            DELETE
+        }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CourierCompanyApi.Migrations
 {
     /// <inheritdoc />
-    public partial class AddOffersTable : Migration
+    public partial class AddOfferTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -28,7 +28,7 @@ namespace CourierCompanyApi.Migrations
             migrationBuilder.InsertData(
                 table: "Offers",
                 columns: new[] { "Id", "creationDate", "price" },
-                values: new object[] { 1, new DateTime(2023, 11, 22, 10, 21, 13, 447, DateTimeKind.Local).AddTicks(5758), 100f });
+                values: new object[] { 1, new DateTime(2023, 11, 24, 0, 46, 47, 474, DateTimeKind.Local).AddTicks(3097), 100f });
         }
 
         /// <inheritdoc />

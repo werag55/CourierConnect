@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourierCompanyApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231122092113_AddOffersTable")]
-    partial class AddOffersTable
+    [Migration("20231123234647_AddOfferTable")]
+    partial class AddOfferTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,7 +47,7 @@ namespace CourierCompanyApi.Migrations
                         new
                         {
                             Id = 1,
-                            creationDate = new DateTime(2023, 11, 22, 10, 21, 13, 447, DateTimeKind.Local).AddTicks(5758),
+                            creationDate = new DateTime(2023, 11, 24, 0, 46, 47, 474, DateTimeKind.Local).AddTicks(3097),
                             price = 100f
                         });
                 });
