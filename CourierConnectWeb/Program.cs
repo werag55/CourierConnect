@@ -2,6 +2,9 @@ using CourierConnect.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using CourierConnect.DataAccess.Repository.IRepository;
+using CourierConnect.DataAccess.Repository;
+using CourierConnectWeb.Services.IServices;
+using CourierConnectWeb.Services;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using CourierConnectWeb.Email;
@@ -26,6 +29,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options
 builder.Services.AddDefaultIdentity<IdentityUser>(/*options => options.SignIn.RequireConfirmedAccount = true*/).AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
 
+////////////////////////////////////////////////
+builder.Services.AddHttpClient<IOfferService, OfferService>();
+builder.Services.AddScoped<IOfferService, OfferService>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(100);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
@@ -44,6 +59,8 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseSession(); //////////////////////
 
 app.MapRazorPages();
 app.MapControllerRoute(
