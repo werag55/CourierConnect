@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using CourierConnect.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Reflection.Emit;
+using System.Reflection.Metadata;
+using CourierConnect.DataAccess.Data.EntityTypeConfiguration;
 
 namespace CourierConnect.DataAccess.Data
 {
@@ -18,6 +21,7 @@ namespace CourierConnect.DataAccess.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            new InquiryEntityTypeConfiguration().Configure(builder.Entity<Inquiry>());
         }
     }
 }
