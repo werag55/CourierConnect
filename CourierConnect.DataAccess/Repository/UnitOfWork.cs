@@ -15,6 +15,9 @@ namespace CourierConnect.DataAccess.Repository
         public IAddressRepository Address { get; private set; }
         public IPackageRepository Package { get; private set; }
         public IPersonalDataRepository PersonalData { get; private set; }
+        public IOfferRepository Offer { get; private set; }
+        public IRequestRepository Request { get; private set; }
+        public IDeliveryRepository Delivery { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
@@ -23,6 +26,9 @@ namespace CourierConnect.DataAccess.Repository
             Address = new AddressRepository(_db);
             Package = new PackageRepository(_db);
             PersonalData = new PersonalDataRepository(_db);
+            Offer = new OfferRepository(_db);
+            Request = new RequestRepository(_db);
+            Delivery = new DeliveryRepository(_db);
         }
 
         public void Save()

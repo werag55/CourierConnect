@@ -15,6 +15,8 @@ namespace CourierConnect.DataAccess.Data
         public DbSet<Package> Packages { get; set; }
         public DbSet<PersonalData> PersonalData { get; set; }
         public DbSet<Offer> Offers { get; set; }
+        public DbSet<Request> Requests { get; set; }
+        public DbSet<Delivery> Deliveries { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -29,6 +31,8 @@ namespace CourierConnect.DataAccess.Data
             new PackageEntityTypeConfiguration().Configure(builder.Entity<Package>());
             new PersonalDataEntityTypeConfiguration().Configure(builder.Entity<PersonalData>());
             new OfferEntityTypeConfiguration().Configure(builder.Entity<Offer>());
+            new RequestEntityTypeConfiguration().Configure(builder.Entity<Request>());
+            new DeliveryEntityTypeConfiguration().Configure(builder.Entity<Delivery>());
         }
     }
 }
