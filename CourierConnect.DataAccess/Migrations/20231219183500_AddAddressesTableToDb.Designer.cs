@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourierConnect.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231124122121_UpdateAddressTable_1")]
-    partial class UpdateAddressTable_1
+    [Migration("20231219183500_AddAddressesTableToDb")]
+    partial class AddAddressesTableToDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,52 +34,30 @@ namespace CourierConnect.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("flatNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("flatNumber")
+                        .HasAnnotation("DisplayName", "Flat number");
 
                     b.Property<int>("houseNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("houseNumber")
+                        .HasAnnotation("DisplayName", "House number");
 
                     b.Property<string>("postcode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("postCode")
+                        .HasAnnotation("DisplayName", "Postcode");
 
                     b.Property<string>("streetName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("streetName")
+                        .HasAnnotation("DisplayName", "Street name");
 
                     b.HasKey("Id");
 
                     b.ToTable("Addresses");
-                });
-
-            modelBuilder.Entity("CourierConnect.Models.Inquiry", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DeliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("descAddressID")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("isCompany")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("isPriority")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("weekendDelivery")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("descAddressID");
-
-                    b.ToTable("Inquiries");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -282,17 +260,6 @@ namespace CourierConnect.DataAccess.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("CourierConnect.Models.Inquiry", b =>
-                {
-                    b.HasOne("CourierConnect.Models.Address", "descAddress")
-                        .WithMany()
-                        .HasForeignKey("descAddressID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("descAddress");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

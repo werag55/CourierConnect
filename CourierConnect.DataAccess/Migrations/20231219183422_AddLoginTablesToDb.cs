@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CourierConnect.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class AddIdentityTables : Migration
+    public partial class AddLoginTablesToDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

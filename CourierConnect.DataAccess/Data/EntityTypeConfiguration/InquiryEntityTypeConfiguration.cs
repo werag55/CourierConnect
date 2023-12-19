@@ -15,9 +15,15 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
         public void Configure(EntityTypeBuilder<Inquiry> builder)
         {
             builder.HasKey(e => e.Id);
-            builder.Property(e => e.DeliveryDate)
+
+            builder.Property(e => e.pickupDate)
                 .IsRequired()
-                .HasColumnName("DeliveryDate")
+                .HasColumnName("pickupDate")
+                .HasAnnotation("DisplayName", "Pickup date");
+
+            builder.Property(e => e.deliveryDate)
+                .IsRequired()
+                .HasColumnName("deliveryDate")
                 .HasAnnotation("DisplayName", "Delivery date");
 
             builder.Property(e => e.isPriority)
@@ -35,13 +41,29 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
                 .HasColumnName("isCompany")
                 .HasAnnotation("DisplayName", "Company");
 
-            builder.Property(e => e.descAddressID)
+            builder.Property(e => e.sourceAddressId)
                 .IsRequired();
 
-            builder.HasOne(e => e.descAddress)
+            builder.HasOne(e => e.sourceAddress)
                 .WithMany()
-                .HasForeignKey(e => e.descAddressID)
-                .HasConstraintName("addressId");
+                .HasForeignKey(e => e.sourceAddressId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Property(e => e.destinationAddressId)
+                .IsRequired();
+
+            builder.HasOne(e => e.destinationAddress)
+                .WithMany()
+                .HasForeignKey(e => e.destinationAddressId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Property(e => e.packageId)
+                .IsRequired();
+
+            builder.HasOne(e => e.package)
+                .WithMany()
+                .HasForeignKey(e => e.packageId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

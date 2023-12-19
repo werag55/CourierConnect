@@ -47,9 +47,9 @@ namespace CourierConnectWeb.Controllers
             var receiver = "gina.grant@ethereal.email";
             var subject = "New Inquiry was created";
             var message = "hello!\n u have just created new inquiry at CourierConnect!\n" +
-                "Delivery Date: " + obj.DeliveryDate.ToShortDateString() + "\nInquiry ID: " + obj.Id.ToString() +
-                "Destination Address:" + obj.descAddress.streetName.ToString() + obj.descAddress.houseNumber.ToString() +
-                obj.descAddress.flatNumber.ToString() + obj.descAddress.postcode.ToString();
+                "Delivery Date: " + obj.deliveryDate.ToShortDateString() + "\nInquiry ID: " + obj.Id.ToString() +
+                "Destination Address:" + obj.destinationAddress.streetName.ToString() + obj.destinationAddress.houseNumber.ToString() +
+                obj.destinationAddress.flatNumber.ToString() + obj.destinationAddress.postcode.ToString();
 
             await _emailsender.SendEmailAsync(receiver, subject, message);
 
@@ -62,7 +62,7 @@ namespace CourierConnectWeb.Controllers
             if (ModelState.IsValid)
             {
                 _unitOfWork.Inquiry.Add(obj);
-                _unitOfWork.Address.Add(obj.descAddress);
+                _unitOfWork.Address.Add(obj.destinationAddress);
                 _unitOfWork.Save();
                 TempData["success"] = "Inquiry created successfully";
                 _ = SendEmail(obj);

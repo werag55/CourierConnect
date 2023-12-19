@@ -10,6 +10,8 @@ namespace CourierConnect.DataAccess.Repository.IRepository
     {
         IInquiryRepository Inquiry { get; }
         IAddressRepository Address { get; }
+        IPackageRepository Package { get; }
+        IPersonalDataRepository PersonalData { get; }
         void Save();
     }
 }

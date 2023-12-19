@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourierConnect.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231123185657_AddAddressTableToDb")]
-    partial class AddAddressTableToDb
+    [Migration("20231219183422_AddLoginTablesToDb")]
+    partial class AddLoginTablesToDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,58 +24,6 @@ namespace CourierConnect.DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("CourierConnect.Models.Address", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<int>("flatNumber")
-                        .HasColumnType("int");
-
-                    b.Property<int>("houseNumber")
-                        .HasColumnType("int");
-
-                    b.Property<string>("postcode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("stringName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Addresses");
-                });
-
-            modelBuilder.Entity("CourierConnect.Models.Inquiry", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DeliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("isCompany")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("isPriority")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("weekendDelivery")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Inquiries");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {

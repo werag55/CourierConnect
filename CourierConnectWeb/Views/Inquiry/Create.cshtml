@@ -13,33 +13,34 @@
             <div class="border p-3">
                 @*<div asp-validation-summary="ModelOnly"></div>*@
                 <div class="form-floating py-2 col-12">
-                    <input asp-for="DeliveryDate" class="form-control border-0 shadow" />
-                    <label asp-for="DeliveryDate" class="ms-2"></label>
-                    <span asp-validation-for="DeliveryDate" class="text-danger"></span>
+                    <input asp-for="deliveryDate" class="form-control border-0 shadow" />
+                    <label asp-for="deliveryDate" class="ms-2"></label>
+                    <span asp-validation-for="deliveryDate" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-2 col-12">
-                    <input asp-for="descAddress.streetName" class="form-control border-0 shadow" />
-                    <label asp-for="descAddress.streetName" class="ms-2"></label>
-                    <span asp-validation-for="descAddress.streetName" class="text-danger"></span>
+                    <input asp-for="destinationAddress.streetName" class="form-control border-0 shadow" />
+                    <label asp-for="destinationAddress.streetName" class="ms-2"></label>
+                    <span asp-validation-for="destinationAddress.streetName" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-2 col-12">
-                    <input asp-for="descAddress.houseNumber" class="form-control border-0 shadow" />
-                    <label asp-for="descAddress.houseNumber" class="ms-2"></label>
-                    <span asp-validation-for="descAddress.houseNumber" class="text-danger"></span>
+                    <input asp-for="destinationAddress.houseNumber" class="form-control border-0 shadow" />
+                    <label asp-for="destinationAddress.houseNumber" class="ms-2"></label>
+                    <span asp-validation-for="destinationAddress.houseNumber" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-2 col-12">
-                    <input asp-for="descAddress.flatNumber" class="form-control border-0 shadow" />
-                    <label asp-for="descAddress.flatNumber" class="ms-2"></label>
-                    <span asp-validation-for="descAddress.flatNumber" class="text-danger"></span>
+                    <input asp-for="destinationAddress.flatNumber" class="form-control border-0 shadow" />
+                    <label asp-for="destinationAddress.flatNumber" class="ms-2"></label>
+                    <span asp-validation-for="destinationAddress.flatNumber" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-2 col-12">
-                    <input asp-for="descAddress.postcode" class="form-control border-0 shadow" />
-                    <label asp-for="descAddress.postcode" class="ms-2"></label>
-                    <span asp-validation-for="descAddress.postcode" class="text-danger"></span>
+                    <input asp-for="destinationAddress.postcode" class="form-control border-0 shadow" />
+                    <label asp-for="destinationAddress.postcode" class="ms-2"></label>
+                    <span asp-validation-for="destinationAddress.postcode" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-2 col-12">
                     <input asp-for="isPriority" class="form-control border-0 shadow" />
-                    <label asp-for="isPriority" class="ms-2"></label>
+                    <label class="ms-2">@Html.DisplayNameFor(model => model.isPriority)</label>
+                    @* <label asp-for="isPriority" class="ms-2"></label> *@
                     <span asp-validation-for="isPriority" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-2 col-12">
