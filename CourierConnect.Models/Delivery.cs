@@ -9,7 +9,8 @@ namespace CourierConnect.Models
     public class Delivery
     {
         public int Id { get; set; }
-        //TODO: courierId
+        public string courierName { get; set; }
+        public string courierSurname { get; set; }
         public int requestId { get; set; }
         public Request request { get; set; }
         public DateTime pickUpDate { get; set; }
