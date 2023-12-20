@@ -13,17 +13,23 @@
             <div class="col-6">
             </div>
         </div>
-
+        @using (Html.BeginForm())
+        {
+            <p>
+                Find by ID: @Html.TextBox("SearchString")
+                <input type="submit" value="Search" />
+            </p>
+        }
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>
-                        Delivery Id
+                        @Html.ActionLink("Id", "Index", new { sortOrder = ViewBag.NameSortParm })
                     </th>
                     <th>
-                       
+                        @Html.ActionLink("Delivery Date", "Index", new { sortOrder = ViewBag.DateSortParm })
                     </th>
-                    
+                    <th></th>
                 </tr>
             </thead>
             <tbody>

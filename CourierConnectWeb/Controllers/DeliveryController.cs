@@ -15,10 +15,32 @@ namespace CourierConnectWeb.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-        public IActionResult Index()
+        public IActionResult Index(string sortOrder, string searchString)
         {
-            List<Delivery> objInquiryList = _unitOfWork.Delivery.GetAll().ToList();
-            return View(objInquiryList);
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+
+            var objInquiryList = _unitOfWork.Delivery.GetAll();
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                objInquiryList = objInquiryList.Where(s => s.Id.ToString() == searchString);
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    objInquiryList = objInquiryList.OrderByDescending(s => s.Id);
+                    break;
+                case "Date":
+                    objInquiryList = objInquiryList.OrderBy(s => s.deliveryDate);
+                    break;
+                case "date_desc":
+                    objInquiryList = objInquiryList.OrderByDescending(s => s.deliveryDate);
+                    break;
+                default:
+                    objInquiryList = objInquiryList.OrderBy(s => s.Id);
+                    break;
+            }
+            return View(objInquiryList.ToList());
         }
         public IActionResult DeliveryStatus(Delivery delivery)
         {
