@@ -13,6 +13,7 @@ namespace CourierConnect.Models
     {
         public int Id { get; set; }
         //TODO: clientId
+        public string clientId { get; set; }
         public DateTime pickupDate { get; set; }
 
         public DateTime deliveryDate { get; set; }
