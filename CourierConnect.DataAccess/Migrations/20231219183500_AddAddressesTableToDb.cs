@@ -5,7 +5,7 @@
 namespace CourierConnect.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class AddAddressTableToDb : Migration
+    public partial class AddAddressesTableToDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,16 +14,16 @@ namespace CourierConnect.DataAccess.Migrations
                 name: "Addresses",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    stringName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    streetName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     houseNumber = table.Column<int>(type: "int", nullable: false),
                     flatNumber = table.Column<int>(type: "int", nullable: false),
-                    postcode = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    postCode = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Addresses", x => x.ID);
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
                 });
         }
 

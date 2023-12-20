@@ -5,6 +5,7 @@ using CourierConnect.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CourierConnectWeb.Email;
+using Microsoft.AspNetCore.Identity;
 
 namespace CourierConnectWeb.Controllers
 {
@@ -12,13 +13,17 @@ namespace CourierConnectWeb.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailSender _emailsender;
-        public InquiryController(IUnitOfWork unitOfWork, IEmailSender emailSender)
+        private readonly UserManager<IdentityUser> _userManager;
+        public InquiryController(IUnitOfWork unitOfWork, IEmailSender emailSender, UserManager<IdentityUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _emailsender = emailSender;
+            _userManager = userManager;
         }
         public IActionResult Index()
         {
+            var id = _userManager.GetUserId(User);
+            
             List<Inquiry> objInquiryList = _unitOfWork.Inquiry.GetAll().ToList();
             return View(objInquiryList);
         }
@@ -47,9 +52,9 @@ namespace CourierConnectWeb.Controllers
             var receiver = "gina.grant@ethereal.email";
             var subject = "New Inquiry was created";
             var message = "hello!\n u have just created new inquiry at CourierConnect!\n" +
-                "Delivery Date: " + obj.DeliveryDate.ToShortDateString() + "\nInquiry ID: " + obj.Id.ToString() +
-                "Destination Address:" + obj.descAddress.streetName.ToString() + obj.descAddress.houseNumber.ToString() +
-                obj.descAddress.flatNumber.ToString() + obj.descAddress.postcode.ToString();
+                "Delivery Date: " + obj.deliveryDate.ToShortDateString() + "\nInquiry ID: " + obj.Id.ToString() +
+                "Destination Address:" + obj.destinationAddress.streetName.ToString() + obj.destinationAddress.houseNumber.ToString() +
+                obj.destinationAddress.flatNumber.ToString() + obj.destinationAddress.postcode.ToString();
 
             await _emailsender.SendEmailAsync(receiver, subject, message);
 
@@ -62,7 +67,7 @@ namespace CourierConnectWeb.Controllers
             if (ModelState.IsValid)
             {
                 _unitOfWork.Inquiry.Add(obj);
-                _unitOfWork.Address.Add(obj.descAddress);
+                _unitOfWork.Address.Add(obj.destinationAddress);
                 _unitOfWork.Save();
                 TempData["success"] = "Inquiry created successfully";
                 _ = SendEmail(obj);

@@ -4,6 +4,7 @@ using CourierConnect.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourierConnect.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231219184241_AddInquiriesTableToDb")]
+    partial class AddInquiriesTableToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,44 +60,6 @@ namespace CourierConnect.DataAccess.Migrations
                     b.ToTable("Addresses");
                 });
 
-            modelBuilder.Entity("CourierConnect.Models.Delivery", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("courierName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("courierSurname")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("deliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("deliveryStatus")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("pickUpDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("reason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("requestId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("requestId");
-
-                    b.ToTable("Deliveries");
-                });
-
             modelBuilder.Entity("CourierConnect.Models.Inquiry", b =>
                 {
                     b.Property<int>("Id")
@@ -102,10 +67,6 @@ namespace CourierConnect.DataAccess.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("clientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("deliveryDate")
                         .HasColumnType("datetime2")
@@ -150,45 +111,6 @@ namespace CourierConnect.DataAccess.Migrations
                     b.HasIndex("sourceAddressId");
 
                     b.ToTable("Inquiries");
-                });
-
-            modelBuilder.Entity("CourierConnect.Models.Offer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("creationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("expirationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("fees")
-                        .HasColumnType("money");
-
-                    b.Property<int>("inquiryId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("price")
-                        .HasColumnType("money");
-
-                    b.Property<int>("status")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("taxes")
-                        .HasColumnType("money");
-
-                    b.Property<DateTime>("updatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("inquiryId");
-
-                    b.ToTable("Offers");
                 });
 
             modelBuilder.Entity("CourierConnect.Models.Package", b =>
@@ -268,35 +190,6 @@ namespace CourierConnect.DataAccess.Migrations
                     b.HasIndex("addressId");
 
                     b.ToTable("PersonalData");
-                });
-
-            modelBuilder.Entity("CourierConnect.Models.Request", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("isAccepted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("offerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("personalDataId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("rejectionReason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("offerId");
-
-                    b.HasIndex("personalDataId");
-
-                    b.ToTable("Requests");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -501,17 +394,6 @@ namespace CourierConnect.DataAccess.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("CourierConnect.Models.Delivery", b =>
-                {
-                    b.HasOne("CourierConnect.Models.Request", "request")
-                        .WithMany()
-                        .HasForeignKey("requestId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("request");
-                });
-
             modelBuilder.Entity("CourierConnect.Models.Inquiry", b =>
                 {
                     b.HasOne("CourierConnect.Models.Address", "destinationAddress")
@@ -539,17 +421,6 @@ namespace CourierConnect.DataAccess.Migrations
                     b.Navigation("sourceAddress");
                 });
 
-            modelBuilder.Entity("CourierConnect.Models.Offer", b =>
-                {
-                    b.HasOne("CourierConnect.Models.Inquiry", "inquiry")
-                        .WithMany()
-                        .HasForeignKey("inquiryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("inquiry");
-                });
-
             modelBuilder.Entity("CourierConnect.Models.PersonalData", b =>
                 {
                     b.HasOne("CourierConnect.Models.Address", "address")
@@ -560,25 +431,6 @@ namespace CourierConnect.DataAccess.Migrations
                         .HasConstraintName("FK_PersonalData_Address_addressId");
 
                     b.Navigation("address");
-                });
-
-            modelBuilder.Entity("CourierConnect.Models.Request", b =>
-                {
-                    b.HasOne("CourierConnect.Models.Offer", "offer")
-                        .WithMany()
-                        .HasForeignKey("offerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("CourierConnect.Models.PersonalData", "personalData")
-                        .WithMany()
-                        .HasForeignKey("personalDataId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("offer");
-
-                    b.Navigation("personalData");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

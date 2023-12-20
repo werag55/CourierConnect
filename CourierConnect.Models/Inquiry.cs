@@ -11,30 +11,26 @@ namespace CourierConnect.Models
 {
     public class Inquiry
     {
-        [Key]
         public int Id { get; set; }
+        //TODO: clientId
+        public string clientId { get; set; }
+        public DateTime pickupDate { get; set; }
 
-        [Required]
-        [DisplayName("Delivery date")]
-        public DateTime DeliveryDate { get; set; }
+        public DateTime deliveryDate { get; set; }
 
-        [Required]
-        [DisplayName("Priority")]
         public bool isPriority { get; set; }
 
-        [Required]
-        [DisplayName("Delivery at weekend")]
         public bool weekendDelivery { get; set; }
 
-        [Required]
-        [DisplayName("Company")]
         public bool isCompany { get; set; }
+        public int sourceAddressId { get; set; }
 
-        //[ForeignKey("Address")]
-        //[Required]
-        public int descAddressID { get; set; }
-        //[DisplayName("Destination address")]
-        [ForeignKey("descAddressID")]
-        public Address descAddress { get; set; }
+        public Address sourceAddress { get; set; }
+
+        public int destinationAddressId { get; set; }
+
+        public Address destinationAddress { get; set; }
+        public int packageId { get; set; }
+        public Package package { get; set; }
     }
 }

@@ -5,24 +5,25 @@
 namespace CourierConnect.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateAddressTable_1 : Migration
+    public partial class UpdateInquiryTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "stringName",
-                table: "Addresses",
-                newName: "streetName");
+            migrationBuilder.AddColumn<string>(
+                name: "clientId",
+                table: "Inquiries",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "streetName",
-                table: "Addresses",
-                newName: "stringName");
+            migrationBuilder.DropColumn(
+                name: "clientId",
+                table: "Inquiries");
         }
     }
 }

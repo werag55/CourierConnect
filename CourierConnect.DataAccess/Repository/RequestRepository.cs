@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace CourierConnect.DataAccess.Repository
 {
-    public class InquiryRepository : Repository<Inquiry>, IInquiryRepository
+    public class RequestRepository : Repository<Request>, IRequestRepository
     {
         private ApplicationDbContext _db;
-        public InquiryRepository(ApplicationDbContext db) : base(db)
+        public RequestRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
         }
 
-        public void Update(Inquiry obj)
+        public void Update(Request obj)
         {
-           _db.Inquiries.Update(obj);
+            _db.Requests.Update(obj);
         }
     }
 }

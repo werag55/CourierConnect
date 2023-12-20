@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourierConnect.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231123185657_AddAddressTableToDb")]
-    partial class AddAddressTableToDb
+    [Migration("20231219183500_AddAddressesTableToDb")]
+    partial class AddAddressesTableToDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,54 +27,37 @@ namespace CourierConnect.DataAccess.Migrations
 
             modelBuilder.Entity("CourierConnect.Models.Address", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<int>("flatNumber")
-                        .HasColumnType("int");
-
-                    b.Property<int>("houseNumber")
-                        .HasColumnType("int");
-
-                    b.Property<string>("postcode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("stringName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Addresses");
-                });
-
-            modelBuilder.Entity("CourierConnect.Models.Inquiry", b =>
-                {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DeliveryDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("flatNumber")
+                        .HasColumnType("int")
+                        .HasColumnName("flatNumber")
+                        .HasAnnotation("DisplayName", "Flat number");
 
-                    b.Property<bool>("isCompany")
-                        .HasColumnType("bit");
+                    b.Property<int>("houseNumber")
+                        .HasColumnType("int")
+                        .HasColumnName("houseNumber")
+                        .HasAnnotation("DisplayName", "House number");
 
-                    b.Property<bool>("isPriority")
-                        .HasColumnType("bit");
+                    b.Property<string>("postcode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("postCode")
+                        .HasAnnotation("DisplayName", "Postcode");
 
-                    b.Property<bool>("weekendDelivery")
-                        .HasColumnType("bit");
+                    b.Property<string>("streetName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("streetName")
+                        .HasAnnotation("DisplayName", "Street name");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Inquiries");
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
