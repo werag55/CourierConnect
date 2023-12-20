@@ -9,6 +9,7 @@ namespace CourierConnectWeb.Controllers
 {
     public class DeliveryController : Controller
     {
+    
         private readonly IUnitOfWork _unitOfWork;
         public DeliveryController(IUnitOfWork unitOfWork)
         {
@@ -18,6 +19,10 @@ namespace CourierConnectWeb.Controllers
         {
             List<Delivery> objInquiryList = _unitOfWork.Delivery.GetAll().ToList();
             return View(objInquiryList);
+        }
+        public IActionResult DeliveryStatus(Delivery delivery)
+        {
+            return View(delivery);
         }
     }
 }

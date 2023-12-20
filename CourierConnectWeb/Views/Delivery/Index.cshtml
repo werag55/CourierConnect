@@ -21,12 +21,9 @@
                         Delivery Id
                     </th>
                     <th>
-                        <div class="col-6 text-end">
-                            <a asp-controller="Delivery" asp-action="Show delivery status" class="btn btn-primary">
-                                <i class="bi bi-plus-circle"></i>  Delivery Status
-                            </a>
-                        </div>
+                       
                     </th>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -34,6 +31,13 @@
                 {
                     <tr>
                         <td>@obj.Id</td>
+                        <td>
+                            <div class="w-40 btn-group" role="group">
+                                <a asp-controller="Delivery" asp-action="DeliveryStatus" asp-route-id="@obj.Id" class="btn btn-primary mx-2">
+                                    <i class="bi bi-pencil-square"></i> Delivery Status
+                                </a>
+                            </div>
+                        </td>
                     </tr>
                 }
             </tbody>
