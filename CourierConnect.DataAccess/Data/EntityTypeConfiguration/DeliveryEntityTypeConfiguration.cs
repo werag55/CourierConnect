@@ -15,6 +15,12 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
         {
             builder.HasKey(e => e.Id);
 
+            builder.Property(e => e.courierName)
+                .IsRequired();
+
+            builder.Property(e => e.courierSurname)
+                .IsRequired();
+
             builder.Property(e => e.requestId)
                 .IsRequired();
 

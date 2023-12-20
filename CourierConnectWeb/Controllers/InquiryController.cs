@@ -5,6 +5,7 @@ using CourierConnect.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CourierConnectWeb.Email;
+using Microsoft.AspNetCore.Identity;
 
 namespace CourierConnectWeb.Controllers
 {
@@ -12,13 +13,17 @@ namespace CourierConnectWeb.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailSender _emailsender;
-        public InquiryController(IUnitOfWork unitOfWork, IEmailSender emailSender)
+        private readonly UserManager<IdentityUser> _userManager;
+        public InquiryController(IUnitOfWork unitOfWork, IEmailSender emailSender, UserManager<IdentityUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _emailsender = emailSender;
+            _userManager = userManager;
         }
         public IActionResult Index()
         {
+            var id = _userManager.GetUserId(User);
+            
             List<Inquiry> objInquiryList = _unitOfWork.Inquiry.GetAll().ToList();
             return View(objInquiryList);
         }
