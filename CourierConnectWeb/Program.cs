@@ -6,13 +6,13 @@ using CourierConnect.DataAccess.Repository;
 using CourierConnectWeb.Services.IServices;
 using CourierConnectWeb.Services;
 using Microsoft.AspNetCore.Authentication.Google;
-using CourierConnectWeb.Email;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using CourierConnect.Utility;
+//using CourierConnectWeb.Email;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddTransient<IEmailSender, EmailSender>();
+//builder.Services.AddTransient<IEmailSender, EmailSender>()
 
 builder.Services.AddAuthentication(options =>
 {
@@ -26,10 +26,11 @@ builder.Services.AddAuthentication(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options 
+builder.Services.AddDbContext<ApplicationDbContext>(options
     => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(/*options => options.SignIn.RequireConfirmedAccount = true*/).AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(/*options => options.SignIn.RequireConfirmedAccount = true*/).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddRazorPages();
 
 ////////////////////////////////////////////////

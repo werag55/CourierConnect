@@ -8,6 +8,7 @@ namespace CourierConnectWeb.Email
     {
         public Task SendEmailAsync(string email, string subject, string message)
         {
+            return Task.CompletedTask;
             var mail = "riley.fritsch@ethereal.email";
             var pw = "SDvt19edpD3k7pNmE8";
 

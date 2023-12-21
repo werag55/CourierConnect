@@ -8,6 +8,11 @@ namespace CourierConnect.Utility
 {
     public static class SD //all the constans 
     {
+        public const string Role_User_Admin = "Admin";
+        public const string Role_User_Worker = "Worker";
+        public const string Role_User_Courier = "Courier";
+        public const string Role_User_Client = "Client";
+
         public enum ApiType
         {
             GET,
