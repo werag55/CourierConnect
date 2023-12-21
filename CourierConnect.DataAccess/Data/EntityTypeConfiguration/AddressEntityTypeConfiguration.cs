@@ -26,7 +26,7 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
                 .HasAnnotation("DisplayName", "House number");
 
             builder.Property(e => e.flatNumber)
-                .IsRequired()
+                //.IsRequired()
                 .HasColumnName("flatNumber")
                 .HasAnnotation("DisplayName", "Flat number");
 
@@ -34,6 +34,9 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
                 .IsRequired()
                 .HasColumnName("postCode")
                 .HasAnnotation("DisplayName", "Postcode");
+
+            builder.Property(e => e.city)
+                .IsRequired();
         }
     }
 }

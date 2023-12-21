@@ -15,5 +15,15 @@ namespace CourierConnect.Models
         public string dimensionsUnit { get; set; }
         public double weight { get; set; }
         public string weightUnit { get; set; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine($"{width} x {height} x {length} {dimensionsUnit}");
+            sb.AppendLine($"{weight} {weightUnit}");
+
+            return sb.ToString();
+        }
     }
 }
