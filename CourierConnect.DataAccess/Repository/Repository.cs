@@ -20,7 +20,7 @@ namespace CourierConnect.DataAccess.Repository
             _db = db;
             this.dbSet = _db.Set<T>();
 
-            //_db.Inquiries.Include(u => u.destinationAddress).Include(u => u.sourceAddress).
+            _db.Inquiries.Include(u => u.destinationAddress).Include(u => u.sourceAddress).Include(u => u.package);
         }
 
         public void Add(T entity)
@@ -28,24 +28,37 @@ namespace CourierConnect.DataAccess.Repository
             dbSet.Add(entity);
         }
 
-        public T Get(Expression<Func<T, bool>> filter)
+        public T? Get(Expression<Func<T, bool>> filter, string? includeProperties = null)
+        {
+            //IQueryable<T> query = dbSet;
+            //query = query.Where(filter);
+            //return query.FirstOrDefault();
+
+            return FindAll(filter, includeProperties).FirstOrDefault();
+        }
+
+        public IEnumerable<T> FindAll(Expression<Func<T, bool>> filter, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
             query = query.Where(filter);
-            return query.FirstOrDefault();
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var includeProp in includeProperties
+                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+            return query.ToList();
+
         }
 
-        public IEnumerable<T> FindAll(Expression<Func<T, bool>> filter)
+        public IEnumerable<T> GetAll(string? includeProperties = null)
         {
-            IQueryable<T> query = dbSet;
-            query = query.Where(filter);
-            return query.ToList();
-        }
+            //IQueryable<T> query = dbSet;
+            //return query.ToList();
 
-        public IEnumerable<T> GetAll()
-        {
-            IQueryable<T> query = dbSet;
-            return query.ToList();
+            return FindAll(u => true, includeProperties);
         }
 
         public void Remove(T entity)

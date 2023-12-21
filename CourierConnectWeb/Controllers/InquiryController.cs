@@ -30,7 +30,8 @@ namespace CourierConnectWeb.Controllers
         {
             var id = _userManager.GetUserId(User);
 
-            List<Inquiry> objInquiryList = _unitOfWork.Inquiry.FindAll(u => u.clientId.Equals(id)).ToList();
+            List<Inquiry> objInquiryList = _unitOfWork.Inquiry.FindAll(u => u.clientId.Equals(id),
+                "sourceAddress,destinationAddress,package").ToList();
             return View(objInquiryList);
         }
 
