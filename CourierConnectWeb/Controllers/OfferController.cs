@@ -23,6 +23,7 @@ namespace CourierConnectWeb.Controllers
             {
                 list = JsonConvert.DeserializeObject<List<OfferDTO>>(Convert.ToString(response.Result));
             }
+
             return View(list);
         }
     }
