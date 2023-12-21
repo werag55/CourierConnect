@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CourierConnectWeb.Email;
 using Microsoft.AspNetCore.Identity;
+using CourierConnect.Models.ViewModels;
 
 namespace CourierConnectWeb.Controllers
 {
@@ -26,13 +27,34 @@ namespace CourierConnectWeb.Controllers
             return View(objInquiryList);
         }
 
+        private bool hasDelivery(int inquiryId)
+        {
+            var offer = _unitOfWork.Offer.Get(u => u.Id == inquiryId);
+            if (offer == default)
+                return false;
+            var request = _unitOfWork.Request.Get(u => u.Id == offer.Id);
+            if (request == default)
+                return false;
+            var delivery = _unitOfWork.Delivery.Get(u => u.Id == request.Id);
+            if (delivery == default)
+                return false;
+            return true;
+        }
+
         public IActionResult ClientInquiries()
         {
             var id = _userManager.GetUserId(User);
 
             List<Inquiry> objInquiryList = _unitOfWork.Inquiry.FindAll(u => u.clientId.Equals(id),
                 "sourceAddress,destinationAddress,package").ToList();
-            return View(objInquiryList);
+
+            List<ClientInquiryVM> objInquiryVMList = new List<ClientInquiryVM>();
+            foreach (var inquiry in objInquiryList)
+            {
+                bool hasDelivery = this.hasDelivery(inquiry.Id);
+                objInquiryVMList.Add(new ClientInquiryVM(inquiry, hasDelivery));
+            }
+            return View(objInquiryVMList);
         }
 
         public IActionResult Create()
@@ -54,7 +76,7 @@ namespace CourierConnectWeb.Controllers
 
         //}
 
-        public async Task<IActionResult> SendEmail(Inquiry obj)
+        public async Task<IActionResult> SendEmail(Inquiry obj) 
         {
             var receiver = "gina.grant@ethereal.email";
             var subject = "New Inquiry was created";

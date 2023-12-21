@@ -9,6 +9,12 @@ namespace CourierConnect.Models.ViewModels
     public class ClientInquiryVM
     {
         public Inquiry Inquiry { get; set; }
-        //public string sourceAddress
+        public bool hasDelivery { get; set; }
+
+        public ClientInquiryVM(Inquiry inquiry, bool hasDelivery)
+        {
+            this.Inquiry = inquiry;
+            this.hasDelivery = hasDelivery;
+        }
     }
 }
