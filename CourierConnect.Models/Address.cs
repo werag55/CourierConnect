@@ -19,5 +19,13 @@ namespace CourierConnect.Models
         public int flatNumber { get; set; }
 
         public string postcode { get; set; }
+
+        public string city { get; set; }
+
+        //public override string ToString()
+        //{
+
+        //    return base.ToString();
+        //}
     }
 }
