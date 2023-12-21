@@ -19,6 +19,8 @@ namespace CourierConnect.DataAccess.Repository
         {
             _db = db;
             this.dbSet = _db.Set<T>();
+
+            //_db.Inquiries.Include(u => u.destinationAddress).Include(u => u.sourceAddress).
         }
 
         public void Add(T entity)
@@ -31,6 +33,13 @@ namespace CourierConnect.DataAccess.Repository
             IQueryable<T> query = dbSet;
             query = query.Where(filter);
             return query.FirstOrDefault();
+        }
+
+        public IEnumerable<T> FindAll(Expression<Func<T, bool>> filter)
+        {
+            IQueryable<T> query = dbSet;
+            query = query.Where(filter);
+            return query.ToList();
         }
 
         public IEnumerable<T> GetAll()

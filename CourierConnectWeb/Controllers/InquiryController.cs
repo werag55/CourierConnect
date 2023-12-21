@@ -22,9 +22,15 @@ namespace CourierConnectWeb.Controllers
         }
         public IActionResult Index()
         {
-            var id = _userManager.GetUserId(User);
-            
             List<Inquiry> objInquiryList = _unitOfWork.Inquiry.GetAll().ToList();
+            return View(objInquiryList);
+        }
+
+        public IActionResult ClientInquiries()
+        {
+            var id = _userManager.GetUserId(User);
+
+            List<Inquiry> objInquiryList = _unitOfWork.Inquiry.FindAll(u => u.clientId.Equals(id)).ToList();
             return View(objInquiryList);
         }
 
