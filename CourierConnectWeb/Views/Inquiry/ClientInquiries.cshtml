@@ -4,7 +4,7 @@
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="text-white py-2">Product List</h2>
+                <h2 class="text-white py-2">Your last inquiries</h2>
             </div>
         </div>
     </div>
@@ -13,8 +13,8 @@
             <div class="col-6">
             </div>
             <div class="col-6 text-end">
-                <a asp-controller="Product" asp-action="Upsert" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i>  Create New Product
+                <a asp-controller="Inquiry" asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i>  Create new Inquiry
                 </a>
             </div>
         </div>
@@ -24,8 +24,9 @@
                 <tr>
                     <th>Pickup date</th>
                     <th>Delivery date</th>
-                    <th>Source street</th>
-                    <th></th>
+                    <th>Source address</th>
+                    <th>Delivery address</th>
+                    <th>Package details</th>
                     <th></th>
                 </tr>
             </thead>
@@ -36,7 +37,9 @@
                     <tr>
                         <td>@obj.pickupDate</td>
                         <td>@obj.deliveryDate</td>
-                        <td>@obj.sourceAddress.streetName</td>
+                        <td>@obj.sourceAddress.ToString()</td>
+                        <td>@obj.destinationAddress.ToString()</td>
+                        <td>@obj.package.ToString()</td>
                         <td>
                             <div class="w-75 btn-group" role="group">
                                 <a asp-controller="Category" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary mx-2">

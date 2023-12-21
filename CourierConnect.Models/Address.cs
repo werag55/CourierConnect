@@ -22,10 +22,21 @@ namespace CourierConnect.Models
 
         public string city { get; set; }
 
-        //public override string ToString()
-        //{
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
 
-        //    return base.ToString();
-        //}
+            sb.Append($"{streetName}, {houseNumber}");
+
+            if (flatNumber != null)
+            {
+                sb.Append($"/{flatNumber}");
+            }
+
+            sb.Append("\n");
+            sb.Append($"{postcode}, {city}");
+
+            return sb.ToString();
+        }
     }
 }
