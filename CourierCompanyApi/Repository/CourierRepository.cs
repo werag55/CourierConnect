@@ -4,18 +4,18 @@ using CourierCompanyApi.Repository.IRepository;
 
 namespace CourierCompanyApi.Repository
 {
-    public class OfferRepository : Repository<Offer>, IOfferRepository
+    public class CourierRepository : Repository<Courier>, ICourierRepository
     {
         private readonly ApplicationDbContext _db;
-        public OfferRepository(ApplicationDbContext db) : base(db)
+        public CourierRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
         }
 
 
-        public async Task<Offer> UpdateAsync(Offer entity)
+        public async Task<Courier> UpdateAsync(Courier entity)
         {
-            _db.Offers.Update(entity);
+            _db.Couriers.Update(entity);
             //await _db.SaveChangesAsync();
             return entity;
         }

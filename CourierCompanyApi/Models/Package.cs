@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CourierConnect.Models
+namespace CourierCompanyApi.Models
 {
     public class Package
     {
@@ -15,15 +15,5 @@ namespace CourierConnect.Models
         public string dimensionsUnit { get; set; }
         public double weight { get; set; }
         public string weightUnit { get; set; }
-
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.AppendLine($"{width} x {height} x {length} {dimensionsUnit}");
-            sb.AppendLine($"{weight} {weightUnit}");
-
-            return sb.ToString();
-        }
     }
 }
