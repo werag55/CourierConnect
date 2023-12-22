@@ -16,6 +16,7 @@ namespace CourierConnect.Models
         public double weight { get; set; }
         public string weightUnit { get; set; }
 
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -25,5 +26,6 @@ namespace CourierConnect.Models
 
             return sb.ToString();
         }
+
     }
 }

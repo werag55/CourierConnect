@@ -32,6 +32,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(/*options => options.SignIn.RequireConfirmedAccount = true*/).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+
 builder.Services.AddRazorPages();
 
 ////////////////////////////////////////////////
