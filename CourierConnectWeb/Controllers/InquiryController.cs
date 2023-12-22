@@ -40,7 +40,7 @@ namespace CourierConnectWeb.Controllers
                 return false;
             return true;
         }
-
+        [Authorize(Roles = SD.Role_User_Client)]
         public IActionResult ClientInquiries()
         {
             var id = _userManager.GetUserId(User);
