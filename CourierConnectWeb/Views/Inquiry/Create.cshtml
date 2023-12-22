@@ -33,6 +33,11 @@
                     <label asp-for="destinationAddress.flatNumber" class="ms-2"></label>
                     <span asp-validation-for="destinationAddress.flatNumber" class="text-danger"></span>
                 </div>
+                 <div class="form-floating py-2 col-12">
+                    <input asp-for="destinationAddress.city" class="form-control border-0 shadow" />
+                    <label asp-for="destinationAddress.city" class="ms-2"></label>
+                    <span asp-validation-for="destinationAddress.city" class="text-danger"></span>
+                </div>
                 <div class="form-floating py-2 col-12">
                     <input asp-for="destinationAddress.postcode" class="form-control border-0 shadow" />
                     <label asp-for="destinationAddress.postcode" class="ms-2"></label>
@@ -74,6 +79,10 @@
                     <input asp-for="sourceAddress.flatNumber" class="form-control border-0 shadow" />
                     <label asp-for="sourceAddress.flatNumber" class="ms-2"></label>
                     <span asp-validation-for="sourceAddress.flatNumber" class="text-danger"></span>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="sourceAddress.city" class="form-control border-0 shadow" />
+                    <label asp-for="sourceAddress.city" class="ms-2"></label>
+                    <span asp-validation-for="sourceAddress.city" class="text-danger"></span>
                 </div>
 
 

@@ -5,10 +5,11 @@ using CourierConnect.Utility;
 using Microsoft.AspNetCore.Identity;
 
 using Microsoft.AspNetCore.Mvc;
-
+using CourierConnect.Utility;
 
 using CourierConnect.Models.ViewModels;
-
+using Google.Apis.Admin.Directory.directory_v1.Data;
+using ICSharpCode.Decompiler.CSharp.Syntax;
 
 namespace CourierConnectWeb.Controllers
 {
@@ -42,7 +43,7 @@ namespace CourierConnectWeb.Controllers
                 return false;
             return true;
         }
-        [Authorize(Roles = SD.Role_User_Client)]
+  
         public IActionResult ClientInquiries()
         {
             var id = _userManager.GetUserId(User);
@@ -69,14 +70,14 @@ namespace CourierConnectWeb.Controllers
         {
             string userId = _userManager.GetUserId(User);
             obj.clientId = userId;
-
             var sourceAddress = _context.Addresses
                 .FirstOrDefault(a =>
                 a.streetName == obj.sourceAddress.streetName &&
                 a.flatNumber == obj.sourceAddress.flatNumber &&
                 a.houseNumber == obj.sourceAddress.houseNumber &&
                 a.postcode == obj.sourceAddress.postcode);
-
+          
+            
             if (sourceAddress == null)
             {
 
@@ -94,15 +95,6 @@ namespace CourierConnectWeb.Controllers
          a.flatNumber == obj.destinationAddress.flatNumber &&
          a.houseNumber == obj.destinationAddress.houseNumber &&
          a.postcode == obj.destinationAddress.postcode);
-
-        public async Task<IActionResult> SendEmail(Inquiry obj) 
-        {
-            var receiver = "gina.grant@ethereal.email";
-            var subject = "New Inquiry was created";
-            var message = "hello!\n u have just created new inquiry at CourierConnect!\n" +
-                "Delivery Date: " + obj.deliveryDate.ToShortDateString() + "\nInquiry ID: " + obj.Id.ToString() +
-                "Destination Address:" + obj.destinationAddress.streetName.ToString() + obj.destinationAddress.houseNumber.ToString() +
-                obj.destinationAddress.flatNumber.ToString() + obj.destinationAddress.postcode.ToString();
 
 
             if (destinationAddress== null)
