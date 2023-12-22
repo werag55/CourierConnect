@@ -33,7 +33,7 @@ namespace CourierCompanyApi.Repository
             Courier = new CourierRepository(_db);
         }
 
-        public async void Save()
+        public async Task SaveAsync()
         {
             await _db.SaveChangesAsync();
         }

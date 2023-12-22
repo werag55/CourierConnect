@@ -16,6 +16,6 @@ namespace CourierCompanyApi.Repository.IRepository
         IRequestRepository Request { get; }
         IDeliveryRepository Delivery { get; }
         ICourierRepository Courier { get; }
-        void Save();
+        Task SaveAsync();
     }
 }

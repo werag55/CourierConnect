@@ -20,6 +20,11 @@ namespace CourierCompanyApi.Models
         public decimal taxes { get; set; }
         public decimal fees { get; set; }   
 
+        public Offer()
+        {
+
+        }
+
     }
 
     public enum OfferStatus

@@ -4,6 +4,7 @@ using CourierCompanyApi.Data;
 using CourierCompanyApi.Repository;
 using CourierCompanyApi.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +14,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(option => {
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddResponseCaching();
-builder.Services.AddScoped<IOfferRepository, OfferRepository>();
+//builder.Services.AddScoped<IOfferRepository, OfferRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
 
