@@ -32,5 +32,8 @@ namespace CourierConnect.Models
         public Address destinationAddress { get; set; }
         public int packageId { get; set; }
         public Package package { get; set; }
+
+        public DateTime creationDate { get; set; }
+
     }
 }

@@ -179,6 +179,12 @@ namespace CourierConnectWeb.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+                string emailSubject = "Created Account";
+                string toEmail = Input.Email;
+                string message = "Thanks for creating an account on our websiter\n";
+                EmailSender email = new EmailSender();
+
+                email.SendEmailAsync(emailSubject, toEmail, message).Wait();
                 if (!string.IsNullOrEmpty(Input.Role))
                 {
                     await _userManager.AddToRoleAsync(user, Input.Role);

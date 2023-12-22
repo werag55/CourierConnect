@@ -1,25 +1,28 @@
-﻿using CourierConnect.DataAccess.Repository.IRepository;
-using CourierConnect.DataAccess.Data;
+﻿using CourierConnect.DataAccess.Data;
+using CourierConnect.DataAccess.Repository.IRepository;
 using CourierConnect.Models;
 using CourierConnect.Utility;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using CourierConnectWeb.Email;
 using Microsoft.AspNetCore.Identity;
+
+using Microsoft.AspNetCore.Mvc;
+using CourierConnect.Utility;
+
 using CourierConnect.Models.ViewModels;
+using Google.Apis.Admin.Directory.directory_v1.Data;
+using ICSharpCode.Decompiler.CSharp.Syntax;
 
 namespace CourierConnectWeb.Controllers
 {
     public class InquiryController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IEmailSender _emailsender;
         private readonly UserManager<IdentityUser> _userManager;
-        public InquiryController(IUnitOfWork unitOfWork, IEmailSender emailSender, UserManager<IdentityUser> userManager)
+        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
+        public InquiryController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager, ApplicationDbContext context)
         {
             _unitOfWork = unitOfWork;
-            _emailsender = emailSender;
             _userManager = userManager;
+            _context = context;
         }
         public IActionResult Index()
         {
@@ -40,7 +43,7 @@ namespace CourierConnectWeb.Controllers
                 return false;
             return true;
         }
-
+  
         public IActionResult ClientInquiries()
         {
             var id = _userManager.GetUserId(User);
@@ -59,49 +62,77 @@ namespace CourierConnectWeb.Controllers
 
         public IActionResult Create()
         {
-            return View();
-        }
-
-        //public IActionResult Create(Inquiry obj)
-        //{
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        _unitOfWork.Inquiry.Add(obj);
-        //        _unitOfWork.Save();
-        //        TempData["success"] = "Inquiry created successfully";
-        //        return RedirectToAction("Index");
-        //    }
-        //    return View();
-
-        //}
-
-        public async Task<IActionResult> SendEmail(Inquiry obj) 
-        {
-            var receiver = "gina.grant@ethereal.email";
-            var subject = "New Inquiry was created";
-            var message = "hello!\n u have just created new inquiry at CourierConnect!\n" +
-                "Delivery Date: " + obj.deliveryDate.ToShortDateString() + "\nInquiry ID: " + obj.Id.ToString() +
-                "Destination Address:" + obj.destinationAddress.streetName.ToString() + obj.destinationAddress.houseNumber.ToString() +
-                obj.destinationAddress.flatNumber.ToString() + obj.destinationAddress.postcode.ToString();
-
-            await _emailsender.SendEmailAsync(receiver, subject, message);
 
             return View();
         }
         [HttpPost]
         public IActionResult Create(Inquiry obj)
         {
-
-            if (ModelState.IsValid)
+            string userId = _userManager.GetUserId(User);
+            obj.clientId = userId;
+            var sourceAddress = _context.Addresses
+                .FirstOrDefault(a =>
+                a.streetName == obj.sourceAddress.streetName &&
+                a.flatNumber == obj.sourceAddress.flatNumber &&
+                a.houseNumber == obj.sourceAddress.houseNumber &&
+                a.postcode == obj.sourceAddress.postcode);
+          
+            
+            if (sourceAddress == null)
             {
+
+                sourceAddress = obj.sourceAddress;
+                _context.Addresses.Add(sourceAddress);
+            }
+            else
+            {
+
+
+            }
+          var destinationAddress = _context.Addresses
+         .FirstOrDefault(a =>
+         a.streetName == obj.destinationAddress.streetName &&
+         a.flatNumber == obj.destinationAddress.flatNumber &&
+         a.houseNumber == obj.destinationAddress.houseNumber &&
+         a.postcode == obj.destinationAddress.postcode);
+
+
+            if (destinationAddress== null)
+            {
+                destinationAddress = obj.destinationAddress;
+                _context.Addresses.Add(destinationAddress);
+            }
+
+            destinationAddress = obj.destinationAddress;
+            Package package = obj.package;
+            _context.Packages.Add(package);
+            
+            
+            _context.SaveChanges();
+
+            
+            obj.creationDate = DateTime.Now;
+            obj.destinationAddressId = destinationAddress.Id;
+            obj.sourceAddressId = sourceAddress.Id;
+            obj.packageId = package.Id;
+
+          
+
+            //if (ModelState.IsValid)
+            //{
+
                 _unitOfWork.Inquiry.Add(obj);
-                _unitOfWork.Address.Add(obj.destinationAddress);
                 _unitOfWork.Save();
                 TempData["success"] = "Inquiry created successfully";
-                _ = SendEmail(obj);
+                string emailSubject = "Created Inqury";
+                string toEmail = _userManager.GetUserName(User);
+                string message = "Your inquiry was created corectly\nThanks for using our Website";
+                EmailSender email = new EmailSender();
+
+                email.SendEmailAsync(emailSubject, toEmail, message).Wait();
                 return RedirectToAction("Index");
-            }
+            //}
+
             return View();
 
         }

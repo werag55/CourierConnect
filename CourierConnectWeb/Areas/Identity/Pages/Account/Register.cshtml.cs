@@ -141,6 +141,7 @@ namespace CourierConnectWeb.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
+
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -170,10 +171,22 @@ namespace CourierConnectWeb.Areas.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
+                        string emailSubject = "Created Account";
+                        string toEmail = Input.Email;
+                        string message = "Thanks for creating an account on our websiter\n";
+                        EmailSender email = new EmailSender();
+
+                        email.SendEmailAsync(emailSubject, toEmail, message).Wait();
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
                     else
                     {
+                        string emailSubject = "Created Account";
+                        string toEmail = Input.Email;
+                        string message = "Thanks for creating an account on our websiter\n";
+                        EmailSender email = new EmailSender();
+
+                        email.SendEmailAsync(emailSubject, toEmail, message).Wait();
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     }
