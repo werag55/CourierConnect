@@ -9,6 +9,9 @@ namespace CourierCompanyApi
         public MappingConfig()
         {
             CreateMap<Offer, OfferDto>();
+            CreateMap<Offer, OfferDto>().ReverseMap();
+            CreateMap<Inquiry, InquiryDto>();
+            CreateMap<Inquiry, InquiryDto>().ReverseMap();
             //CreateMap<Offer, OfferCreateDto>().ReverseMap();
         }
     }

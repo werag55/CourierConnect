@@ -19,11 +19,11 @@ namespace CourierCompanyApi.Controllers
     {
 
         protected APIResponse _response;
-        private readonly IOfferRepository _dbOffer;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public OfferController(IOfferRepository dbOffer, IMapper mapper)
+        public OfferController(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _dbOffer = dbOffer;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _response = new();
         }
@@ -39,7 +39,7 @@ namespace CourierCompanyApi.Controllers
             {
 
                 IEnumerable<Offer> OfferList;
-                OfferList = await _dbOffer.GetAllAsync(pageSize: pageSize,
+                OfferList = await _unitOfWork.Offer.GetAllAsync(pageSize: pageSize,
                     pageNumber: pageNumber);
 
                 Pagination pagination = new() { PageNumber = pageNumber, PageSize = pageSize };
@@ -73,7 +73,7 @@ namespace CourierCompanyApi.Controllers
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
-                var Offer = await _dbOffer.GetAsync(u => u.Id == id);
+                var Offer = await _unitOfWork.Offer.GetAsync(u => u.Id == id,includeProperties:"inquiry");
                 if (Offer == null)
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
@@ -92,10 +92,62 @@ namespace CourierCompanyApi.Controllers
             return _response;
         }
 
+
+        private Offer createOffer(Inquiry inquiry)
+        {
+            var offer = new Offer()
+            {
+                Id = 0,
+                inquiryId = inquiry.Id,
+                inquiry = inquiry,
+                creationDate = DateTime.Now,
+                updatedDate = DateTime.Now,
+                expirationDate = DateTime.Now.AddDays(1),
+                status = OfferStatus.Pending,
+                price = 100,
+                taxes = 23,
+                fees = 50
+            };
+            return offer;
+        }
         // POST api/<OffersController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponse>> Post([FromBody] InquiryDto inquiryDto)
         {
+            try
+            {
+
+                if (inquiryDto == null)
+                {
+                    return BadRequest(inquiryDto);
+                }
+
+                Inquiry inquiry = _mapper.Map<Inquiry>(inquiryDto);
+
+                await _unitOfWork.Inquiry.CreateAsync(inquiry);
+                //await _unitOfWork.Address.CreateAsync(inquiry.destinationAddress);
+                //await _unitOfWork.Address.CreateAsync(inquiry.sourceAddress);
+                //await _unitOfWork.Package.CreateAsync(inquiry.package);
+                //await _unitOfWork.SaveAsync();
+
+                Offer offer = createOffer(inquiry);
+                await _unitOfWork.Offer.CreateAsync(offer);
+                //await _unitOfWork.SaveAsync();
+
+                _response.Result = _mapper.Map<OfferDto>(offer);
+                _response.StatusCode = HttpStatusCode.Created;
+                return Ok(_response);
+                //return CreatedAtRoute("Offer/GetOffer", new { id = offer.Id }, _response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
         }
 
         // PUT api/<OffersController>/5
