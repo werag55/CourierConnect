@@ -4,6 +4,7 @@ using CourierCompanyApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourierCompanyApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231222002018_AddRequestTableToDb")]
+    partial class AddRequestTableToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,41 +83,6 @@ namespace CourierCompanyApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Couriers");
-                });
-
-            modelBuilder.Entity("CourierCompanyApi.Models.Delivery", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("courierId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("deliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("deliveryStatus")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("pickUpDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("reason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("requestId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("courierId");
-
-                    b.HasIndex("requestId");
-
-                    b.ToTable("Deliveries");
                 });
 
             modelBuilder.Entity("CourierCompanyApi.Models.Inquiry", b =>
@@ -317,25 +285,6 @@ namespace CourierCompanyApi.Migrations
                     b.ToTable("Requests");
                 });
 
-            modelBuilder.Entity("CourierCompanyApi.Models.Delivery", b =>
-                {
-                    b.HasOne("CourierCompanyApi.Models.Courier", "courier")
-                        .WithMany()
-                        .HasForeignKey("courierId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("CourierCompanyApi.Models.Request", "request")
-                        .WithMany()
-                        .HasForeignKey("requestId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("courier");
-
-                    b.Navigation("request");
-                });
-
             modelBuilder.Entity("CourierCompanyApi.Models.Inquiry", b =>
                 {
                     b.HasOne("CourierCompanyApi.Models.Address", "destinationAddress")
@@ -391,13 +340,13 @@ namespace CourierCompanyApi.Migrations
                     b.HasOne("CourierCompanyApi.Models.Offer", "offer")
                         .WithMany()
                         .HasForeignKey("offerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("CourierCompanyApi.Models.PersonalData", "personalData")
                         .WithMany()
                         .HasForeignKey("personalDataId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("offer");

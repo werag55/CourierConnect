@@ -4,6 +4,7 @@ using CourierCompanyApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourierCompanyApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231222001925_AddOfferTableToDb")]
+    partial class AddOfferTableToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,41 +83,6 @@ namespace CourierCompanyApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Couriers");
-                });
-
-            modelBuilder.Entity("CourierCompanyApi.Models.Delivery", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("courierId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("deliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("deliveryStatus")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("pickUpDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("reason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("requestId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("courierId");
-
-                    b.HasIndex("requestId");
-
-                    b.ToTable("Deliveries");
                 });
 
             modelBuilder.Entity("CourierCompanyApi.Models.Inquiry", b =>
@@ -288,54 +256,6 @@ namespace CourierCompanyApi.Migrations
                     b.ToTable("PersonalData");
                 });
 
-            modelBuilder.Entity("CourierCompanyApi.Models.Request", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("isAccepted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("offerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("personalDataId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("rejectionReason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("offerId");
-
-                    b.HasIndex("personalDataId");
-
-                    b.ToTable("Requests");
-                });
-
-            modelBuilder.Entity("CourierCompanyApi.Models.Delivery", b =>
-                {
-                    b.HasOne("CourierCompanyApi.Models.Courier", "courier")
-                        .WithMany()
-                        .HasForeignKey("courierId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("CourierCompanyApi.Models.Request", "request")
-                        .WithMany()
-                        .HasForeignKey("requestId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("courier");
-
-                    b.Navigation("request");
-                });
-
             modelBuilder.Entity("CourierCompanyApi.Models.Inquiry", b =>
                 {
                     b.HasOne("CourierCompanyApi.Models.Address", "destinationAddress")
@@ -384,25 +304,6 @@ namespace CourierCompanyApi.Migrations
                         .HasConstraintName("FK_PersonalData_Address_addressId");
 
                     b.Navigation("address");
-                });
-
-            modelBuilder.Entity("CourierCompanyApi.Models.Request", b =>
-                {
-                    b.HasOne("CourierCompanyApi.Models.Offer", "offer")
-                        .WithMany()
-                        .HasForeignKey("offerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("CourierCompanyApi.Models.PersonalData", "personalData")
-                        .WithMany()
-                        .HasForeignKey("personalDataId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("offer");
-
-                    b.Navigation("personalData");
                 });
 #pragma warning restore 612, 618
         }
