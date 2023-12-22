@@ -22,6 +22,7 @@ namespace CourierConnectWeb.Services
             try
             {
                 var client = httpClient.CreateClient("CourierCompanyAPI");
+                
                 HttpRequestMessage message = new HttpRequestMessage();
                 //message.Headers.Add("Accept", "application/json");
                 message.Headers.Add("x-api-key", "ApiKey.1");

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<OfferDTO>
+﻿@model OfferDto
 <br />
 <div class="container p-4 border">
     <div>
@@ -8,22 +8,20 @@
     <table class="table">
 		<thead>
 			<tr>
-				<th>
-					Id
-				</th>
-				<th>
-					Price
-				</th>
+				<th>Price</th>
+				<th>Taxes</th>
+				<th>Fees</th>
+				<th>Expiration Date</th>
 				<th></th>
 			</tr>
 		</thead>
 		<tbody>
-			@foreach(var item in Model){
-				<tr>
-					<td>@item.Id</td>
-					<td>@((item.price).ToString("c"))</td>
-				</tr>
-			}
+			<tr>
+				<td>@Model.price</td>
+				<td>@Model.fees</td>
+				<td>@Model.taxes</td>
+				<td>@Model.expirationDate</td>
+			</tr>
 		</tbody>
     </table>
 
