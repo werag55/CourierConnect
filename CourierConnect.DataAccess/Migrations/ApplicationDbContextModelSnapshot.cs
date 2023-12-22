@@ -30,6 +30,10 @@ namespace CourierConnect.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("city")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("flatNumber")
                         .HasColumnType("int")
                         .HasColumnName("flatNumber")

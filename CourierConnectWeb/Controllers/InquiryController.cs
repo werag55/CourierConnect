@@ -3,7 +3,11 @@ using CourierConnect.DataAccess.Repository.IRepository;
 using CourierConnect.Models;
 using CourierConnect.Utility;
 using Microsoft.AspNetCore.Identity;
+
 using Microsoft.AspNetCore.Mvc;
+
+
+using CourierConnect.Models.ViewModels;
 
 
 namespace CourierConnectWeb.Controllers
@@ -23,6 +27,36 @@ namespace CourierConnectWeb.Controllers
         {
             List<Inquiry> objInquiryList = _unitOfWork.Inquiry.GetAll().ToList();
             return View(objInquiryList);
+        }
+
+        private bool hasDelivery(int inquiryId)
+        {
+            var offer = _unitOfWork.Offer.Get(u => u.Id == inquiryId);
+            if (offer == default)
+                return false;
+            var request = _unitOfWork.Request.Get(u => u.Id == offer.Id);
+            if (request == default)
+                return false;
+            var delivery = _unitOfWork.Delivery.Get(u => u.Id == request.Id);
+            if (delivery == default)
+                return false;
+            return true;
+        }
+        [Authorize(Roles = SD.Role_User_Client)]
+        public IActionResult ClientInquiries()
+        {
+            var id = _userManager.GetUserId(User);
+
+            List<Inquiry> objInquiryList = _unitOfWork.Inquiry.FindAll(u => u.clientId.Equals(id),
+                "sourceAddress,destinationAddress,package").ToList();
+
+            List<ClientInquiryVM> objInquiryVMList = new List<ClientInquiryVM>();
+            foreach (var inquiry in objInquiryList)
+            {
+                bool hasDelivery = this.hasDelivery(inquiry.Id);
+                objInquiryVMList.Add(new ClientInquiryVM(inquiry, hasDelivery));
+            }
+            return View(objInquiryVMList);
         }
 
         public IActionResult Create()
@@ -52,6 +86,7 @@ namespace CourierConnectWeb.Controllers
             else
             {
 
+
             }
           var destinationAddress = _context.Addresses
          .FirstOrDefault(a =>
@@ -59,6 +94,16 @@ namespace CourierConnectWeb.Controllers
          a.flatNumber == obj.destinationAddress.flatNumber &&
          a.houseNumber == obj.destinationAddress.houseNumber &&
          a.postcode == obj.destinationAddress.postcode);
+
+        public async Task<IActionResult> SendEmail(Inquiry obj) 
+        {
+            var receiver = "gina.grant@ethereal.email";
+            var subject = "New Inquiry was created";
+            var message = "hello!\n u have just created new inquiry at CourierConnect!\n" +
+                "Delivery Date: " + obj.deliveryDate.ToShortDateString() + "\nInquiry ID: " + obj.Id.ToString() +
+                "Destination Address:" + obj.destinationAddress.streetName.ToString() + obj.destinationAddress.houseNumber.ToString() +
+                obj.destinationAddress.flatNumber.ToString() + obj.destinationAddress.postcode.ToString();
+
 
             if (destinationAddress== null)
             {

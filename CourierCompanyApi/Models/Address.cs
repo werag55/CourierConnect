@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CourierConnect.Models
+namespace CourierCompanyApi.Models
 {
     public class Address
     {
@@ -21,22 +21,5 @@ namespace CourierConnect.Models
         public string postcode { get; set; }
 
         public string city { get; set; }
-
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append($"{streetName}, {houseNumber}");
-
-            if (flatNumber != null)
-            {
-                sb.Append($"/{flatNumber}");
-            }
-
-            sb.Append("\n");
-            sb.Append($"{postcode}, {city}");
-
-            return sb.ToString();
-        }
     }
 }

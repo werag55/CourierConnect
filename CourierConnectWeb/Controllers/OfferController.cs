@@ -1,4 +1,4 @@
-﻿using CourierConnect.Models;
+﻿ using CourierConnect.Models;
 using CourierConnect.Models.Dto;
 using CourierConnect.Utility;
 using CourierConnectWeb.Services.IServices;
@@ -23,6 +23,7 @@ namespace CourierConnectWeb.Controllers
             {
                 list = JsonConvert.DeserializeObject<List<OfferDTO>>(Convert.ToString(response.Result));
             }
+
             return View(list);
         }
     }

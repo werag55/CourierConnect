@@ -13,20 +13,23 @@
             <div class="col-6">
             </div>
         </div>
-
+        @using (Html.BeginForm())
+        {
+            <p>
+                Find by ID: @Html.TextBox("SearchString")
+                <input type="submit" value="Search" />
+            </p>
+        }
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>
-                        Delivery Id
+                        @Html.ActionLink("Id", "Index", new { sortOrder = ViewBag.NameSortParm })
                     </th>
                     <th>
-                        <div class="col-6 text-end">
-                            <a asp-controller="Delivery" asp-action="Show delivery status" class="btn btn-primary">
-                                <i class="bi bi-plus-circle"></i>  Delivery Status
-                            </a>
-                        </div>
+                        @Html.ActionLink("Delivery Date", "Index", new { sortOrder = ViewBag.DateSortParm })
                     </th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -34,6 +37,13 @@
                 {
                     <tr>
                         <td>@obj.Id</td>
+                        <td>
+                            <div class="w-40 btn-group" role="group">
+                                <a asp-controller="Delivery" asp-action="DeliveryStatus" asp-route-id="@obj.Id" class="btn btn-primary mx-2">
+                                    <i class="bi bi-pencil-square"></i> Delivery Status
+                                </a>
+                            </div>
+                        </td>
                     </tr>
                 }
             </tbody>
