@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using CourierCompanyApi.Models;
-using CourierCompanyApi.Models.Dto;
+using CourierConnect.Models;
+using CourierConnect.Models.Dto;
 
-namespace CourierCompanyApi
+namespace CourierConnect
 {
     public class MappingConfig : Profile
     {
@@ -16,7 +16,6 @@ namespace CourierCompanyApi
             CreateMap<Address, AddressDto>().ReverseMap();
             CreateMap<Package, PackageDto>();
             CreateMap<Package, PackageDto>().ReverseMap();
-            //CreateMap<Offer, OfferCreateDto>().ReverseMap();
         }
     }
 }

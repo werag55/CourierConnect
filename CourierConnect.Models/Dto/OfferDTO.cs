@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CourierConnect.Models.Dto
+﻿namespace CourierConnect.Models.Dto
 {
-    public class OfferDTO
+    public class OfferDto
     {
-        public int Id { get; set; }
-        public float price { get; set; }
+        public InquiryDto inquiry { get; set; }
+        public DateTime expirationDate { get; set; }
+        public decimal price { get; set; }
+        //public string currency {  get; set; }
+        public decimal taxes { get; set; }
+        public decimal fees { get; set; }
     }
 }

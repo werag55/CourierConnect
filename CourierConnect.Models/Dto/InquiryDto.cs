@@ -1,4 +1,4 @@
-﻿namespace CourierCompanyApi.Models.Dto
+﻿namespace CourierConnect.Models.Dto
 {
     public class InquiryDto
     {

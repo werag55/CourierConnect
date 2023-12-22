@@ -1,4 +1,5 @@
 ﻿using CourierConnect.Models;
+using CourierConnect.Models.Dto;
 using CourierConnect.Utility;
 using CourierConnectWeb.Services.IServices;
 
@@ -30,7 +31,17 @@ namespace CourierConnectWeb.Services
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = offerUrl + "/api/Offer/GetOffer" + id,
+                Url = offerUrl + "/api/Offer/GetOffer/" + id,
+            });
+        }
+
+        public Task<T> GetOfferAsync<T>(InquiryDto inquiryDto)
+        {
+            return SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = inquiryDto,
+                Url = offerUrl + "/api/Offer/Post",
             });
         }
 
