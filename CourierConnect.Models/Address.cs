@@ -19,5 +19,6 @@ namespace CourierConnect.Models
         public int flatNumber { get; set; }
 
         public string postcode { get; set; }
+
     }
 }

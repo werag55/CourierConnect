@@ -15,5 +15,7 @@ namespace CourierConnect.Models
         public string dimensionsUnit { get; set; }
         public double weight { get; set; }
         public string weightUnit { get; set; }
+
+
     }
 }

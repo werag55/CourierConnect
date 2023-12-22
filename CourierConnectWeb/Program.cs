@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using CourierConnect.Utility;
-//using CourierConnectWeb.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddTransient<IEmailSender, EmailSender>()
@@ -31,6 +30,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(/*options => options.SignIn.RequireConfirmedAccount = true*/).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+
 builder.Services.AddRazorPages();
 
 ////////////////////////////////////////////////
