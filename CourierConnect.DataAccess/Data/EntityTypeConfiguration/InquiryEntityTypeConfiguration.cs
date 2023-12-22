@@ -62,7 +62,7 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
 
             builder.Property(e => e.packageId)
                 .IsRequired();
-
+            builder.Property(e=>e.creationDate).IsRequired();
             builder.HasOne(e => e.package)
                 .WithMany()
                 .HasForeignKey(e => e.packageId)
