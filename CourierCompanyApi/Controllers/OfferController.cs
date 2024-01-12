@@ -95,6 +95,9 @@ namespace CourierCompanyApi.Controllers
 
         private Offer createOffer(Inquiry inquiry)
         {
+            Package package = _unitOfWork.Package.GetAsync(u => u.Id == inquiry.Id).Result;
+            var weight = package.weight;
+            var length = package.length;
             var offer = new Offer()
             {
                 Id = 0,
@@ -104,9 +107,9 @@ namespace CourierCompanyApi.Controllers
                 updatedDate = DateTime.Now,
                 expirationDate = DateTime.Now.AddDays(1),
                 status = OfferStatus.Pending,
-                price = 100,
-                taxes = 23,
-                fees = 50
+                price = (decimal)(weight + length * 2.5),
+                taxes = (decimal)(weight + length * 2.5 * 0.23),
+                fees = (decimal)(weight + length * 2.5 * 0.1),
             };
             return offer;
         }
