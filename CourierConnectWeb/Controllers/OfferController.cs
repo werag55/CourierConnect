@@ -20,9 +20,10 @@ namespace CourierConnectWeb.Controllers
             _offerService = offerService;
             _mapper = mapper;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int inquiryId)
         {
             Inquiry inquiry = _unitOfWork.Inquiry.GetAll(includeProperties:"sourceAddress,destinationAddress,package").FirstOrDefault();
+            //Inquiry inquiry = _unitOfWork.Inquiry.Get(u => u.Id == inquiryId, includeProperties: "sourceAddress,destinationAddress,package");
             InquiryDto inquiryDto = _mapper.Map<InquiryDto>(inquiry);
             var response = await _offerService.GetOfferAsync<APIResponse>(inquiryDto);
             if (response != null && response.IsSuccess)
