@@ -16,6 +16,8 @@ namespace CourierCompanyApi.Data.EntityTypeConfiguration
             builder.Property(e => e.surname)
                 .IsRequired();
 
+            builder.Property(e => e.userName)
+                .IsRequired();
         }
     }
 }

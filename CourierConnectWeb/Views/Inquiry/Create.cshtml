@@ -75,10 +75,11 @@
                     <label asp-for="sourceAddress.houseNumber" class="ms-2"></label>
                     <span asp-validation-for="sourceAddress.houseNumber" class="text-danger"></span>
                 </div> 
-                     <div class="form-floating py-2 col-12">
+                <div class="form-floating py-2 col-12">
                     <input asp-for="sourceAddress.flatNumber" class="form-control border-0 shadow" />
                     <label asp-for="sourceAddress.flatNumber" class="ms-2"></label>
                     <span asp-validation-for="sourceAddress.flatNumber" class="text-danger"></span>
+                </div>
                 <div class="form-floating py-2 col-12">
                     <input asp-for="sourceAddress.city" class="form-control border-0 shadow" />
                     <label asp-for="sourceAddress.city" class="ms-2"></label>
@@ -123,11 +124,14 @@
                 </div>
                 <div class="row pt-2">
                     <div class="col-6 col-md-3">
-                        <button type="submit" class="btn btn-primary form-control">Create</button>
+                        @* <button type="submit" class="btn btn-primary form-control">Create</button> *@
+@*                         <a asp-controller="Offer" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-outline-primary border  form-control">
+                            View offers
+                        </a> *@
                     </div>
                     <div class="col-6 col-md-3">
-                        <a asp-controller="Inquiry" asp-action="Index" class="btn btn-outline-primary border  form-control">
-                            Back to List
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary border  form-control">
+                            Back to Home
                         </a>
                     </div>
                 </div>
