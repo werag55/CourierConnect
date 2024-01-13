@@ -34,6 +34,7 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
 
             builder.Property(e => e.email)
                 .IsRequired();
-        }
+
+		}
     }
 }

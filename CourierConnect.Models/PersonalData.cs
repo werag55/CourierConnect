@@ -16,5 +16,6 @@ namespace CourierConnect.Models
 
         public Address address { get; set; }
         public string email { get; set; }
+        public string? clientId { get; set; }
     }
 }

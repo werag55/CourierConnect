@@ -15,5 +15,5 @@ namespace CourierCompanyApi.Models
         public int addressId { get; set; }
         public Address address { get; set; }
         public string email { get; set; }
-    }
+	}
 }
