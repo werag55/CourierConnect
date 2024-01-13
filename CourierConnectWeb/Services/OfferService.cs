@@ -27,14 +27,15 @@ namespace CourierConnectWeb.Services
             }, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
         }
 
-        public Task<T> GetAsync<T>(int id)
-        {
-            return SendAsync<T>(new APIRequest()
-            {
-                ApiType = SD.ApiType.GET,
-                Url = offerUrl + "/api/Offer/GetOffer/" + id,
-            }, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
-        }
+        //public Task<T> GetAsync<T>(string courier)
+        //{
+        //    return SendAsync<T>(new APIRequest()
+        //    {
+        //        ApiType = SD.ApiType.GET,
+        //        Data = courier,
+        //        Url = offerUrl + "/api/Offer/GetourierOffers",
+        //    }, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
+        //}
 
         public Task<T> GetOfferAsync<T>(InquiryDto inquiryDto)
         {

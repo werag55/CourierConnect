@@ -21,6 +21,7 @@ namespace CourierConnect.DataAccess.Repository
             this.dbSet = _db.Set<T>();
 
             _db.Inquiries.Include(u => u.destinationAddress).Include(u => u.sourceAddress).Include(u => u.package);
+            _db.Offers.Include(u => u.inquiry);
         }
 
         public void Add(T entity)

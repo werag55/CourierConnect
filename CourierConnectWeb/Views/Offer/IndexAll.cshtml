@@ -1,0 +1,44 @@
+﻿@model List<OfferDto>
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Offers</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+
+        <table id="tblData" class="table table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Price</th>
+                    <th>Taxes</th>
+                    <th>Fees</th>
+                    <th>Expiration Date</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var obj in Model)
+                {
+                    <tr>
+                        <td>@obj.price</td>
+                        <td>@obj.fees</td>
+                        <td>@obj.taxes</td>
+                        <td>@obj.expirationDate</td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/product.js"></script>
+}
+
