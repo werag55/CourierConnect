@@ -37,7 +37,7 @@ namespace CourierConnectWeb.Controllers
         }
 
         [Authorize(Roles = SD.Role_User_Client)]
-        public async Task<IActionResult> Index(int Id)
+        public async Task<IActionResult> Create(int Id)
         {
             //Inquiry? inquiry = _unitOfWork.Inquiry.GetAll(includeProperties:"sourceAddress,destinationAddress,package").FirstOrDefault();
             Inquiry inquiry = _unitOfWork.Inquiry.Get(u => u.Id == Id, includeProperties: "sourceAddress,destinationAddress,package");
@@ -50,7 +50,18 @@ namespace CourierConnectWeb.Controllers
                 _unitOfWork.Offer.Add(offer);
                 _unitOfWork.Save();
 
-                return View(offerDto);
+                return View(offer);
+            }
+            return NotFound();
+        }
+
+        [Authorize(Roles = SD.Role_User_Client)]
+        public IActionResult Index(int Id)
+        {
+            IEnumerable<Offer> offers = _unitOfWork.Offer.FindAll(u => u.inquiry.Id == Id, includeProperties:"inquiry");
+            if (offers != null)
+            {
+                return View(offers);
             }
             return NotFound();
         }
