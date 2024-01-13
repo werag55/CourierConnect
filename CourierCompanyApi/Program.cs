@@ -50,6 +50,7 @@ builder.Services.AddSwaggerGen( c =>
 });
 
 builder.Services.AddScoped<ApiKeyAuthFilter>();
+builder.Services.AddScoped<SpecialApiKeyAuthFilter>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

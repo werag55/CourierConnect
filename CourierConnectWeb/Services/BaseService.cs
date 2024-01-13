@@ -17,7 +17,7 @@ namespace CourierConnectWeb.Services
             this.responseModel = new();
             this.httpClient = httpClient;
         }
-        public async Task<T> SendAsync<T>(APIRequest apiRequest)
+        public async Task<T> SendAsync<T>(APIRequest apiRequest, string? apiKey)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace CourierConnectWeb.Services
                 
                 HttpRequestMessage message = new HttpRequestMessage();
                 //message.Headers.Add("Accept", "application/json");
-                message.Headers.Add("x-api-key", "ApiKey.1");
+                message.Headers.Add("x-api-key", apiKey);
                 message.RequestUri = new Uri(apiRequest.Url);
                 if (apiRequest.Data != null)
                 {

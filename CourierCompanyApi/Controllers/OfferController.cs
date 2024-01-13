@@ -14,7 +14,6 @@ namespace CourierCompanyApi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [ServiceFilter(typeof(ApiKeyAuthFilter))]
     public class OfferController : ControllerBase
     {
 
@@ -31,20 +30,15 @@ namespace CourierCompanyApi.Controllers
 
         // GET: api/<OffersController>
         [HttpGet]
+        [ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetOffers()
         {
-            int pageSize = 0, pageNumber = 1;
             try
             {
 
                 IEnumerable<Offer> OfferList;
-                OfferList = await _unitOfWork.Offer.GetAllAsync(pageSize: pageSize,
-                    pageNumber: pageNumber);
-
-                Pagination pagination = new() { PageNumber = pageNumber, PageSize = pageSize };
-
-                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
+                OfferList = await _unitOfWork.Offer.GetAllAsync(includeProperties:"inquiry");
                 _response.Result = _mapper.Map<List<OfferDto>>(OfferList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
@@ -59,43 +53,42 @@ namespace CourierCompanyApi.Controllers
             return _response;
         }
 
-        // GET api/<OffersController>/5
-        [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetOffer(int id)
-        {
-            try
-            {
-                if (id == 0)
-                {
-                    _response.StatusCode = HttpStatusCode.BadRequest;
-                    return BadRequest(_response);
-                }
-                var Offer = await _unitOfWork.Offer.GetAsync(u => u.Id == id,includeProperties:"inquiry");
-                if (Offer == null)
-                {
-                    _response.StatusCode = HttpStatusCode.NotFound;
-                    return NotFound(_response);
-                }
-                _response.Result = _mapper.Map<OfferDto>(Offer);
-                _response.StatusCode = HttpStatusCode.OK;
-                return Ok(_response);
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.ErrorMessages
-                     = new List<string>() { ex.ToString() };
-            }
-            return _response;
-        }
-
+        //// GET api/<OffersController>/5
+        //[HttpGet("{id}")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //public async Task<ActionResult<APIResponse>> GetOffer(int id)
+        //{
+        //    try
+        //    {
+        //        if (id == 0)
+        //        {
+        //            _response.StatusCode = HttpStatusCode.BadRequest;
+        //            return BadRequest(_response);
+        //        }
+        //        var Offer = await _unitOfWork.Offer.GetAsync(u => u.Id == id,includeProperties:"inquiry");
+        //        if (Offer == null)
+        //        {
+        //            _response.StatusCode = HttpStatusCode.NotFound;
+        //            return NotFound(_response);
+        //        }
+        //        _response.Result = _mapper.Map<OfferDto>(Offer);
+        //        _response.StatusCode = HttpStatusCode.OK;
+        //        return Ok(_response);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _response.IsSuccess = false;
+        //        _response.ErrorMessages
+        //             = new List<string>() { ex.ToString() };
+        //    }
+        //    return _response;
+        //}
 
         private Offer createOffer(Inquiry inquiry)
         {
-            Package package = _unitOfWork.Package.GetAsync(u => u.Id == inquiry.Id).Result;
+            Package package = inquiry.package; //_unitOfWork.Package.GetAsync(u => u.Id == inquiry.Id).Result;
             var weight = package.weight;
             var length = package.length;
             var offer = new Offer()
@@ -113,11 +106,13 @@ namespace CourierCompanyApi.Controllers
             };
             return offer;
         }
+
         // POST api/<OffersController>
         [HttpPost]
+        [ServiceFilter(typeof(ApiKeyAuthFilter))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> Post([FromBody] InquiryDto inquiryDto)
+        public async Task<ActionResult<APIResponse>> Get([FromBody] InquiryDto inquiryDto)
         {
             try
             {

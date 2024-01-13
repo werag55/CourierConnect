@@ -13,6 +13,9 @@ namespace CourierConnect.Utility
         public const string Role_User_Courier = "Courier";
         public const string Role_User_Client = "Client";
 
+        public const string ApiKeySectionName = "Authentication:ApiKey";
+        public const string SpecialApiKeySectionName = "Authentication:SpecialApiKey";
+
         public enum ApiType
         {
             GET,
