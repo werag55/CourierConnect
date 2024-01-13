@@ -130,10 +130,16 @@ namespace CourierConnectWeb.Controllers
                 EmailSender email = new EmailSender();
 
                 email.SendEmailAsync(emailSubject, toEmail, message).Wait();
-                return RedirectToAction("Index");
-            //}
+				//return RedirectToAction("Index");
+				return RedirectToRoute(new
+				{
+					controller = "Offer",
+					action = "Create",
+					id = obj.Id
+				});
+			//}
 
-            return View();
+            return View(obj);
 
         }
 
