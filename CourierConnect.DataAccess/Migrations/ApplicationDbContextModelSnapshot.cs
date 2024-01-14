@@ -69,25 +69,11 @@ namespace CourierConnect.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("courierName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("courierSurname")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("deliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("deliveryStatus")
+                    b.Property<int>("companyDeliveryId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("pickUpDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("reason")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("companyId")
+                        .HasColumnType("int");
 
                     b.Property<int>("requestId")
                         .HasColumnType("int");
@@ -108,7 +94,6 @@ namespace CourierConnect.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("clientId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("creationDate")
@@ -167,8 +152,17 @@ namespace CourierConnect.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("companyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("companyOfferId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("creationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("currency")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("expirationDate")
                         .HasColumnType("datetime2");

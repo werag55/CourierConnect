@@ -16,8 +16,7 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
         {
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.clientId)
-                .IsRequired();
+            builder.Property(e => e.clientId);
 
             builder.Property(e => e.pickupDate)
                 .IsRequired()

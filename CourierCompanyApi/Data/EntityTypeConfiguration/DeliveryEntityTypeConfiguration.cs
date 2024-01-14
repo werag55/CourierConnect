@@ -33,8 +33,10 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Property(e => e.pickUpDate)
+            builder.Property(e => e.cancelationDeadline)
                 .IsRequired();
+
+            builder.Property(e => e.pickUpDate);
 
             builder.Property(e => e.deliveryDate);
 

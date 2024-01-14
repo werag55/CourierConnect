@@ -13,7 +13,8 @@ namespace CourierCompanyApi.Models
         public Courier courier { get; set; }
         public int requestId { get; set; }
         public Request request { get; set; }
-        public DateTime pickUpDate { get; set; }
+        public DateTime cancelationDeadline { get; set; }
+        public DateTime? pickUpDate { get; set; }
         public DateTime? deliveryDate { get; set; }
         public DeliveryStatus deliveryStatus { get; set; }
         public string? reason { get; set; }
@@ -22,8 +23,10 @@ namespace CourierCompanyApi.Models
 
     public enum DeliveryStatus
     {
+        Proccessing,
         PickedUp,
         Deliverd,
-        CannotDeliver
+        CannotDeliver,
+        Cancelled
     }
 }

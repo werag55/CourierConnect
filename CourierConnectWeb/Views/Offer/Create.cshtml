@@ -21,7 +21,7 @@
 				<td>@Model.fees</td>
 				<td>@Model.taxes</td>
 				<td>@Model.expirationDate</td>
-				@if (Model.expirationDate < DateTime.Now)
+				@if (Model.expirationDate > DateTime.Now)
 				{
 					<a asp-controller="Request" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-primary mx-2">
 						<i class="bi bi-pencil-square"></i> Choose
