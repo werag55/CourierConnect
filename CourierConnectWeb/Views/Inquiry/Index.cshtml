@@ -36,9 +36,9 @@
                 @foreach (var obj in Model)
                 {
                     <tr>
-                        <td>@obj.Id</td>
+                        <td>@Html.DisplayFor(model => obj.Id)</td>
                         <td>
-                            @obj.deliveryDate
+                            @Html.DisplayFor(model => obj.deliveryDate)
                         </td>
                         <td>
                             <div class="w-75 btn-group" role="group">

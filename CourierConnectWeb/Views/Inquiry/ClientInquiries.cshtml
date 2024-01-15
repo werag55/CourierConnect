@@ -36,11 +36,11 @@
                 @foreach (var obj in Model)
                 {
                     <tr>
-                        <td>@obj.Inquiry.pickupDate.Date</td>
-                        <td>@obj.Inquiry.deliveryDate.Date</td>
-                        <td>@obj.Inquiry.sourceAddress.ToString()</td>
-                        <td>@obj.Inquiry.destinationAddress.ToString()</td>
-                        <td>@obj.Inquiry.package.ToString()</td>
+                        <td>@Html.DisplayFor(model => obj.Inquiry.pickupDate.Date)</td>
+                        <td>@Html.DisplayFor(model => obj.Inquiry.deliveryDate.Date)</td>
+                        <td>@Html.DisplayFor(model => obj.Inquiry.sourceAddress.ToString())</td>
+                        <td>@Html.DisplayFor(model => obj.Inquiry.destinationAddress.ToString())</td>
+                        <td>@Html.DisplayFor(model => obj.Inquiry.package.ToString())</td>
                         <td>
                             <div class="w-75 btn-group" role="group">
                                 @if (obj.hasDelivery)
