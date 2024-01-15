@@ -50,7 +50,14 @@ namespace CourierConnectWeb.Controllers
         }
         public IActionResult DeliveryStatus(Delivery delivery)
         {
-            return View(delivery);
+            if(delivery.deliveryStatus == CourierConnect.Models.DeliveryStatus.CannotDeliver)
+            {
+                return View("CannotDeliverView", delivery);
+            }
+            else
+            {
+                return View("CanDeliverView", delivery);
+            }
         }
 
         public async Task<IActionResult> Index(int id)
