@@ -55,6 +55,7 @@ namespace CourierConnectWeb.Controllers
 
         public async Task<IActionResult> Index(int id)
         {
+            
             Delivery delivery = _unitOfWork.Delivery.Get(u => u.Id == id);
             if (delivery == null)
                 return NotFound();

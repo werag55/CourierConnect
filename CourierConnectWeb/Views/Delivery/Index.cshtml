@@ -1,6 +1,62 @@
 ﻿@model DeliveryDto
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+<br />
+<div class="container p-4 border">
+	<div>
+		<h1 class="text-primary">Delivvery details</h1>
+	</div>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Courier</th>
+				<th>Request</th>
+				<th>Delivery Status</th>
+				<th>Pickup Date</th>
+				<th>(Try to) Delivery Date</th>
+				<th>Reason</th>
+				<th>Cancelation deadline</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					@Model.courier.name
+					@Model.courier.surname
+				</td>
+				<td>Button</td>
+				<td>@Model.deliveryStatus</td>
+				<td>
+					@if (@Model.pickUpDate != null)
+					{
+						@Model.pickUpDate
+					}
+				</td>
+				<td>
+					@if (@Model.deliveryDate != null)
+					{
+						@Model.deliveryDate
+					}
+				</td>
+				<td>
+					@if (@Model.reason != null)
+					{
+						@Model.reason
+					}
+				</td>
+				<td>
+					@Model.cancelationDeadline
+				</td>
+				<td>
+					@if (Model.cancelationDeadline > DateTime.Now)
+					{
+						<a asp-controller="Delivery" asp-action="Cancel" asp-route-id="@Model.companyDeliveryId" class="btn btn-danger mx-2">
+							<i class="bi bi-pencil-square"></i> Cancel
+						</a>
+					}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+</div>

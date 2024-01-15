@@ -9,6 +9,7 @@ using System.Text.Json;
 using CourierCompanyApi.Models;
 using CourierCompanyApi.Models.Dto;
 using CourierCompanyApi.Authentication;
+using CourierCompanyApi.Responses;
 
 namespace CourierCompanyApi.Controllers
 {
@@ -27,11 +28,15 @@ namespace CourierCompanyApi.Controllers
             _response = new();
         }
 
-
-        // GET: api/<OffersController>
-        [HttpGet]
+		/// <summary>
+		/// Returns all offers realated to the company (for the office worker)
+		/// </summary>
+		/// <response code="200">Returns list of all offers</response>
+		/// <response code="404">There is no offer to return</response>
+		// GET: api/<OffersController>
+		[HttpGet]
         [ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ListOfferResponse), StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetOffers()
         {
             try
@@ -39,6 +44,14 @@ namespace CourierCompanyApi.Controllers
 
                 IEnumerable<Offer> OfferList;
                 OfferList = await _unitOfWork.Offer.GetAllAsync(includeProperties:"inquiry,inquiry.sourceAddress,inquiry.destinationAddress,inquiry.package");
+                
+                if (OfferList == null || OfferList.Count() == 0)
+                {
+					_response.IsSuccess = false;
+					_response.StatusCode = HttpStatusCode.NotFound;
+					return NotFound();
+				}
+                
                 _response.Result = _mapper.Map<List<OfferDto>>(OfferList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
@@ -110,12 +123,17 @@ namespace CourierCompanyApi.Controllers
             return offer;
         }
 
-        // POST api/<OffersController>
-        [HttpPost]
+		/// <summary>
+		/// Creates an offer based on a given inquiry
+		/// </summary>
+		/// <response code="201">Offer has been succesfully created. Returns the offer details.</response>
+		/// <response code="400">Provided iquiry was not valid</response>
+		// POST api/<OffersController>
+		[HttpPost]
         [ServiceFilter(typeof(ApiKeyAuthFilter))]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(OfferResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> Get([FromBody] InquiryDto inquiryDto)
+        public async Task<ActionResult<APIResponse>> Post([FromBody] InquiryDto inquiryDto)
         {
             try
             {

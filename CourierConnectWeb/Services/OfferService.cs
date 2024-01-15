@@ -43,7 +43,7 @@ namespace CourierConnectWeb.Services
             {
                 ApiType = SD.ApiType.POST,
                 Data = inquiryDto,
-                Url = apiUrl + "/api/Offer/Get",
+                Url = apiUrl + "/api/Offer/Post",
             }, _configuration.GetValue<string>(SD.ApiKeySectionName));
         }
 

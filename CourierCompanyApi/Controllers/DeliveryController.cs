@@ -10,6 +10,8 @@ using CourierCompanyApi.Models;
 using CourierCompanyApi.Models.Dto;
 using CourierCompanyApi.Authentication;
 using System.Diagnostics.Metrics;
+using CourierCompanyApi.Responses;
+using Microsoft.AspNetCore.Http;
 
 namespace CourierCompanyApi.Controllers
 {
@@ -28,9 +30,15 @@ namespace CourierCompanyApi.Controllers
             _response = new();
         }
 
-        [HttpGet("{courierUserName}")]
+		/// <summary>
+		/// Returns all deliveries related to the courier with a given User Name (for the courier)
+		/// </summary>
+		/// <response code="200">Returns the deliveries</response>
+		/// <response code="400">Provided User Name was not valid</response>
+		/// /// <response code="404">There is no delivery related to provided courier</response>
+		[HttpGet]
         [ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ListDeliveryResponse),StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<APIResponse>> GetCourierDeliveries([FromBody] string courierUserName)
@@ -70,16 +78,21 @@ namespace CourierCompanyApi.Controllers
             return _response;
         }
 
-        [HttpGet]
+		/// <summary>
+		/// Returns delivery matching the provided delivery Id
+		/// </summary>
+		/// <response code="200">Returns the delivery</response>
+		/// <response code="400">Provided delivery Id was not valid</response>
+		[HttpGet("{deliveryId}")]
         [ServiceFilter(typeof(ApiKeyAuthFilter))]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DeliveryResponse),StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> GetDelivery([FromBody] int deliveryId)
+        public async Task<ActionResult<APIResponse>> GetDelivery(int deliveryId)
         {
             try
             {
                 Delivery delivery = await _unitOfWork.Delivery.GetAsync(u => u.Id == deliveryId, includeProperties:
-                    "request,request.offer,request.personalData,request.offer.inquiry,request.offer.inquiry.sourceAddress,request.offer.inquiry.destinationAddress,request.offer.inquiry.package");
+                    "courier,request,request.offer,request.personalData,,request.personalData.address,request.offer.inquiry,request.offer.inquiry.sourceAddress,request.offer.inquiry.destinationAddress,request.offer.inquiry.package");
 
                 if (delivery == null)
                     return BadRequest();
@@ -100,20 +113,24 @@ namespace CourierCompanyApi.Controllers
             return _response;
         }
 
-        [HttpGet]
+		/// <summary>
+		/// Returns all deliveries realated to the company (for the office worker)
+		/// </summary>
+		/// <response code="200">Returns list of al deliveries</response>
+		/// <response code="404">There is no delivery to return</response>
+		[HttpGet]
         [ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ListDeliveryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<APIResponse>> GetAllDeliveries()
         {
             try
             {
-
                 IEnumerable<Delivery> DeliveryList;
                 DeliveryList = await _unitOfWork.Delivery.GetAllAsync(includeProperties:
                     "request,request.offer,request.personalData,request.offer.inquiry,request.offer.inquiry.sourceAddress,request.offer.inquiry.destinationAddress,request.offer.inquiry.package");
 
-                if (DeliveryList.Count() == 0)
+                if (DeliveryList == null || DeliveryList.Count() == 0)
                 {
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.NotFound;
@@ -137,21 +154,65 @@ namespace CourierCompanyApi.Controllers
             return _response;
         }
 
-        [HttpPost]
+		/// <summary>
+		/// Changes the delivery status to Canceled (if the cancelation deadline has not been exceeded)
+		/// </summary>
+		/// <response code="200">Delivery status has been succesfully updated</response>
+		/// <response code="400">Provided delivery Id was not valid or the cancelation deadline has been exceeded</response>
+		[HttpPut("{deliveryId}")]
+		[ServiceFilter(typeof(ApiKeyAuthFilter))]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public async Task<ActionResult<APIResponse>> CancelDelivery(int deliveryId)
+        {
+			try
+			{
+				Delivery delivery = await _unitOfWork.Delivery.GetAsync(u => u.Id == deliveryId, includeProperties:
+					"courier,request,request.offer,request.personalData,,request.personalData.address,request.offer.inquiry,request.offer.inquiry.sourceAddress,request.offer.inquiry.destinationAddress,request.offer.inquiry.package");
+
+				if (delivery == null)
+					return BadRequest();
+
+                if (delivery.cancelationDeadline < DateTime.Now)
+                    return BadRequest();
+
+                delivery.deliveryStatus = DeliveryStatus.Cancelled;
+                _unitOfWork.Delivery.UpdateAsync(delivery);
+				_response.StatusCode = HttpStatusCode.OK;
+				return Ok(_response);
+
+			}
+			catch (Exception ex)
+			{
+				_response.IsSuccess = false;
+				_response.ErrorMessages
+					 = new List<string>() { ex.ToString() };
+			}
+			return _response;
+		}
+
+		/// <summary>
+		/// Creates a delivery based on a given request
+		/// </summary>
+		/// <response code="201">Delivery has been succesfully created. Returns the delivery details.</response>
+        /// <response code="200">The company decided to reject request. Returns rjection reason.</response>
+		/// <response code="400">Provided request was not valid (e.g. there is no offer with a given Id)</response>
+		[HttpPost]
         [ServiceFilter(typeof(ApiKeyAuthFilter))]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+		[ProducesResponseType(typeof(RequestRejectResponse), StatusCodes.Status200OK)]
+		[ProducesResponseType(typeof(RequestAcceptResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> Get([FromBody] RequestSendDto requestDto)
+        public async Task<ActionResult<APIResponse>> Post([FromBody] RequestSendDto requestDto)
         {
             try
             {
-       
+
                 if (requestDto == null)
-                    return BadRequest(requestDto);
+					return BadRequest(_response);
 
                 Offer offer = await _unitOfWork.Offer.GetAsync(u => u.Id == requestDto.companyOfferId);
                 if (offer == null)
-                    return BadRequest();
+					return BadRequest(_response);
 
                 Request request = _mapper.Map<Request>(requestDto);
                 request.offerId = offer.Id;

@@ -41,8 +41,7 @@ public class DeliveryService : BaseService, IDeliveryService
         return SendAsync<T>(new APIRequest()
         {
             ApiType = SD.ApiType.GET,
-            Data = deliveryId,
-            Url = apiUrl + $"/api/Delivery/GetDelivery",
+            Url = apiUrl + $"/api/Delivery/GetDelivery/{deliveryId}",
         }, _configuration.GetValue<string>(SD.ApiKeySectionName));
     }
 
@@ -52,7 +51,7 @@ public class DeliveryService : BaseService, IDeliveryService
         {
             ApiType = SD.ApiType.POST,
             Data = requestDto,
-            Url = apiUrl + "/api/Delivery/Get",
+            Url = apiUrl + "/api/Delivery/Post",
         }, _configuration.GetValue<string>(SD.ApiKeySectionName));
     }
 }
