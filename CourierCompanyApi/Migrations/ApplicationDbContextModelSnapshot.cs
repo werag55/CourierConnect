@@ -94,6 +94,10 @@ namespace CourierCompanyApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("GUID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("cancelationDeadline")
                         .HasColumnType("datetime2");
 
@@ -184,6 +188,10 @@ namespace CourierCompanyApi.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("GUID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("creationDate")
                         .HasColumnType("datetime2");
@@ -306,8 +314,12 @@ namespace CourierCompanyApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("isAccepted")
-                        .HasColumnType("bit");
+                    b.Property<string>("GUID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("decisionDeadline")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("offerId")
                         .HasColumnType("int");
@@ -317,6 +329,9 @@ namespace CourierCompanyApi.Migrations
 
                     b.Property<string>("rejectionReason")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("requestStatus")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

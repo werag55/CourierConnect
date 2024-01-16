@@ -23,7 +23,7 @@ namespace CourierConnectWeb.Services
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = apiUrl + "/api/Offer/GetOffers",
+                Url = "https://couriercompanyapi.azurewebsites.net" + "/api/Offer/GetOffers",
             }, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
         }
 
@@ -43,7 +43,7 @@ namespace CourierConnectWeb.Services
             {
                 ApiType = SD.ApiType.POST,
                 Data = inquiryDto,
-                Url = apiUrl + "/api/Offer/Post",
+                Url = apiUrl + "/api/Offer/PostOffer",
             }, _configuration.GetValue<string>(SD.ApiKeySectionName));
         }
 

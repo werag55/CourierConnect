@@ -51,7 +51,7 @@ public class DeliveryService : BaseService, IDeliveryService
         {
             ApiType = SD.ApiType.POST,
             Data = requestDto,
-            Url = apiUrl + "/api/Delivery/Post",
+            Url = apiUrl + "/api/Delivery/PostDelivery",
         }, _configuration.GetValue<string>(SD.ApiKeySectionName));
     }
 }

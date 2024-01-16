@@ -2,7 +2,7 @@
 {
     public class DeliveryDto
     {
-        public int companyDeliveryId { get; set; }
+        public string companyDeliveryId { get; set; }
         public CourierDto courier { get; set; }
         public RequestDto request { get; set; }
         public DateTime cancelationDeadline { get; set; }

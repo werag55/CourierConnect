@@ -18,7 +18,11 @@ namespace CourierConnect
             CreateMap<Package, PackageDto>().ReverseMap();
             CreateMap<Request, RequestDto>();
             CreateMap<Request, RequestDto>().ReverseMap();
-            CreateMap<Request, RequestSendDto>();
+			CreateMap<Request, RequestStatusDto>();
+			CreateMap<Request, RequestStatusDto>().ReverseMap();
+			CreateMap<Request, RequestResponseDto>();
+			CreateMap<Request, RequestResponseDto>().ReverseMap();
+			CreateMap<Request, RequestSendDto>();
             CreateMap<Request, RequestSendDto>().ReverseMap();
             CreateMap<Request, RequestRejectDto>();
             CreateMap<Request, RequestRejectDto>().ReverseMap();

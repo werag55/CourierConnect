@@ -34,7 +34,9 @@ namespace CourierConnectWeb.Controllers
 		public IActionResult Create(int Id)
 		{
 			string? clientId = _userManager.GetUserId(User);
-			PersonalData pd = _unitOfWork.PersonalData.Get(u => u.clientId == clientId, includeProperties: "address") ?? new PersonalData();
+            PersonalData pd = new PersonalData();
+			if (clientId != null)
+                pd = _unitOfWork.PersonalData.Get(u => u.clientId == clientId, includeProperties: "address"); // ?? new PersonalData();
 			Offer offer = _unitOfWork.Offer.Get(u => u.Id == Id); //, includeProperties: "inquiry,inquiry.sourceAddress,inquiry.destinationAddress,inquiry.package");
 
 			if (offer == null) 
@@ -67,7 +69,7 @@ namespace CourierConnectWeb.Controllers
 
                 string? clientId = _userManager.GetUserId(User);
                 PersonalData clientPd = _unitOfWork.PersonalData.Get(u => u.clientId == clientId, includeProperties: "address");
-                if (clientPd == null)
+                if (clientPd == null && clientId != null)
                 {
                     Address ad = pd.address;
                     _unitOfWork.Address.Add(ad);
@@ -79,7 +81,7 @@ namespace CourierConnectWeb.Controllers
                 }
                 else
                 {
-                    if (pd.name == clientPd.name && pd.surname == clientPd.surname && pd.companyName == clientPd.companyName
+                    if (clientPd != null && pd.name == clientPd.name && pd.surname == clientPd.surname && pd.companyName == clientPd.companyName
                         && pd.email == clientPd.email && pd.address.streetName == clientPd.address.streetName
                         && pd.address.houseNumber == clientPd.address.houseNumber && pd.address.flatNumber == clientPd.address.flatNumber
                         && pd.address.postcode == clientPd.address.postcode && pd.address.city == clientPd.address.city)
@@ -107,7 +109,7 @@ namespace CourierConnectWeb.Controllers
 				if (response.StatusCode == System.Net.HttpStatusCode.OK) // request rejected
 				{
                     RequestRejectDto reject = JsonConvert.DeserializeObject<RequestRejectDto>(Convert.ToString(response.Result));
-                    request.isAccepted = reject.isAccepted;
+                    request.requestStatus = reject.requestStatus;
                     request.rejectionReason = reject.rejectionReason;
                     _unitOfWork.Request.Add(request);
                     _unitOfWork.Save();
@@ -128,7 +130,7 @@ namespace CourierConnectWeb.Controllers
                 else //if (response.StatusCode == System.Net.HttpStatusCode.Created) // delivery created
 				{
                     RequestAcceptDto accept = JsonConvert.DeserializeObject<RequestAcceptDto>(Convert.ToString(response.Result));
-                    request.isAccepted = accept.isAccepted;
+                    request.requestStatus = accept.requestStatus;
                     //TODO: Agreement
                     //TODO: Receipt
                     _unitOfWork.Request.Add(request);

@@ -28,44 +28,6 @@ namespace CourierCompanyApi.Controllers
             _response = new();
         }
 
-		/// <summary>
-		/// Returns all offers realated to the company (for the office worker)
-		/// </summary>
-		/// <response code="200">Returns list of all offers</response>
-		/// <response code="404">There is no offer to return</response>
-		// GET: api/<OffersController>
-		[HttpGet]
-        [ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
-        [ProducesResponseType(typeof(ListOfferResponse), StatusCodes.Status200OK)]
-        public async Task<ActionResult<APIResponse>> GetOffers()
-        {
-            try
-            {
-
-                IEnumerable<Offer> OfferList;
-                OfferList = await _unitOfWork.Offer.GetAllAsync(includeProperties:"inquiry,inquiry.sourceAddress,inquiry.destinationAddress,inquiry.package");
-                
-                if (OfferList == null || OfferList.Count() == 0)
-                {
-					_response.IsSuccess = false;
-					_response.StatusCode = HttpStatusCode.NotFound;
-					return NotFound();
-				}
-                
-                _response.Result = _mapper.Map<List<OfferDto>>(OfferList);
-                _response.StatusCode = HttpStatusCode.OK;
-                return Ok(_response);
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.ErrorMessages
-                     = new List<string>() { ex.ToString() };
-            }
-            return _response;
-        }
-
         //// GET api/<OffersController>/5
         //[HttpGet("{id}")]
         //[ProducesResponseType(StatusCodes.Status200OK)]
@@ -107,6 +69,7 @@ namespace CourierCompanyApi.Controllers
             var offer = new Offer()
             {
                 Id = 0,
+                GUID = Guid.NewGuid().ToString(),
                 inquiryId = inquiry.Id,
                 inquiry = inquiry,
                 creationDate = DateTime.Now,
@@ -132,18 +95,22 @@ namespace CourierCompanyApi.Controllers
 		[HttpPost]
         [ServiceFilter(typeof(ApiKeyAuthFilter))]
         [ProducesResponseType(typeof(OfferResponse), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> Post([FromBody] InquiryDto inquiryDto)
+        [ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponse>> PostOffer([FromBody] InquiryDto inquiryDto)
         {
             try
             {
 
                 if (inquiryDto == null)
-                {
-                    return BadRequest(inquiryDto);
-                }
+				{
+					_response.IsSuccess = false;
+					_response.ErrorMessages
+						= new List<string>() { "The required parameter has not been provided" };
+					_response.StatusCode = HttpStatusCode.BadRequest;
+					return BadRequest(_response);
+				}
 
-                Inquiry inquiry = _mapper.Map<Inquiry>(inquiryDto);
+				Inquiry inquiry = _mapper.Map<Inquiry>(inquiryDto);
 
                 await _unitOfWork.Inquiry.CreateAsync(inquiry);
                 //await _unitOfWork.Address.CreateAsync(inquiry.destinationAddress);
@@ -155,7 +122,7 @@ namespace CourierCompanyApi.Controllers
                 await _unitOfWork.Offer.CreateAsync(offer);
                 //await _unitOfWork.SaveAsync();
                 OfferDto offerDto = _mapper.Map<OfferDto>(offer);
-                offerDto.companyOfferId = offer.Id;
+                offerDto.companyOfferId = offer.GUID;
                 _response.Result = offerDto;
                 _response.StatusCode = HttpStatusCode.Created;
                 return Ok(_response);
@@ -170,16 +137,55 @@ namespace CourierCompanyApi.Controllers
             return _response;
         }
 
-/*        // PUT api/<OffersController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+		/// <summary>
+		/// Returns all offers realated to the company (for the office worker)
+		/// </summary>
+		/// <response code="200">Returns list of all offers</response>
+		/// <response code="404">There is no offer to return</response>
+		// GET: api/<OffersController>
+		[HttpGet]
+		[ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
+		[ProducesResponseType(typeof(ListOfferResponse), StatusCodes.Status200OK)]
+		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status404NotFound)]
+		public async Task<ActionResult<APIResponse>> GetOffers()
+		{
+			try
+			{
 
-        // DELETE api/<OffersController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }*/
-    }
+				IEnumerable<Offer> OfferList;
+				OfferList = await _unitOfWork.Offer.GetAllAsync(includeProperties: "inquiry,inquiry.sourceAddress,inquiry.destinationAddress,inquiry.package");
+
+				if (OfferList == null || OfferList.Count() == 0)
+				{
+					_response.IsSuccess = false;
+					_response.StatusCode = HttpStatusCode.NotFound;
+					return NotFound(_response);
+				}
+
+				_response.Result = _mapper.Map<List<OfferDto>>(OfferList);
+				_response.StatusCode = HttpStatusCode.OK;
+				return Ok(_response);
+
+			}
+			catch (Exception ex)
+			{
+				_response.IsSuccess = false;
+				_response.ErrorMessages
+					 = new List<string>() { ex.ToString() };
+			}
+			return _response;
+		}
+
+		/*        // PUT api/<OffersController>/5
+				[HttpPut("{id}")]
+				public void Put(int id, [FromBody] string value)
+				{
+				}
+
+				// DELETE api/<OffersController>/5
+				[HttpDelete("{id}")]
+				public void Delete(int id)
+				{
+				}*/
+	}
 }

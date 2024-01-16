@@ -48,7 +48,7 @@
 					@Model.cancelationDeadline
 				</td>
 				<td>
-					@if (Model.cancelationDeadline > DateTime.Now)
+					@if (Model.cancelationDeadline > DateTime.Now && Model.deliveryStatus == DeliveryStatus.Proccessing)
 					{
 						<a asp-controller="Delivery" asp-action="Cancel" asp-route-id="@Model.companyDeliveryId" class="btn btn-danger mx-2">
 							<i class="bi bi-pencil-square"></i> Cancel

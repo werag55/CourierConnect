@@ -9,7 +9,7 @@ namespace CourierConnect.Models
     public class Delivery
     {
         public int Id { get; set; }
-        public int companyDeliveryId { get; set; }
+        public string companyDeliveryId { get; set; }
         public int companyId { get; set; }
         public int requestId { get; set; }
         public Request request { get; set; }
