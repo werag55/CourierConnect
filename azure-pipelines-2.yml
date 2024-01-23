@@ -6,6 +6,7 @@
 
 trigger:
 - master
+-unitTest
 
 pool:
   vmImage: 'windows-latest'
