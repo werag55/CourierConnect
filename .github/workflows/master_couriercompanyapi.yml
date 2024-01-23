@@ -32,7 +32,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: .net-api
-          path: ${{env.DOTNET_ROOT}}/myapi
+          path: ${{env.DOTNET_ROOT}}/CourierCompanyApi
 
   deploy:
     runs-on: windows-latest
