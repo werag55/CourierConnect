@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using SendGrid.Helpers.Mail;
 using System;
 using System.Security.Principal;
 using System.Web.Mvc;
@@ -31,15 +32,18 @@ namespace TestProject
             unitOfWork = new Mock<IUnitOfWork>();
             //var userManager = new UserManager<IdentityUser>();
             //UserManager<IdentityUser> userManager = GetUserManager();
-            var mockuser = new Mock<UserManager<IdentityUser>>();
-            var context = new Mock<CourierConnect.DataAccess.Data.ApplicationDbContext>();
-            iController = new InquiryController(unitOfWork.Object, mockuser.Object, context.Object);
+            //var mockuser = new Mock<UserManager<IdentityUser>>();
+            //var context = new Mock<CourierConnect.DataAccess.Data.ApplicationDbContext>();
+            
         }
         [TestMethod]
         public void Index()
         {
             // unit of work setup
-            unitOfWork.Setup(u => u.Inquiry).Returns((IInquiryRepository)inquiries.ToList());
+            var mockuser = new Mock<UserManager<IdentityUser>>();
+            var context = new Mock<CourierConnect.DataAccess.Data.ApplicationDbContext>();
+            unitOfWork.Setup(u => u.Inquiry).Returns((IInquiryRepository)(inquiries.ToList() ));
+            iController = new InquiryController(unitOfWork.Object, mockuser.Object, context.Object);
             // action
             var result = iController.Index() as ViewResult;
             var model = result.Model as List<Inquiry>;
