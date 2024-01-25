@@ -11,5 +11,6 @@ namespace CourierConnect.Models.ViewModels
     {
         public RequestSendDto requestSendDto { get; set; }
         public int offerId { get; set; }
+        public int companyId { get; set; }
     }
 }

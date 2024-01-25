@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using CourierConnect.Utility;
 using CourierConnect;
+using CourierConnectWeb.Services.Factory;
 //using CourierConnectWeb.Email;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,12 +38,15 @@ builder.Services.AddRazorPages();
 
 ////////////////////////////////////////////////
 builder.Services.AddAutoMapper(typeof(MappingConfig));
+
+builder.Services.AddSingleton<OurServiceFactory>();
 builder.Services.AddHttpClient<IOfferService, OfferService>();
 builder.Services.AddScoped<IOfferService, OfferService>();
 builder.Services.AddHttpClient<IDeliveryService, DeliveryService>();
 builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 builder.Services.AddHttpClient<IRequestService, RequestService>();
 builder.Services.AddScoped<IRequestService, RequestService>();
+
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>

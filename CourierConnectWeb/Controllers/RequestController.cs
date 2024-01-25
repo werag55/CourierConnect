@@ -9,6 +9,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using CourierConnect.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using CourierConnectWeb.Services.Factory;
 
 namespace CourierConnectWeb.Controllers
 {
@@ -16,13 +17,16 @@ namespace CourierConnectWeb.Controllers
 	{
 		private readonly UserManager<IdentityUser> _userManager;
 		private readonly IUnitOfWork _unitOfWork;
-		private readonly IRequestService _requestService;
-		private readonly IMapper _mapper;
-		public RequestController(IUnitOfWork unitOfWork, IRequestService requestService, IMapper mapper, UserManager<IdentityUser> userManager)
+        //private readonly IRequestService _requestService;
+        private List<IServiceFactory> _serviceFactories = new List<IServiceFactory>();
+        private readonly IMapper _mapper;
+		public RequestController(IUnitOfWork unitOfWork, /*IRequestService requestService,*/ OurServiceFactory ourServiceFactory,
+            IMapper mapper, UserManager<IdentityUser> userManager)
 		{
 			_unitOfWork = unitOfWork;
-			_requestService = requestService;
-			_mapper = mapper;
+            //_requestService = requestService;
+            _serviceFactories.Add(ourServiceFactory);
+            _mapper = mapper;
 			_userManager = userManager;
 		}
 
@@ -51,7 +55,8 @@ namespace CourierConnectWeb.Controllers
 			RequestCreateVM requestCreateVM = new RequestCreateVM
 			{
                 requestSendDto = request,
-				offerId = Id
+				offerId = Id,
+                companyId = offer.companyId,
 			};
 
 			return View(requestCreateVM);
@@ -62,7 +67,9 @@ namespace CourierConnectWeb.Controllers
 		{
 			RequestSendDto requestSendDto = requestCreateVM.requestSendDto;
 
-            var response = await _requestService.GetRequestAsync<APIResponse>(requestSendDto);
+            IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == requestCreateVM.companyId).FirstOrDefault();
+            var requestService = serviceFactory.createRequestService();
+            var response = await requestService.GetRequestAsync<APIResponse>(requestSendDto);
             if (response != null && response.IsSuccess)
             {
                 PersonalData pd = _mapper.Map<PersonalData>(requestSendDto.personalData);
@@ -99,20 +106,20 @@ namespace CourierConnectWeb.Controllers
 
                 RequestResponseDto requestResponseDto = JsonConvert.DeserializeObject<RequestResponseDto>(Convert.ToString(response.Result));
 
-				Request request = new Request
-				{
-					offerId = requestCreateVM.offerId,
-					offer = _unitOfWork.Offer.Get(u => u.Id == requestCreateVM.offerId, includeProperties:
-							                        "inquiry,inquiry.sourceAddress,inquiry.destinationAddress,inquiry.package"),
-					personalDataId = pd.Id,
-					personalData = pd,
+                Request request = new Request
+                {
+                    offerId = requestCreateVM.offerId,
+                    offer = _unitOfWork.Offer.Get(u => u.Id == requestCreateVM.offerId, includeProperties:
+                                                    "inquiry,inquiry.sourceAddress,inquiry.destinationAddress,inquiry.package"),
+                    personalDataId = pd.Id,
+                    personalData = pd,
                     companyRequestId = requestResponseDto.companyRequestId,
                     decisionDeadline = requestResponseDto.decisionDeadline,
                     requestStatus = RequestStatus.Pending
-				};
+                };
 
-				_unitOfWork.Request.Add(request);
-				_unitOfWork.Save();
+                _unitOfWork.Request.Add(request);
+                _unitOfWork.Save();
 
                 request.offer.status = OfferStatus.Accepted;
                 _unitOfWork.Offer.Update(request.offer);

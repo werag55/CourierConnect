@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using CourierConnectWeb.Services.IServices;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Identity;
+using CourierConnectWeb.Services.Factory;
+using CourierConnect.Models.ViewModels;
 
 namespace CourierConnectWeb.Controllers
 {
@@ -15,13 +17,16 @@ namespace CourierConnectWeb.Controllers
     {
 		private readonly UserManager<IdentityUser> _userManager;
 		private readonly IUnitOfWork _unitOfWork;
-        private readonly IDeliveryService _deliveryService;
-        private readonly IRequestService _requestService;
-        public DeliveryController(IUnitOfWork unitOfWork, IDeliveryService deliveryService, IRequestService requestService, UserManager<IdentityUser> userManager)
+        //private readonly IDeliveryService _deliveryService;
+        private List<IServiceFactory> _serviceFactories = new List<IServiceFactory>();
+        //private readonly IRequestService _requestService;
+        public DeliveryController(IUnitOfWork unitOfWork, /*IDeliveryService deliveryService, IRequestService requestService,*/
+            OurServiceFactory ourServiceFactory, UserManager<IdentityUser> userManager)
         {
             _unitOfWork = unitOfWork;
-            _deliveryService = deliveryService;
-            _requestService = requestService;
+            //_deliveryService = deliveryService;
+            _serviceFactories.Add(ourServiceFactory);
+            //_requestService = requestService;
             _userManager = userManager;
         }
 
@@ -35,70 +40,84 @@ namespace CourierConnectWeb.Controllers
 
             foreach (var pendingRequest in pendingRequests)
             {
-                var response = await _requestService.GetRequestStatusAsync<APIResponse>(pendingRequest.companyRequestId);
+                IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == pendingRequest.offer.companyId).FirstOrDefault();
 
-				if (response != null && response.IsSuccess)
-				{
-                    RequestStatusDto requestStatusDto = JsonConvert.DeserializeObject<RequestStatusDto>(Convert.ToString(response.Result));
-                    if (requestStatusDto.isReady || pendingRequest.decisionDeadline < DateTime.Now)
+                if (serviceFactory != null)
+                {
+                    var requestService = serviceFactory.createRequestService();
+                    var response = await requestService.GetRequestStatusAsync<APIResponse>(pendingRequest.companyRequestId);
+
+                    if (response != null && response.IsSuccess)
                     {
-						var responseDelivery = await _deliveryService.GetNewDeliveryAsync<APIResponse>(pendingRequest.companyRequestId);
-                        if (responseDelivery != null && responseDelivery.IsSuccess)
+                        RequestStatusDto requestStatusDto = JsonConvert.DeserializeObject<RequestStatusDto>(Convert.ToString(response.Result));
+                        if (requestStatusDto.isReady || pendingRequest.decisionDeadline < DateTime.Now)
                         {
-                            if (responseDelivery.StatusCode == System.Net.HttpStatusCode.NotAcceptable) // request rejected
+                            var deliveryService = serviceFactory.createDeliveryService();
+                            var responseDelivery = await deliveryService.GetNewDeliveryAsync<APIResponse>(pendingRequest.companyRequestId);
+                            if (responseDelivery != null && responseDelivery.IsSuccess)
                             {
-                                RequestRejectDto reject = JsonConvert.DeserializeObject<RequestRejectDto>(Convert.ToString(responseDelivery.Result));
-                                pendingRequest.requestStatus = reject.requestStatus;
-                                pendingRequest.rejectionReason = reject.rejectionReason;
-                                _unitOfWork.Request.Update(pendingRequest);
-                                _unitOfWork.Save();
-
-                                pendingRequest.offer.updatedDate = DateTime.Now;
-                                pendingRequest.offer.status = OfferStatus.Rejected;
-                                _unitOfWork.Offer.Update(pendingRequest.offer);
-                                _unitOfWork.Save();
-                            }
-
-                            if (responseDelivery.StatusCode == System.Net.HttpStatusCode.Created) // delivery created
-                            {
-                                RequestAcceptDto accept = JsonConvert.DeserializeObject<RequestAcceptDto>(Convert.ToString(responseDelivery.Result));
-                                pendingRequest.requestStatus = accept.requestStatus;
-                                _unitOfWork.Request.Update(pendingRequest);
-                                _unitOfWork.Save();
-
-                                pendingRequest.offer.updatedDate = DateTime.Now;
-                                pendingRequest.offer.status = OfferStatus.Accepted;
-                                _unitOfWork.Offer.Update(pendingRequest.offer);
-                                _unitOfWork.Save();
-
-                                Delivery delivery = new Delivery
+                                if (responseDelivery.StatusCode == System.Net.HttpStatusCode.NotAcceptable) // request rejected
                                 {
-                                    companyDeliveryId = accept.companyDeliveryId,
-                                    companyId = pendingRequest.offer.companyId,
-                                    requestId = pendingRequest.Id,
-                                    request = pendingRequest
-                                };
-                                _unitOfWork.Delivery.Add(delivery);
-                                _unitOfWork.Save();
+                                    RequestRejectDto reject = JsonConvert.DeserializeObject<RequestRejectDto>(Convert.ToString(responseDelivery.Result));
+                                    pendingRequest.requestStatus = reject.requestStatus;
+                                    pendingRequest.rejectionReason = reject.rejectionReason;
+                                    _unitOfWork.Request.Update(pendingRequest);
+                                    _unitOfWork.Save();
+
+                                    pendingRequest.offer.updatedDate = DateTime.Now;
+                                    pendingRequest.offer.status = OfferStatus.Rejected;
+                                    _unitOfWork.Offer.Update(pendingRequest.offer);
+                                    _unitOfWork.Save();
+                                }
+
+                                if (responseDelivery.StatusCode == System.Net.HttpStatusCode.Created) // delivery created
+                                {
+                                    RequestAcceptDto accept = JsonConvert.DeserializeObject<RequestAcceptDto>(Convert.ToString(responseDelivery.Result));
+                                    pendingRequest.requestStatus = accept.requestStatus;
+                                    _unitOfWork.Request.Update(pendingRequest);
+                                    _unitOfWork.Save();
+
+                                    pendingRequest.offer.updatedDate = DateTime.Now;
+                                    pendingRequest.offer.status = OfferStatus.Accepted;
+                                    _unitOfWork.Offer.Update(pendingRequest.offer);
+                                    _unitOfWork.Save();
+
+                                    Delivery delivery = new Delivery
+                                    {
+                                        companyDeliveryId = accept.companyDeliveryId,
+                                        companyId = pendingRequest.offer.companyId,
+                                        requestId = pendingRequest.Id,
+                                        request = pendingRequest
+                                    };
+                                    _unitOfWork.Delivery.Add(delivery);
+                                    _unitOfWork.Save();
+                                }
                             }
                         }
                     }
-				}
+                }
 			}
 
             List<DeliveryDto> deliveriesDto = new List<DeliveryDto>();
 
 			var id = _userManager.GetUserId(User);
-			var deliveries = _unitOfWork.Delivery.FindAll(u => u.request.offer.inquiry.clientId == id);
+			var deliveries = _unitOfWork.Delivery.FindAll(u => u.request.offer.inquiry.clientId == id, includeProperties:
+                "request,request.offer");
 
             foreach (var delivery in deliveries)
             {
-				var response = await _deliveryService.GetDeliveryAsync<APIResponse>(delivery.companyDeliveryId);
-				if (response != null && response.IsSuccess)
+                IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == delivery.request.offer.companyId).FirstOrDefault();
+
+                if (serviceFactory != null)
                 {
-                    DeliveryDto deliveryDto = JsonConvert.DeserializeObject<DeliveryDto>(Convert.ToString(response.Result));
-                    deliveriesDto.Add(deliveryDto);
-				}
+                    var deliveryService = serviceFactory.createDeliveryService();
+                    var response = await deliveryService.GetDeliveryAsync<APIResponse>(delivery.companyDeliveryId);
+                    if (response != null && response.IsSuccess)
+                    {
+                        DeliveryDto deliveryDto = JsonConvert.DeserializeObject<DeliveryDto>(Convert.ToString(response.Result));
+                        deliveriesDto.Add(deliveryDto);
+                    }
+                }
 
 			}
 
@@ -140,7 +159,10 @@ namespace CourierConnectWeb.Controllers
             if (delivery == null)
                 return NotFound();
 
-            var response = await _deliveryService.GetDeliveryAsync<APIResponse>(delivery.companyDeliveryId);
+            IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == delivery.request.offer.companyId).FirstOrDefault();
+            var deliveryService = serviceFactory.createDeliveryService();
+
+            var response = await deliveryService.GetDeliveryAsync<APIResponse>(delivery.companyDeliveryId);
             if (response != null && response.IsSuccess)
             {
                 DeliveryDto deliveryDto = JsonConvert.DeserializeObject<DeliveryDto>(Convert.ToString(response.Result));
