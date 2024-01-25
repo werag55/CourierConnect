@@ -17,41 +17,76 @@ public class DeliveryService : BaseService, IDeliveryService
         _configuration = configuration;
     }
 
-    //public Task<T> GetAllAsync<T>()
-    //{
-    //    return SendAsync<T>(new APIRequest()
-    //    {
-    //        ApiType = SD.ApiType.GET,
-    //        Url = apiUrl + "/api/Delivery/GetDeliveries",
-    //    }, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
-    //}
-
-    //public Task<T> GetAsync<T>(string courier)
-    //{
-    //    return SendAsync<T>(new APIRequest()
-    //    {
-    //        ApiType = SD.ApiType.GET,
-    //        Data = courier,
-    //        Url = apiUrl + "/api/Delivery/GetCourierDeliveries",
-    //    }, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
-    //}
-
-    public Task<T> GetDeliveryAsync<T>(int deliveryId)
+	public async Task<T> GetNewDeliveryAsync<T>(string companyRequestId)
     {
-        return SendAsync<T>(new APIRequest()
-        {
-            ApiType = SD.ApiType.GET,
-            Url = apiUrl + $"/api/Delivery/GetDelivery/{deliveryId}",
-        }, _configuration.GetValue<string>(SD.ApiKeySectionName));
-    }
-
-    public Task<T> GetDeliveryAsync<T>(RequestSendDto requestDto)
+		return await SendAsync<T>(new APIRequest()
+		{
+			ApiType = SD.ApiType.POST,
+			Url = apiUrl + $"/api/Delivery/PostDelivery/{companyRequestId}",
+		}, _configuration.GetValue<string>(SD.ApiKeySectionName));
+	}
+	public async Task<T> GetDeliveryAsync<T>(string companyDeliveryId)
     {
-        return SendAsync<T>(new APIRequest()
-        {
-            ApiType = SD.ApiType.POST,
-            Data = requestDto,
-            Url = apiUrl + "/api/Delivery/PostDelivery",
-        }, _configuration.GetValue<string>(SD.ApiKeySectionName));
-    }
+		return await SendAsync<T>(new APIRequest()
+		{
+			ApiType = SD.ApiType.GET,
+			Url = apiUrl + $"/api/Delivery/GetDelivery/{companyDeliveryId}",
+		}, _configuration.GetValue<string>(SD.ApiKeySectionName));
+	}
+	public async Task<T> CancelDeliveryAsync<T>(string companyDeliveryId)
+	{
+		return await SendAsync<T>(new APIRequest()
+		{
+			ApiType = SD.ApiType.DELETE,
+			Url = apiUrl + $"/api/Delivery/CancelDelivery/{companyDeliveryId}",
+		}, _configuration.GetValue<string>(SD.ApiKeySectionName));
+	}
+
+	// Office worker:
+	public async Task<T> GetAllAsync<T>()
+	{
+		return await SendAsync<T>(new APIRequest()
+		{
+			ApiType = SD.ApiType.GET,
+			Url = apiUrl + "/api/Delivery/GetAllDeliveries",
+		}, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
+	}
+
+	// Courier:
+	public async Task<T> GetAllCourierDeliveryAsync<T>(string courierUserName)
+	{
+		return await SendAsync<T>(new APIRequest()
+		{
+			ApiType = SD.ApiType.GET,
+			Data = courierUserName,
+			Url = apiUrl + "/api/Delivery/GetCourierDeliveries",
+		}, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
+	}
+
+	public async Task<T> PickUpPackageAsync<T>(string companyDeliveryId)
+	{
+		return await SendAsync<T>(new APIRequest()
+		{
+			ApiType = SD.ApiType.POST,
+			Url = apiUrl + $"/api/Delivery/PickUpPackage/{companyDeliveryId}",
+		}, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
+	}
+
+	public async Task<T> DeliverPackageAsync<T>(string companyDeliveryId)
+	{
+		return await SendAsync<T>(new APIRequest()
+		{
+			ApiType = SD.ApiType.POST,
+			Url = apiUrl + $"/api/Delivery/DeliverPackage/{companyDeliveryId}",
+		}, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
+	}
+
+	public async Task<T> CannotDeliverPackageAsync<T>(string companyDeliveryId)
+	{
+		return await SendAsync<T>(new APIRequest()
+		{
+			ApiType = SD.ApiType.POST,
+			Url = apiUrl + $"/api/Delivery/CannotDeliverPackage/{companyDeliveryId}",
+		}, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
+	}
 }

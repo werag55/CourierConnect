@@ -16,12 +16,12 @@ namespace CourierConnectWeb.Controllers
 	{
 		private readonly UserManager<IdentityUser> _userManager;
 		private readonly IUnitOfWork _unitOfWork;
-		private readonly IDeliveryService _deliveryService;
+		private readonly IRequestService _requestService;
 		private readonly IMapper _mapper;
-		public RequestController(IUnitOfWork unitOfWork, IDeliveryService deliveryService, IMapper mapper, UserManager<IdentityUser> userManager)
+		public RequestController(IUnitOfWork unitOfWork, IRequestService requestService, IMapper mapper, UserManager<IdentityUser> userManager)
 		{
 			_unitOfWork = unitOfWork;
-			_deliveryService = deliveryService;
+			_requestService = requestService;
 			_mapper = mapper;
 			_userManager = userManager;
 		}
@@ -62,7 +62,7 @@ namespace CourierConnectWeb.Controllers
 		{
 			RequestSendDto requestSendDto = requestCreateVM.requestSendDto;
 
-            var response = await _deliveryService.GetDeliveryAsync<APIResponse>(requestSendDto);
+            var response = await _requestService.GetRequestAsync<APIResponse>(requestSendDto);
             if (response != null && response.IsSuccess)
             {
                 PersonalData pd = _mapper.Map<PersonalData>(requestSendDto.personalData);
@@ -97,70 +97,35 @@ namespace CourierConnectWeb.Controllers
                     }
                 }
 
-                Request request = new Request
+                RequestResponseDto requestResponseDto = JsonConvert.DeserializeObject<RequestResponseDto>(Convert.ToString(response.Result));
+
+				Request request = new Request
 				{
 					offerId = requestCreateVM.offerId,
-					offer = _unitOfWork.Offer.Get(u => u.Id == requestCreateVM.offerId,
-                    includeProperties: "inquiry,inquiry.sourceAddress,inquiry.destinationAddress,inquiry.package"),
+					offer = _unitOfWork.Offer.Get(u => u.Id == requestCreateVM.offerId, includeProperties:
+							                        "inquiry,inquiry.sourceAddress,inquiry.destinationAddress,inquiry.package"),
 					personalDataId = pd.Id,
-					personalData = pd
+					personalData = pd,
+                    companyRequestId = requestResponseDto.companyRequestId,
+                    decisionDeadline = requestResponseDto.decisionDeadline,
+                    requestStatus = RequestStatus.Pending
 				};
 
-				if (response.StatusCode == System.Net.HttpStatusCode.OK) // request rejected
+				_unitOfWork.Request.Add(request);
+				_unitOfWork.Save();
+
+                request.offer.status = OfferStatus.Accepted;
+                _unitOfWork.Offer.Update(request.offer);
+                _unitOfWork.Save();
+
+				return RedirectToRoute(new
 				{
-                    RequestRejectDto reject = JsonConvert.DeserializeObject<RequestRejectDto>(Convert.ToString(response.Result));
-                    request.requestStatus = reject.requestStatus;
-                    request.rejectionReason = reject.rejectionReason;
-                    _unitOfWork.Request.Add(request);
-                    _unitOfWork.Save();
+					controller = "Request",
+					action = "Processing",
+					id = request.Id
+				});
 
-                    request.offer.updatedDate = DateTime.Now;
-                    request.offer.status = OfferStatus.Rejected;
-                    _unitOfWork.Offer.Update(request.offer);
-                    _unitOfWork.Save();
-
-                    return RedirectToRoute(new
-                    {
-                        controller = "Request",
-                        action = "Reject",
-                        id = request.Id
-                    });
-                }
-
-                else //if (response.StatusCode == System.Net.HttpStatusCode.Created) // delivery created
-				{
-                    RequestAcceptDto accept = JsonConvert.DeserializeObject<RequestAcceptDto>(Convert.ToString(response.Result));
-                    request.requestStatus = accept.requestStatus;
-                    //TODO: Agreement
-                    //TODO: Receipt
-                    _unitOfWork.Request.Add(request);
-                    _unitOfWork.Save();
-
-                    request.offer.updatedDate = DateTime.Now;
-                    request.offer.status = OfferStatus.Accepted; 
-                    _unitOfWork.Offer.Update(request.offer);
-                    _unitOfWork.Save();
-
-
-                    Delivery delivery = new Delivery
-                    {
-                        companyDeliveryId = accept.companyDeliveryId,
-                        companyId = request.offer.companyId,
-                        requestId = request.Id,
-                        request = request
-                    };
-                    _unitOfWork.Delivery.Add(delivery);
-                    _unitOfWork.Save();
-
-                    return RedirectToRoute(new
-                    {
-                        controller = "Delivery",
-                        action = "Index",
-                        id = delivery.Id
-                    });
-                }
-
-            }
+			}
             return NotFound();
 
         }
@@ -171,5 +136,12 @@ namespace CourierConnectWeb.Controllers
                 "personalData,personalData.address,offer,offer.inquiry,offer.inquiry.sourceAddress,offer.inquiry.destinationAddress,offer.inquiry.package");
             return View(request);
         }
-    }
+
+		public IActionResult Processing(int id)
+		{
+			Request request = _unitOfWork.Request.Get(u => u.Id == id, includeProperties:
+				"personalData,personalData.address,offer,offer.inquiry,offer.inquiry.sourceAddress,offer.inquiry.destinationAddress,offer.inquiry.package");
+			return View(request);
+		}
+	}
 }

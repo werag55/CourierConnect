@@ -68,7 +68,7 @@ namespace CourierCompanyApi.Controllers
 				request.offerId = offer.Id;
 				request.offer = offer;
 				request.requestStatus = RequestStatus.Pending;
-				request.decisionDeadline = DateTime.Now.AddDays(1);
+				request.decisionDeadline = DateTime.Now.AddMinutes(0.5);
 				await _unitOfWork.Request.CreateAsync(request);
 
 
@@ -131,7 +131,7 @@ namespace CourierCompanyApi.Controllers
 		/// </summary>
 		/// <response code="200">Request status has been succesfully updated</response>
 		/// <response code="400">Provided request was not valid or decision cannot be made</response>
-		[HttpPut("{requestId}")]
+		[HttpPost("{requestId}")]
 		[ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
 		[ProducesResponseType(typeof(RequestStatusResponse), StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
@@ -140,7 +140,7 @@ namespace CourierCompanyApi.Controllers
 			try
 			{
 				Request request = await _unitOfWork.Request.GetAsync(u => u.GUID == requestId, includeProperties:
-					"offer,ersonalData,personalData.address,offer.inquiry,offer.inquiry.sourceAddress,offer.inquiry.destinationAddress,offer.inquiry.package");
+					"offer,personalData,personalData.address,offer.inquiry,offer.inquiry.sourceAddress,offer.inquiry.destinationAddress,offer.inquiry.package");
 				if (request == null)
 				{
 					_response.IsSuccess = false;
@@ -186,7 +186,7 @@ namespace CourierCompanyApi.Controllers
 		/// </summary>
 		/// <response code="200">Request status has been succesfully updated</response>
 		/// <response code="400">Provided request was not valid or decision cannot be made</response>
-		[HttpPut("{requestId}")]
+		[HttpPost("{requestId}")]
 		[ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
 		[ProducesResponseType(typeof(RequestStatusResponse), StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
@@ -195,7 +195,7 @@ namespace CourierCompanyApi.Controllers
 			try
 			{
 				Request request = await _unitOfWork.Request.GetAsync(u => u.GUID == requestId, includeProperties:
-					"offer,ersonalData,personalData.address,offer.inquiry,offer.inquiry.sourceAddress,offer.inquiry.destinationAddress,offer.inquiry.package");
+					"offer,personalData,personalData.address,offer.inquiry,offer.inquiry.sourceAddress,offer.inquiry.destinationAddress,offer.inquiry.package");
 				if (request == null)
 				{
 					_response.IsSuccess = false;

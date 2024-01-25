@@ -6,7 +6,7 @@
 
         public int houseNumber { get; set; }
 
-        public int flatNumber { get; set; }
+        public int? flatNumber { get; set; }
 
         public string postcode { get; set; }
 

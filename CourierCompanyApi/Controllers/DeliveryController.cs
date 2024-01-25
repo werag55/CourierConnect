@@ -34,11 +34,11 @@ namespace CourierCompanyApi.Controllers
 		/// Creates a delivery based on a given request
 		/// </summary>
 		/// <response code="201">Delivery has been succesfully created. Returns the delivery details.</response>
-		/// <response code="200">The company decided to reject request. Returns rejection reason.</response>
+		/// <response code="406">The company decided to reject request. Returns rejection reason.</response>
 		/// <response code="400">Provided request was not valid (e.g. there is no offer with a given Id) r the decision has not been made yet</response>
 		[HttpPost("{requestId}")]
 		[ServiceFilter(typeof(ApiKeyAuthFilter))]
-		[ProducesResponseType(typeof(RequestRejectResponse), StatusCodes.Status200OK)]
+		[ProducesResponseType(typeof(RequestRejectResponse), StatusCodes.Status406NotAcceptable)]
 		[ProducesResponseType(typeof(RequestAcceptResponse), StatusCodes.Status201Created)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
 		public async Task<ActionResult<APIResponse>> PostDelivery(string requestId)
@@ -46,7 +46,7 @@ namespace CourierCompanyApi.Controllers
 			try
 			{
 				Request request = await _unitOfWork.Request.GetAsync(u => u.GUID == requestId, includeProperties:
-					"offer,ersonalData,personalData.address,offer.inquiry,offer.inquiry.sourceAddress,offer.inquiry.destinationAddress,offer.inquiry.package");
+					"offer,personalData,personalData.address,offer.inquiry,offer.inquiry.sourceAddress,offer.inquiry.destinationAddress,offer.inquiry.package");
 
 				if (request == null)
 				{
@@ -68,11 +68,8 @@ namespace CourierCompanyApi.Controllers
 
 				if (request.requestStatus == RequestStatus.Pending)
 					request.requestStatus = RequestStatus.Accepted;
-				else
-				{
-					request.requestStatus = RequestStatus.Rejected;
+				if (request.requestStatus == RequestStatus.Rejected)
 					request.rejectionReason = "We changed our mind ;*";
-				}
 
 				Courier courier = null;
 				if (request.requestStatus == RequestStatus.Accepted)
@@ -106,7 +103,6 @@ namespace CourierCompanyApi.Controllers
 				{
 					//TODO: Agreement
 					//TODO: Receipt
-					await _unitOfWork.Request.CreateAsync(request);
 
 					request.offer.status = OfferStatus.Accepted;
 					request.offer.updatedDate = DateTime.Now;
@@ -200,7 +196,7 @@ namespace CourierCompanyApi.Controllers
 		/// </summary>
 		/// <response code="200">Delivery status has been succesfully updated</response>
 		/// <response code="400">Provided delivery Id was not valid or the cancelation deadline has been exceeded</response>
-		[HttpPut("{deliveryId}")]
+		[HttpDelete("{deliveryId}")]
 		[ServiceFilter(typeof(ApiKeyAuthFilter))]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
@@ -344,7 +340,7 @@ namespace CourierCompanyApi.Controllers
 		/// </summary>
 		/// <response code="200">Delivery status has been succesfully updated</response>
 		/// <response code="400">Provided delivery Id was not valid or the package cannot be picked up</response>
-		[HttpPut("{deliveryId}")]
+		[HttpPost("{deliveryId}")]
 		[ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
@@ -394,7 +390,7 @@ namespace CourierCompanyApi.Controllers
 		/// </summary>
 		/// <response code="200">Delivery status has been succesfully updated</response>
 		/// <response code="400">Provided delivery Id was not valid or the package cannot be delivered</response>
-		[HttpPut("{deliveryId}")]
+		[HttpPost("{deliveryId}")]
 		[ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
@@ -444,7 +440,7 @@ namespace CourierCompanyApi.Controllers
 		/// </summary>
 		/// <response code="200">Delivery status has been succesfully updated</response>
 		/// <response code="400">Provided delivery Id was not valid or the package cannot be droped</response>
-		[HttpPut("{deliveryId}")]
+		[HttpPost("{deliveryId}")]
 		[ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]

@@ -1,4 +1,4 @@
-﻿@* @model List<Delivery>
+﻿@model List<DeliveryDto>
 
 <div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
@@ -24,9 +24,6 @@
             <thead>
                 <tr>
                     <th>
-                        @Html.ActionLink("Id", "Index", new { sortOrder = ViewBag.NameSortParm })
-                    </th>
-                    <th>
                         @Html.ActionLink("Delivery Date", "Index", new { sortOrder = ViewBag.DateSortParm })
                     </th>
                     <th></th>
@@ -36,18 +33,12 @@
                 @foreach (var obj in Model)
                 {
                     <tr>
-                        <td>@obj.Id</td>
-                        <td>
-                            <div class="w-40 btn-group" role="group">
-                                <a asp-controller="Delivery" asp-action="DeliveryStatus" asp-route-id="@obj.Id" class="btn btn-primary mx-2">
-                                    <i class="bi bi-pencil-square"></i> Delivery Status
-                                </a>
-                            </div>
-                        </td>
+                        <td>DeliveryDate: @obj.deliveryDate.ToString()</td>
+                        <td>DeliveryStatus: @obj.deliveryStatus</td>
                     </tr>
                 }
             </tbody>
         </table>
 
     </div>
-</div> *@
+</div> 
