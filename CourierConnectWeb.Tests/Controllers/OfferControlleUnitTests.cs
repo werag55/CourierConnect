@@ -65,7 +65,7 @@ namespace CourierConnectWeb.Tests.Controllers
 
             var result = _offerController.Index(inquiryId);
 
-            result.Should().BeOfType<NotFoundResult>();
+            result.Should().BeOfType<NotFoundResult>(); 
         }
     }
 }
