@@ -7,6 +7,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -20,44 +21,85 @@ namespace CourierConnectWeb.Tests.Controllers
     public class InquiryControllerUnitTests
     {
         private IUnitOfWork _unitOfWork;
-        private Mock<ApplicationDbContext> _context;
-        private UserManager<IdentityUser> _userManager; // static so we cant test it!
+        private UserManager<IdentityUser> _userManager;
 
-        private InquiryController _inquiryController;
+
+        private async Task<ApplicationDbContext> GetDbContext()
+        {
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+            var databaseContext = new ApplicationDbContext(options);
+            databaseContext.Database.EnsureCreated();
+            if (await databaseContext.Inquiries.CountAsync() <= 0)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    databaseContext.Inquiries.Add(
+                    new CourierConnect.Models.Inquiry()
+                    {
+                        Id = i + 1,
+                        creationDate = DateTime.Now,
+                        pickupDate = DateTime.Now,
+                        deliveryDate = DateTime.Now,
+                        isCompany = false,
+                        isPriority = false,
+                        weekendDelivery = true,
+                        sourceAddressId = i + 1,
+                        sourceAddress = new Address()
+                        {
+                            Id = i + 1,
+                            city = "Warszawa",
+                            postcode = "00000",
+                            streetName = "Wolska",
+
+                        },
+                        destinationAddressId = i + 1,
+                        destinationAddress = new Address()
+                        {
+                            Id = i + 1,
+                            city = "Warszawa",
+                            postcode = "00001",
+                            streetName = "Woloska",
+                        },
+                        packageId = i + 1,
+                        package = new Package()
+                        {
+                            Id= i + 1,
+                            dimensionsUnit = "m",
+                            weightUnit = "kg",
+                        },
+                    }
+                    ) ;
+                    await databaseContext.SaveChangesAsync();
+                }
+            }
+            return databaseContext;
+        }
+
         public InquiryControllerUnitTests() 
         {
             _unitOfWork = A.Fake<IUnitOfWork>();
-            _context = new Mock<ApplicationDbContext>();
             _userManager = A.Fake<UserManager<IdentityUser>>();
-
-            //SUT
-            _inquiryController = new InquiryController(_unitOfWork, _userManager, CreateMockedDbContext());
-        }
-
-        private ApplicationDbContext CreateMockedDbContext()
-        {
-            var objInquiryList = A.Fake<List<Inquiry>>();
-            var mockDbSet = new Mock<DbSet<Inquiry>>();
-            mockDbSet.As<IQueryable<Inquiry>>().Setup(m => m.Provider).Returns(objInquiryList.AsQueryable().Provider);
-            mockDbSet.As<IQueryable<Inquiry>>().Setup(m => m.Expression).Returns(objInquiryList.AsQueryable().Expression);
-            mockDbSet.As<IQueryable<Inquiry>>().Setup(m => m.ElementType).Returns(objInquiryList.AsQueryable().ElementType);
-            mockDbSet.As<IQueryable<Inquiry>>().Setup(m => m.GetEnumerator()).Returns(() => objInquiryList.GetEnumerator());
-            // Set up the context mock to return the mock DbSet when Inquiries property is accessed
-            _context.Setup(c => c.Inquiries).Returns(new Mock<DbSet<Inquiry>>().Object);
-
-            // Return the mock context
-            return _context.Object;
         }
 
         [Fact]
-        public void InquiryController_Index_ReturnsSuccess()
+        public async void InquiryController_Index_ReturnsSuccess()
         {
-            var objInquiryList = A.Fake<List<Inquiry>>();
-            A.CallTo(() => _unitOfWork.Inquiry.GetAll(A<string?>.Ignored)).Returns(objInquiryList.ToList());
+            var dbContext = await GetDbContext();
+            dbContext.Inquiries.AsNoTracking();
+            var inquiryController = new InquiryController(_unitOfWork, _userManager, dbContext);
 
-            var result = _inquiryController.Index();
 
-            result.Should().BeOfType<Task<IActionResult>>();
+            var objInquiryList = A.Fake<IEnumerable<Inquiry>>();
+            A.CallTo(() => _unitOfWork.Inquiry.GetAll(
+                A<string?>.Ignored
+                )).Returns(objInquiryList.ToList());
+
+            var result = inquiryController.Index();
+
+            result.Should().BeOfType<ViewResult>()
+              .Which.Model.Should().BeEquivalentTo(objInquiryList);
         }
     }
 }

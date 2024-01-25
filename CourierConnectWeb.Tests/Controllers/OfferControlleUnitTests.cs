@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace CourierConnectWeb.Tests.Controllers
 {
-    public class OfferControllerTests
+    public class OfferControlleUnitTests
     {
         private readonly OfferController _offerController;
 
@@ -26,7 +26,7 @@ namespace CourierConnectWeb.Tests.Controllers
         private readonly IOfferService _offerService;
         private readonly IMapper _mapper;
 
-        public OfferControllerTests()
+        public OfferControlleUnitTests()
         {
             _unitOfWork = A.Fake<IUnitOfWork>();
             _offerService = A.Fake<IOfferService>();
