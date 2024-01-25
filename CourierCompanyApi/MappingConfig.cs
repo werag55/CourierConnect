@@ -37,6 +37,7 @@ namespace CourierCompanyApi
             CreateMap<Delivery, DeliveryDto>();
             CreateMap<Delivery, DeliveryDto>().ReverseMap();
             //CreateMap<Offer, OfferCreateDto>().ReverseMap();
+
         }
     }
 }
