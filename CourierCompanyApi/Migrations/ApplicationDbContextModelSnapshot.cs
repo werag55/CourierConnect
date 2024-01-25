@@ -34,7 +34,7 @@ namespace CourierCompanyApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("flatNumber")
+                    b.Property<int?>("flatNumber")
                         .HasColumnType("int")
                         .HasColumnName("flatNumber")
                         .HasAnnotation("DisplayName", "Flat number");
@@ -235,9 +235,8 @@ namespace CourierCompanyApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("dimensionsUnit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<int>("dimensionsUnit")
+                        .HasColumnType("int")
                         .HasColumnName("dimensionsUnit")
                         .HasAnnotation("DisplayName", "Unit of package dimensions");
 
@@ -256,9 +255,8 @@ namespace CourierCompanyApi.Migrations
                         .HasColumnName("weight")
                         .HasAnnotation("DisplayName", "Package weight");
 
-                    b.Property<string>("weightUnit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<int>("weightUnit")
+                        .HasColumnType("int")
                         .HasColumnName("weightUnit")
                         .HasAnnotation("DisplayName", "Unit of package weight");
 
