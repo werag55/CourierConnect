@@ -59,53 +59,79 @@ namespace CourierConnectWeb.Services.Currier
 
         public async Task<T> GetRequestAsync<T>(RequestSendDto requestSendDto)
         {
-            throw new NotImplementedException();
-            //var client = _clientFactory.CreateClient();
+            var client = _clientFactory.CreateClient();
 
-            //string token = await GetTokenAsync();
-            //CurrierInquiryDto currierInquiryDto = _mapper.Map<CurrierInquiryDto>(inquiryDto);
+            string token = await GetTokenAsync();
+            CurrierRequestSendDto currierRequestSendDto = _mapper.Map<CurrierRequestSendDto>(requestSendDto);
 
-            //HttpRequestMessage message = new HttpRequestMessage();
-            //message.RequestUri = new Uri(apiUrl + "/Inquires");
-            //message.Content = new StringContent(JsonConvert.SerializeObject(currierInquiryDto),
-            //            Encoding.UTF8, "application/json");
-            //message.Method = HttpMethod.Post;
-            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            HttpRequestMessage message = new HttpRequestMessage();
+            message.RequestUri = new Uri(apiUrl + "/Offers");
+            message.Content = new StringContent(JsonConvert.SerializeObject(currierRequestSendDto),
+                        Encoding.UTF8, "application/json");
+            message.Method = HttpMethod.Post;
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            //HttpResponseMessage apiResponse = null;
-            //apiResponse = await client.SendAsync(message);
-            //apiResponse.EnsureSuccessStatusCode();
+            HttpResponseMessage apiResponse = null;
+            apiResponse = await client.SendAsync(message);
 
-            //OfferDto offerDto = null;
-            //if (apiResponse.StatusCode == System.Net.HttpStatusCode.OK)
-            //{
-            //    var apiContent = await apiResponse.Content.ReadAsStringAsync();
-            //    CurrierOfferDto currierOfferDto = JsonConvert.DeserializeObject<CurrierOfferDto>(apiContent);
-            //    offerDto = _mapper.Map<OfferDto>(currierOfferDto);
-            //    offerDto.companyId = _serviceId;
-            //}
+            RequestResponseDto requestResponseDto = null;
+            if (apiResponse.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var apiContent = await apiResponse.Content.ReadAsStringAsync();
+                CurrierRequestResponseDto currierRequestResponseDto = JsonConvert.DeserializeObject<CurrierRequestResponseDto>(apiContent);
+                requestResponseDto = _mapper.Map<RequestResponseDto>(currierRequestResponseDto);
+                //requestResponseDto.companyId = _serviceId;
+            }
 
-            //APIResponse APIResponse = new APIResponse
-            //{
-            //    StatusCode = apiResponse.StatusCode,
-            //    IsSuccess = apiResponse.StatusCode == System.Net.HttpStatusCode.OK,
-            //    Result = offerDto
-            //};
+            APIResponse APIResponse = new APIResponse
+            {
+                StatusCode = apiResponse.StatusCode,
+                IsSuccess = apiResponse.StatusCode == System.Net.HttpStatusCode.OK,
+                Result = requestResponseDto
+            };
 
-            //var res = JsonConvert.SerializeObject(APIResponse);
-            //return JsonConvert.DeserializeObject<T>(res);
+            var res = JsonConvert.SerializeObject(APIResponse);
+            return JsonConvert.DeserializeObject<T>(res);
         }
-        Task<T> GetRequestStatusAsync<T>(string companyRequestId)
+        public async Task<T> GetRequestStatusAsync<T>(string companyRequestId)
+        {
+            var client = _clientFactory.CreateClient();
+
+            string token = await GetTokenAsync();
+
+            HttpRequestMessage message = new HttpRequestMessage();
+            message.RequestUri = new Uri(apiUrl + $"/offer/request/{companyRequestId}/status");
+            message.Method = HttpMethod.Get;
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            HttpResponseMessage apiResponse = null;
+            apiResponse = await client.SendAsync(message);
+
+            RequestStatusDto requestStatusDto = null;
+            if (apiResponse.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var apiContent = await apiResponse.Content.ReadAsStringAsync();
+                CurrierRequestStatusDto currierRequestStatusDto = JsonConvert.DeserializeObject<CurrierRequestStatusDto>(apiContent);
+                requestStatusDto = _mapper.Map<RequestStatusDto>(currierRequestStatusDto);
+            }
+
+            APIResponse APIResponse = new APIResponse
+            {
+                StatusCode = apiResponse.StatusCode,
+                IsSuccess = apiResponse.StatusCode == System.Net.HttpStatusCode.OK,
+                Result = requestStatusDto
+            };
+
+            var res = JsonConvert.SerializeObject(APIResponse);
+            return JsonConvert.DeserializeObject<T>(res);
+        }
+
+
+        public async Task<T> AcceptRequestAsync<T>(string companyRequestId)
         {
             throw new NotImplementedException();
         }
-
-
-        Task<T> AcceptRequestAsync<T>(string companyRequestId)
-        {
-            throw new NotImplementedException();
-        }
-        Task<T> RejectRequestAsync<T>(string companyRequestId)
+        public async Task<T> RejectRequestAsync<T>(string companyRequestId)
         {
             throw new NotImplementedException();
         }

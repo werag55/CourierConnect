@@ -2,6 +2,7 @@
 using CourierConnect.Models;
 using CourierConnect.Models.Dto;
 using CourierConnect.Models.Dto.Currier;
+using CourierConnectWeb.Services.Currier;
 
 namespace CourierConnect
 {
@@ -99,6 +100,146 @@ namespace CourierConnect
                 .ForMember(dest => dest.currency, opt => opt.MapFrom(src => Enum.Parse<Currency>(src.currency)))
                 .ForMember(dest => dest.expirationDate, opt => opt.MapFrom(src => src.expiringAt))
                 .ForMember(dest => dest.creationDate, opt => opt.MapFrom(src => DateTime.Now));
+
+            CreateMap<CurrierRequestSendDto, RequestSendDto>()
+                .ForMember(dest => dest.companyOfferId, opt => opt.MapFrom(src => src.inquiryId))
+                .ForPath(dest => dest.personalData.name, opt => opt.MapFrom(src => src.name))
+                .ForPath(dest => dest.personalData.address, opt => opt.MapFrom(src => src.address))
+                .ForPath(dest => dest.personalData.email, opt => opt.MapFrom(src => src.email));
+
+            CreateMap<RequestSendDto, CurrierRequestSendDto>()
+                .ForMember(dest => dest.inquiryId, opt => opt.MapFrom(src => src.companyOfferId))
+                .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.personalData.name))
+                .ForMember(dest => dest.email, opt => opt.MapFrom(src => src.personalData.email))
+                .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.personalData.address));
+
+            CreateMap<CurrierRequestResponseDto, RequestResponseDto>()
+            .ForMember(dest => dest.companyRequestId, opt => opt.MapFrom(src => src.offerRequestId))
+            .ForMember(dest => dest.decisionDeadline, opt => opt.MapFrom(src => src.validTo));
+
+            CreateMap<RequestResponseDto, CurrierRequestResponseDto>()
+                .ForMember(dest => dest.offerRequestId, opt => opt.MapFrom(src => src.companyRequestId))
+                .ForMember(dest => dest.validTo, opt => opt.MapFrom(src => src.decisionDeadline));
+
+            CreateMap<CurrierRequestStatusDto, RequestStatusDto>();
+            CreateMap<CurrierRequestStatusDto, RequestStatusDto>().ReverseMap();
+
+            CreateMap<CurrierRequestStatusDto, RequestAcceptDto>()
+                .ForMember(dest => dest.requestStatus, opt => opt.MapFrom(src => RequestStatus.Accepted))
+                .ForMember(dest => dest.companyDeliveryId, opt => opt.MapFrom(src => src.offerId));
+
+            CreateMap<RequestAcceptDto, CurrierRequestStatusDto>()
+                .ForMember(dest => dest.offerId, opt => opt.MapFrom(src => src.companyDeliveryId));
+
+            CreateMap<CurrierDeliveryDto, DeliveryDto>()
+                .ForMember(dest => dest.companyDeliveryId, opt => opt.MapFrom(src => src.offerId))
+                .ForMember(dest => dest.courier, opt => opt.MapFrom(src => new CourierDto
+                {
+                    name = string.Empty,
+                    surname = string.Empty
+                }))
+                .ForMember(dest => dest.request, opt => opt.MapFrom(src => new RequestDto
+                {
+                    offer = new OfferDto
+                    {
+                        companyOfferId = src.offerId,
+                        expirationDate = src.validTo,
+                        creationDate = src.inquireDate,
+                        price = (decimal)src.totalPrice,
+                        taxes = 0,
+                        fees = 0,
+                        currency = MapCurrency(src.currency),
+                        inquiry = new InquiryDto
+                        {
+                            pickupDate = src.pickupDate,
+                            deliveryDate = src.deliveryDate,
+                            isPriority = src.priority == "High",
+                            weekendDelivery = src.deliveryInWeekend,
+                            isCompany = false,
+                            sourceAddress = new AddressDto
+                            {
+                                streetName = src.source.street,
+                                houseNumber = stringIntConverter(src.source.houseNumber),
+                                flatNumber = stringIntConverter(src.source.apartmentNumber),
+                                postcode = src.source.zipCode,
+                                city = src.source.city
+                            },
+                            destinationAddress = new AddressDto
+                            {
+                                streetName = src.destination.street,
+                                houseNumber = stringIntConverter(src.destination.houseNumber),
+                                flatNumber = stringIntConverter(src.destination.apartmentNumber),
+                                postcode = src.destination.zipCode,
+                                city = src.destination.city
+                            },
+                            package = new PackageDto
+                            {
+                                width = src.dimensions.width,
+                                height = src.dimensions.height,
+                                length = src.dimensions.length,
+                                dimensionsUnit = src.dimensions.dimensionUnit == "Inches" ? DimensionUnit.Inches : DimensionUnit.Meters,
+                                weight = src.weight,
+                                weightUnit = src.weightUnit == "Pounds" ? WeightUnit.Pounds : WeightUnit.Kilograms
+                            }
+                        }
+                    },
+                    requestStatus = RequestStatus.Accepted,
+                    personalData = new PersonalDataDto
+                    {
+                        name = src.buyerName ?? string.Empty,
+                        surname = string.Empty,
+                        companyName = string.Empty,
+                        address = new AddressDto
+                        {
+                            streetName = src.buyerAddress.street,
+                            houseNumber = stringIntConverter(src.buyerAddress.houseNumber),
+                            flatNumber = stringIntConverter(src.buyerAddress.apartmentNumber),
+                            postcode = src.buyerAddress.zipCode,
+                            city = src.buyerAddress.city
+                        },
+                        email = string.Empty
+                    },
+                    rejectionReason = null
+                }))
+                .ForMember(dest => dest.cancelationDeadline, opt => opt.MapFrom(src => src.validTo))
+                .ForMember(dest => dest.pickUpDate, opt => opt.MapFrom(src => src.pickupDate))
+                .ForMember(dest => dest.deliveryDate, opt => opt.MapFrom(src => src.deliveryDate))
+                .ForMember(dest => dest.deliveryStatus, opt => opt.MapFrom(src => MapDeliveryStatus(src.offerStatus)))
+                .ForMember(dest => dest.reason, opt => opt.Ignore()); 
+        }
+
+        private static int stringIntConverter(string s)
+        {
+            return int.TryParse(s, out var result) ? result : 0;
+        }
+
+        private static Currency MapCurrency(string status)
+        {
+            return status switch
+            {
+                "Pln" => Currency.PLN,
+                "PLN" => Currency.PLN,
+                "USD" => Currency.PLN,
+                "Usd" => Currency.PLN,
+                "EUR" => Currency.PLN,
+                "Eur" => Currency.PLN,
+                "GBP" => Currency.PLN,
+                "Gbp" => Currency.PLN,
+                _ => Currency.PLN 
+            };
+        }
+
+        private static DeliveryStatus MapDeliveryStatus(string status)
+        {
+            return status switch
+            {
+                "Pending" => DeliveryStatus.Proccessing,
+                "Accepted" => DeliveryStatus.PickedUp,
+                "Delivered" => DeliveryStatus.Delivered,
+                "CannotDeliver" => DeliveryStatus.CannotDeliver,
+                "Cancelled" => DeliveryStatus.Cancelled,
+                _ => DeliveryStatus.Proccessing // Domyślna wartość
+            };
         }
 
         public class StringNullableIntConverter : IValueConverter<string, int?>

@@ -419,7 +419,7 @@ namespace CourierCompanyApi.Controllers
 					return BadRequest(_response);
 				}
 
-				delivery.deliveryStatus = DeliveryStatus.Deliverd;
+				delivery.deliveryStatus = DeliveryStatus.Delivered;
 				delivery.deliveryDate = DateTime.Now;
 				await _unitOfWork.Delivery.UpdateAsync(delivery);
 				_response.StatusCode = HttpStatusCode.OK;
@@ -460,7 +460,7 @@ namespace CourierCompanyApi.Controllers
 					return BadRequest(_response);
 				}
 
-				if (delivery.deliveryStatus == DeliveryStatus.Deliverd)
+				if (delivery.deliveryStatus == DeliveryStatus.Delivered)
 				{
 					_response.IsSuccess = false;
 					_response.ErrorMessages

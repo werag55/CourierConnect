@@ -9,7 +9,6 @@ namespace CourierConnect.Models.Dto
 	public class RequestResponseDto
 	{
 		public string companyRequestId { get; set; }
-		public bool isReady { get; set; }
 		public DateTime decisionDeadline { get; set; }
 
 	}

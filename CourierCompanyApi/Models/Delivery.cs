@@ -26,7 +26,7 @@ namespace CourierCompanyApi.Models
     {
         Proccessing,
         PickedUp,
-        Deliverd,
+        Delivered,
         CannotDeliver,
         Cancelled
     }

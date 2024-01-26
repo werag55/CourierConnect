@@ -20,12 +20,13 @@ namespace CourierConnectWeb.Controllers
         //private readonly IRequestService _requestService;
         private List<IServiceFactory> _serviceFactories = new List<IServiceFactory>();
         private readonly IMapper _mapper;
-		public RequestController(IUnitOfWork unitOfWork, /*IRequestService requestService,*/ OurServiceFactory ourServiceFactory,
+		public RequestController(IUnitOfWork unitOfWork, /*IRequestService requestService,*/ OurServiceFactory ourServiceFactory, CurrierServiceFactory currierServiceFactory,
             IMapper mapper, UserManager<IdentityUser> userManager)
 		{
 			_unitOfWork = unitOfWork;
             //_requestService = requestService;
             _serviceFactories.Add(ourServiceFactory);
+            _serviceFactories.Add(currierServiceFactory);
             _mapper = mapper;
 			_userManager = userManager;
 		}

@@ -20,7 +20,7 @@ namespace CourierConnect.Models
     {
         Proccessing,
         PickedUp,
-        Deliverd,
+        Delivered,
         CannotDeliver,
         Cancelled
     }

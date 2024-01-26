@@ -19,12 +19,10 @@ namespace CourierConnectWeb.Services.Factory
         }
         public IDeliveryService createDeliveryService()
         {
-            throw new NotImplementedException();
-            //return new CurrierDeliveryService(_httpClient, _configuration, _mapper, serviceId);
+            return new CurrierDeliveryService(_httpClient, _configuration, _mapper, serviceId);
         }
         public IOfferService createOfferService()
         {
-            //throw new NotImplementedException();
             return new CurrierOfferService(_httpClient, _configuration, _mapper, serviceId);
         }
         public IRequestService createRequestService()
