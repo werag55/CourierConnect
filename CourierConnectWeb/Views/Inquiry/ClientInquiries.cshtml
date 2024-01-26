@@ -24,6 +24,9 @@
                 <tr>
                     <th>Pickup date</th>
                     <th>Delivery date</th>
+                    <th>Priority</th>
+                    <th>Weekend delivery</th>
+                    <th>Company</th>
                     <th>Source address</th>
                     <th>Delivery address</th>
                     <th>Package details</th>
@@ -37,6 +40,36 @@
                     <tr>
                         <td>@obj.Inquiry.pickupDate.Date</td>
                         <td>@obj.Inquiry.deliveryDate.Date</td>
+                        <td>
+                            @if (obj.Inquiry.isPriority)
+                            {
+                                <text>Yes</text>
+                            }
+                            else
+                            {
+                                <text>No</text>
+                            }
+                        </td>
+                        <td>
+                            @if (obj.Inquiry.weekendDelivery)
+                            {
+                                <text>Yes</text>
+                            }
+                            else
+                            {
+                                <text>No</text>
+                            }
+                        </td>
+                        <td>
+                            @if (obj.Inquiry.isCompany)
+                            {
+                                <text>Yes</text>
+                            }
+                            else
+                            {
+                                <text>No</text>
+                            }
+                        </td>
                         <td>@obj.Inquiry.sourceAddress.ToString()</td>
                         <td>@obj.Inquiry.destinationAddress.ToString()</td>
                         <td>@obj.Inquiry.package.ToString()</td>
@@ -44,7 +77,7 @@
                             <div class="w-75 btn-group" role="group">
                                 @if (obj.hasDelivery)
                                 {
-                                     <a asp-controller="Category" asp-action="Edit" asp-route-id="@obj.Inquiry.Id" class="btn btn-primary mx-2">
+                                     <a asp-controller="Delivery" asp-action="Details" asp-route-id="@obj.Inquiry.Id" class="btn btn-primary mx-2">
                                         <i class="bi bi-pencil-square"></i> View delivery
                                     </a>
                                 }

@@ -22,6 +22,6 @@ namespace CourierConnect.Models
         PickedUp,
         Delivered,
         CannotDeliver,
-        Cancelled
+        Canceled
     }
 }

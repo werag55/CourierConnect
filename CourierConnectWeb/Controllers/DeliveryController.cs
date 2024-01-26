@@ -25,7 +25,7 @@ namespace CourierConnectWeb.Controllers
         {
             _unitOfWork = unitOfWork;
             //_deliveryService = deliveryService;
-            //_serviceFactories.Add(ourServiceFactory);
+            _serviceFactories.Add(ourServiceFactory);
             _serviceFactories.Add(currierServiceFactory);
             //_requestService = requestService;
             _userManager = userManager;
@@ -100,7 +100,7 @@ namespace CourierConnectWeb.Controllers
                 }
 			}
 
-            List<DeliveryDto> deliveriesDto = new List<DeliveryDto>();
+            List<DeliveryVM> deliveriesDto = new List<DeliveryVM>();
 
 			var id = _userManager.GetUserId(User);
 			var deliveries = _unitOfWork.Delivery.FindAll(u => u.request.offer.inquiry.clientId == id, includeProperties:
@@ -117,7 +117,12 @@ namespace CourierConnectWeb.Controllers
                     if (response != null && response.IsSuccess)
                     {
                         DeliveryDto deliveryDto = JsonConvert.DeserializeObject<DeliveryDto>(Convert.ToString(response.Result));
-                        deliveriesDto.Add(deliveryDto);
+                        DeliveryVM deliveryVM = new DeliveryVM
+                        {
+                            delivery = delivery,
+                            deliveryDto = deliveryDto
+                        };
+                        deliveriesDto.Add(deliveryVM);
                     }
                 }
 
@@ -161,17 +166,86 @@ namespace CourierConnectWeb.Controllers
             if (delivery == null)
                 return NotFound();
 
-            IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == delivery.request.offer.companyId).FirstOrDefault();
+            IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == delivery./*request.offer.*/companyId).FirstOrDefault();
             var deliveryService = serviceFactory.createDeliveryService();
 
             var response = await deliveryService.GetDeliveryAsync<APIResponse>(delivery.companyDeliveryId);
             if (response != null && response.IsSuccess)
             {
                 DeliveryDto deliveryDto = JsonConvert.DeserializeObject<DeliveryDto>(Convert.ToString(response.Result));
-                return View(deliveryDto);
+                DeliveryVM deliveryVM = new DeliveryVM
+                {
+                    delivery = delivery,
+                    deliveryDto = deliveryDto
+                };
+                return View(deliveryVM);
             }
             return NotFound();
+        }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            Delivery delivery = _unitOfWork.Delivery.Get(u => u.request.offer.inquiryId == id);
+            if (delivery == null)
+                return NotFound();
+
+            return RedirectToRoute(new
+            {
+                controller = "Delivery",
+                action = "Index",
+                id = delivery.Id
+            });
+        }
+
+        [HttpGet]
+        public IActionResult Add()
+		{
+			return View();
+		}
+
+        [HttpPost]
+        public IActionResult Add(string id)
+        {
+			Delivery delivery = _unitOfWork.Delivery.Get(u => u.companyDeliveryId == id,
+                includeProperties:"request,request.offer,request.offer.inquiry");
+
+            if (delivery != null)
+            {
+                var clientId = _userManager.GetUserId(User);
+                delivery.request.offer.inquiry.clientId = clientId;
+                _unitOfWork.Delivery.Update(delivery);
+                _unitOfWork.Save();
+
+				TempData["SuccessMessage"] = "Delivery added successfully.";
+			}
+			else
+			{
+				TempData["ErrorMessage"] = "Failed to add delivery. Delivery not found.";
+			}
+
+			return RedirectToAction("IndexAll");
+		}
+
+        public async Task<IActionResult> Cancel(int id)
+        {
+            Delivery delivery = _unitOfWork.Delivery.Get(u => u.Id == id);
+            if (delivery == null)
+                return NotFound();
+
+            IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == delivery./*request.offer.*/companyId).FirstOrDefault();
+            var deliveryService = serviceFactory.createDeliveryService();
+
+            var response = await deliveryService.CancelDeliveryAsync<APIResponse>(delivery.companyDeliveryId);
+            if (response != null && response.IsSuccess)
+            {
+                TempData["SuccessMessage"] = "Delivery canceled successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to cancel delivery. Try again.";
+            }
+
+            return RedirectToAction("IndexAll");
         }
     }
 }

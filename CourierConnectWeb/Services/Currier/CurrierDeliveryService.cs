@@ -123,7 +123,26 @@ namespace CourierConnectWeb.Services.Currier
         }
         public async Task<T> CancelDeliveryAsync<T>(string companyDeliveryId)
         {
-            throw new NotImplementedException();
+            var client = _clientFactory.CreateClient();
+
+            string token = await GetTokenAsync();
+
+            HttpRequestMessage message = new HttpRequestMessage();
+            message.RequestUri = new Uri(apiUrl + $"/offer/{companyDeliveryId}/cancel");
+            message.Method = HttpMethod.Delete;
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            HttpResponseMessage apiResponse = null;
+            apiResponse = await client.SendAsync(message);
+
+            APIResponse APIResponse = new APIResponse
+            {
+                StatusCode = apiResponse.StatusCode,
+                IsSuccess = apiResponse.StatusCode == System.Net.HttpStatusCode.OK,
+            };
+
+            var res = JsonConvert.SerializeObject(APIResponse);
+            return JsonConvert.DeserializeObject<T>(res);
         }
 
         // Office worker:

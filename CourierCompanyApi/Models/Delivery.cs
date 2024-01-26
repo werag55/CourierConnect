@@ -28,6 +28,6 @@ namespace CourierCompanyApi.Models
         PickedUp,
         Delivered,
         CannotDeliver,
-        Cancelled
+        Canceled
     }
 }

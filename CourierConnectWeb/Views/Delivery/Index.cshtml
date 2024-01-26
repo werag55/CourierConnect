@@ -1,15 +1,14 @@
-﻿@model DeliveryDto
+﻿@model DeliveryVM
 <br />
 <div class="container p-4 border">
 	<div>
-		<h1 class="text-primary">Delivvery details</h1>
+		<h1 class="text-primary">Delivery details</h1>
 	</div>
 
 	<table class="table">
 		<thead>
 			<tr>
 				<th>Courier</th>
-				<th>Request</th>
 				<th>Delivery Status</th>
 				<th>Pickup Date</th>
 				<th>(Try to) Delivery Date</th>
@@ -21,40 +20,130 @@
 		<tbody>
 			<tr>
 				<td>
-					@Model.courier.name
-					@Model.courier.surname
+					@Model.deliveryDto.courier.name
+					@Model.deliveryDto.courier.surname
 				</td>
-				<td>Button</td>
-				<td>@Model.deliveryStatus</td>
+				<td>@Model.deliveryDto.deliveryStatus</td>
+				<td>@Model.deliveryDto.pickUpDate</td>
+				<td>@Model.deliveryDto.deliveryDate</td>
 				<td>
-					@if (@Model.pickUpDate != null)
+					@if (@Model.deliveryDto.reason != null)
 					{
-						@Model.pickUpDate
+						@Model.deliveryDto.reason
 					}
 				</td>
+				<td>@Model.deliveryDto.cancelationDeadline.Date</td>
 				<td>
-					@if (@Model.deliveryDate != null)
+					@if (Model.deliveryDto.cancelationDeadline > DateTime.Now && Model.deliveryDto.deliveryStatus == DeliveryStatus.Proccessing)
 					{
-						@Model.deliveryDate
-					}
-				</td>
-				<td>
-					@if (@Model.reason != null)
-					{
-						@Model.reason
-					}
-				</td>
-				<td>
-					@Model.cancelationDeadline
-				</td>
-				<td>
-					@if (Model.cancelationDeadline > DateTime.Now && Model.deliveryStatus == DeliveryStatus.Proccessing)
-					{
-						<a asp-controller="Delivery" asp-action="Cancel" asp-route-id="@Model.companyDeliveryId" class="btn btn-danger mx-2">
+						<a asp-controller="Delivery" asp-action="Cancel" asp-route-id="@Model.delivery.companyDeliveryId" class="btn btn-danger mx-2">
 							<i class="bi bi-pencil-square"></i> Cancel
 						</a>
 					}
 				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div>
+		<h2 class="text-primary">Personal data</h2>
+	</div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Surname</th>
+				<th>Company name</th>
+				<th>Address</th>
+				<th>Email</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>@Model.deliveryDto.request.personalData.name</td>
+				<td>@Model.deliveryDto.request.personalData.surname</td>
+				<td>@Model.deliveryDto.request.personalData.companyName</td>
+				<td>@Model.deliveryDto.request.personalData.address.ToString()</td>
+				<td>@Model.deliveryDto.request.personalData.email</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div>
+		<h2 class="text-primary">Offer</h2>
+	</div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Price</th>
+				<th>Taxes</th>
+				<th>Fees</th>
+				<th>Currency</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>@Model.deliveryDto.request.offer.price</td>
+				<td>@Model.deliveryDto.request.offer.taxes</td>
+				<td>@Model.deliveryDto.request.offer.fees</td>
+				<td>@Model.deliveryDto.request.offer.currency</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div>
+		<h2 class="text-primary">Inquiry</h2>
+	</div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Pickup date</th>
+				<th>Delivery date</th>
+				<th>Priority</th>
+				<th>Weekend delivery</th>
+				<th>Company</th>
+				<th>Source address</th>
+				<th>Delivery address</th>
+				<th>Package details</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>@Model.deliveryDto.request.offer.inquiry.pickupDate.Date</td>
+				<td>@Model.deliveryDto.request.offer.inquiry.deliveryDate.Date</td>
+				<td>
+					@if (Model.deliveryDto.request.offer.inquiry.isPriority)
+					{
+						<text>Yes</text>
+					}
+					else
+					{
+						<text>No</text>
+					}
+				</td>
+				<td>
+					@if (Model.deliveryDto.request.offer.inquiry.weekendDelivery)
+					{
+						<text>Yes</text>
+					}
+					else
+					{
+						<text>No</text>
+					}
+				</td>
+				<td>
+					@if (Model.deliveryDto.request.offer.inquiry.isCompany)
+					{
+						<text>Yes</text>
+					}
+					else
+					{
+						<text>No</text>
+					}
+				</td>
+				<td>@Model.deliveryDto.request.offer.inquiry.sourceAddress.ToString()</td>
+				<td>@Model.deliveryDto.request.offer.inquiry.destinationAddress.ToString()</td>
+				<td>@Model.deliveryDto.request.offer.inquiry.package.ToString()</td>
 			</tr>
 		</tbody>
 	</table>

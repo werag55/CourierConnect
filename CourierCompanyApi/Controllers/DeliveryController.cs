@@ -225,7 +225,7 @@ namespace CourierCompanyApi.Controllers
 					return BadRequest(_response);
 				}
 
-				delivery.deliveryStatus = DeliveryStatus.Cancelled;
+				delivery.deliveryStatus = DeliveryStatus.Canceled;
                 await _unitOfWork.Delivery.UpdateAsync(delivery);
 				_response.StatusCode = HttpStatusCode.OK;
 				return Ok(_response);

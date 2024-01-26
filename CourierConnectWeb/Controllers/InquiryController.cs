@@ -24,7 +24,7 @@ namespace CourierConnectWeb.Controllers
             _userManager = userManager;
             _context = context;
         }
-        public IActionResult Index()
+        public IActionResult IndexAll()
         {
             List<Inquiry> objInquiryList = _unitOfWork.Inquiry.GetAll().ToList();
             return View(objInquiryList);
@@ -32,13 +32,13 @@ namespace CourierConnectWeb.Controllers
 
         private bool hasDelivery(int inquiryId)
         {
-            var offer = _unitOfWork.Offer.Get(u => u.Id == inquiryId);
+            var offer = _unitOfWork.Offer.Get(u => u.inquiryId == inquiryId);
             if (offer == default)
                 return false;
-            var request = _unitOfWork.Request.Get(u => u.Id == offer.Id);
+            var request = _unitOfWork.Request.Get(u => u.offerId == offer.Id);
             if (request == default)
                 return false;
-            var delivery = _unitOfWork.Delivery.Get(u => u.Id == request.Id);
+            var delivery = _unitOfWork.Delivery.Get(u => u.requestId == request.Id);
             if (delivery == default)
                 return false;
             return true;

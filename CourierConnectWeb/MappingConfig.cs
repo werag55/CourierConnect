@@ -234,10 +234,10 @@ namespace CourierConnect
             return status switch
             {
                 "Pending" => DeliveryStatus.Proccessing,
-                "Accepted" => DeliveryStatus.PickedUp,
+                "Accepted" => DeliveryStatus.Proccessing,
                 "Delivered" => DeliveryStatus.Delivered,
                 "CannotDeliver" => DeliveryStatus.CannotDeliver,
-                "Cancelled" => DeliveryStatus.Cancelled,
+                "Canceled" => DeliveryStatus.Canceled,
                 _ => DeliveryStatus.Proccessing // Domyślna wartość
             };
         }
