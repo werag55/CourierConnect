@@ -40,12 +40,18 @@ builder.Services.AddRazorPages();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
 builder.Services.AddSingleton<OurServiceFactory>();
-builder.Services.AddHttpClient<IOfferService, OfferService>();
-builder.Services.AddScoped<IOfferService, OfferService>();
-builder.Services.AddHttpClient<IDeliveryService, DeliveryService>();
-builder.Services.AddScoped<IDeliveryService, DeliveryService>();
-builder.Services.AddHttpClient<IRequestService, RequestService>();
-builder.Services.AddScoped<IRequestService, RequestService>();
+builder.Services.AddHttpClient<IOfferService>();
+builder.Services.AddHttpClient<IDeliveryService>();
+builder.Services.AddHttpClient<IRequestService>();
+//builder.Services.AddHttpClient<IOfferService, OfferService>();
+//builder.Services.AddScoped<IOfferService, OfferService>();
+//builder.Services.AddHttpClient<IDeliveryService, DeliveryService>();
+//builder.Services.AddScoped<IDeliveryService, DeliveryService>();
+//builder.Services.AddHttpClient<IRequestService, RequestService>();
+//builder.Services.AddScoped<IRequestService, RequestService>();
+
+builder.Services.AddSingleton<CurrierServiceFactory>();
+
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddDistributedMemoryCache();

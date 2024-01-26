@@ -21,23 +21,23 @@ namespace CourierConnectWeb.Controllers
         //private readonly IOfferService _offerService;
         private List<IServiceFactory> _serviceFactories = new List<IServiceFactory>();
         private readonly IMapper _mapper;
-        public OfferController(IUnitOfWork unitOfWork, /*IOfferService offerService,*/ OurServiceFactory ourServiceFactory,
+        public OfferController(IUnitOfWork unitOfWork, /*IOfferService offerService,*/ OurServiceFactory ourServiceFactory, CurrierServiceFactory currierServiceFactory,
             IMapper mapper, UserManager<IdentityUser> userManager)
         {
             _unitOfWork = unitOfWork;
             //_offerService = offerService;
             _serviceFactories.Add(ourServiceFactory);
+            _serviceFactories.Add(currierServiceFactory);
             _mapper = mapper;
             _userManager = userManager;
         }
 
-        private Offer GetOfferToSave(OfferDto offerDto, Inquiry inquiry, int companyId)
+        private Offer GetOfferToSave(OfferDto offerDto, Inquiry inquiry)
         {
             Offer offer = _mapper.Map<Offer>(offerDto);
             offer.inquiry = inquiry;
             offer.inquiryId = inquiry.Id;
             offer.updatedDate = DateTime.Now;
-            offer.companyId = companyId;
             return offer;
         }
 
@@ -47,19 +47,23 @@ namespace CourierConnectWeb.Controllers
             //Inquiry? inquiry = _unitOfWork.Inquiry.GetAll(includeProperties:"sourceAddress,destinationAddress,package").FirstOrDefault();
             Inquiry inquiry = _unitOfWork.Inquiry.Get(u => u.Id == Id, includeProperties: "sourceAddress,destinationAddress,package");
             InquiryDto inquiryDto = _mapper.Map<InquiryDto>(inquiry);
+            List<Task<APIResponse>> tasks = new List<Task<APIResponse>>();
 
             foreach (var serviceFactory in  _serviceFactories)
             {
                 var offerService = serviceFactory.createOfferService();
-                var response = await offerService.GetOfferAsync<APIResponse>(inquiryDto);
+                tasks.Add(offerService.GetOfferAsync<APIResponse>(inquiryDto));
+            }
+
+            var responses = await Task.WhenAll(tasks);
+            foreach (var response in responses)
+            {
                 if (response != null && response.IsSuccess)
                 {
                     OfferDto? offerDto = JsonConvert.DeserializeObject<OfferDto>(Convert.ToString(response.Result));
-                    Offer offer = GetOfferToSave(offerDto, inquiry, serviceFactory.serviceId);
+                    Offer offer = GetOfferToSave(offerDto, inquiry);
                     _unitOfWork.Offer.Add(offer);
                     _unitOfWork.Save();
-
-                    //return View(offer);
                 }
             }
 

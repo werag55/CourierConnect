@@ -17,6 +17,11 @@
                     <label asp-for="deliveryDate" class="ms-2"></label>
                     <span asp-validation-for="deliveryDate" class="text-danger"></span>
                 </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="pickupDate" class="form-control border-0 shadow" />
+                    <label asp-for="pickupDate" class="ms-2"></label>
+                    <span asp-validation-for="pickupDate" class="text-danger"></span>
+                </div>
                 <div>Destination addres</div>
                 <div class="form-floating py-2 col-12">
                     <input asp-for="destinationAddress.streetName" class="form-control border-0 shadow" />

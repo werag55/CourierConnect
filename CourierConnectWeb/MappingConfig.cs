@@ -67,22 +67,38 @@ namespace CourierConnect
                    dimensionUnit = src.package.dimensionsUnit == DimensionUnit.Inches ? "Inches" : "Meters"
                }))
                .ForMember(dest => dest.weight, opt => opt.MapFrom(src => src.package.weight))
-               .ForMember(dest => dest.weightUnit, opt => opt.MapFrom(src => src.package.weightUnit == WeightUnit.Pounds ? "Pounds" : "Kilograms"));
+               .ForMember(dest => dest.weightUnit, opt => opt.MapFrom(src => src.package.weightUnit == WeightUnit.Pounds ? "Pounds" : "Kilograms"))
+               .ForMember(dest => dest.currency, opt => opt.MapFrom(src => "Pln"));
 
             CreateMap<CurrierAddressDto, AddressDto>()
                 .ForMember(dest => dest.streetName, opt => opt.MapFrom(src => src.street))
                 .ForMember(dest => dest.houseNumber, opt => opt.ConvertUsing(new StringIntConverter(), src => src.houseNumber))
-                .ForMember(dest => dest.flatNumber, opt =>  opt.ConvertUsing(new StringNullableIntConverter(), src => src.apartamentNumber))
+                .ForMember(dest => dest.flatNumber, opt =>  opt.ConvertUsing(new StringNullableIntConverter(), src => src.apartmentNumber))
                 .ForMember(dest => dest.postcode, opt => opt.MapFrom(src => src.zipCode))
                 .ForMember(dest => dest.city, opt => opt.MapFrom(src => src.city));
 
             CreateMap<AddressDto, CurrierAddressDto>()
                 .ForMember(dest => dest.street, opt => opt.MapFrom(src => src.streetName))
                 .ForMember(dest => dest.houseNumber, opt => opt.MapFrom(src => src.houseNumber.ToString()))
-                .ForMember(dest => dest.apartamentNumber, opt => opt.MapFrom(src => src.flatNumber.ToString()))
+                .ForMember(dest => dest.apartmentNumber, opt => opt.MapFrom(src => src.flatNumber.ToString()))
                 .ForMember(dest => dest.zipCode, opt => opt.MapFrom(src => src.postcode))
-                .ForMember(dest => dest.city, opt => opt.MapFrom(src => src.city));
+                .ForMember(dest => dest.city, opt => opt.MapFrom(src => src.city))
+                .ForMember(dest => dest.country, opt => opt.MapFrom(src => "Poland"));
 
+            CreateMap<OfferDto, CurrierOfferDto>()
+                .ForMember(dest => dest.inquiryId, opt => opt.MapFrom(src => src.companyOfferId))
+                .ForMember(dest => dest.totalPrice, opt => opt.MapFrom(src => src.price + src.taxes + src.fees))
+                .ForMember(dest => dest.currency, opt => opt.MapFrom(src => src.currency.ToString()))
+                .ForMember(dest => dest.expiringAt, opt => opt.MapFrom(src => src.expirationDate));
+
+            CreateMap<CurrierOfferDto, OfferDto>()
+                .ForMember(dest => dest.companyOfferId, opt => opt.MapFrom(src => src.inquiryId))
+                .ForMember(dest => dest.price, opt => opt.MapFrom(src => src.totalPrice))
+                .ForMember(dest => dest.taxes, opt => opt.MapFrom(src => 0)) 
+                .ForMember(dest => dest.fees, opt => opt.MapFrom(src => 0))  
+                .ForMember(dest => dest.currency, opt => opt.MapFrom(src => Enum.Parse<Currency>(src.currency)))
+                .ForMember(dest => dest.expirationDate, opt => opt.MapFrom(src => src.expiringAt))
+                .ForMember(dest => dest.creationDate, opt => opt.MapFrom(src => DateTime.Now));
         }
 
         public class StringNullableIntConverter : IValueConverter<string, int?>

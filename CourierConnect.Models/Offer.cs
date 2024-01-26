@@ -35,6 +35,7 @@ namespace CourierConnect.Models
     {
         PLN,
         EUR,
-        USD
+        USD,
+        GBP
     }
 }

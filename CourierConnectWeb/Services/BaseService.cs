@@ -7,6 +7,8 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
 
+using System.IO;
+
 namespace CourierConnectWeb.Services
 {
     public class BaseService : IBaseService
@@ -18,11 +20,11 @@ namespace CourierConnectWeb.Services
             this.responseModel = new();
             this.httpClient = httpClient;
         }
-        public async Task<T> SendAsync<T>(APIRequest apiRequest, string? apiKey)
+        public async Task<T> SendAsync<T>(APIRequest apiRequest, string? apiKey = null)
         {
             try
             {
-                var client = httpClient.CreateClient("CourierCompanyAPI");
+                var client = httpClient.CreateClient("CourierConnect");
                 
                 HttpRequestMessage message = new HttpRequestMessage();
                 //message.Headers.Add("Accept", "application/json");

@@ -40,6 +40,7 @@ namespace CourierCompanyApi.Models
     {
         PLN,
         EUR,
-        USD
+        USD,
+        GBP
     }
 }

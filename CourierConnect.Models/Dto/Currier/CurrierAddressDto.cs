@@ -9,7 +9,7 @@ namespace CourierConnect.Models.Dto.Currier
     public class CurrierAddressDto
     {
         public string? houseNumber {  get; set; }
-        public string? apartamentNumber { get; set; }
+        public string? apartmentNumber { get; set; }
         public string? street {  get; set; }
         public string? city { get; set; }
         public string? zipCode { get; set; }

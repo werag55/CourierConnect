@@ -31,8 +31,4 @@
     <ProjectReference Include="..\CourierConnect.Utility\CourierConnect.Utility.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\Currier\" />
-  </ItemGroup>
-
 </Project>

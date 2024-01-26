@@ -9,7 +9,7 @@ namespace CourierConnect.Models.Dto.Currier
     public class CurrierInquiryDto
     {
         public DimensionsDto dimensions {  get; set; }
-        string? currency {  get; set; }
+        public string? currency {  get; set; }
         public float weight { get; set; }
         public string? weightUnit { get; set; }
         public CurrierAddressDto source {  get; set; }
