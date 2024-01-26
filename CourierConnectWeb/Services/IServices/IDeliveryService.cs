@@ -15,7 +15,7 @@ namespace CourierConnectWeb.Services.IServices
 		Task<T> GetAllCourierDeliveryAsync<T>(string courierUserName);
         Task<T> PickUpPackageAsync<T>(string companyDeliveryId);
 		Task<T> DeliverPackageAsync<T>(string companyDeliveryId);
-		Task<T> CannotDeliverPackageAsync<T>(string companyDeliveryId);
+		Task<T> CannotDeliverPackageAsync<T>(string companyDeliveryId, string reason);
 
 	}
 }

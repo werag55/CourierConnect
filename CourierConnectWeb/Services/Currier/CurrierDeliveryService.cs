@@ -164,7 +164,7 @@ namespace CourierConnectWeb.Services.Currier
         {
             throw new NotImplementedException();
         }
-        public async Task<T> CannotDeliverPackageAsync<T>(string companyDeliveryId)
+        public async Task<T> CannotDeliverPackageAsync<T>(string companyDeliveryId, string reason)
         {
             throw new NotImplementedException();
         }

@@ -81,7 +81,7 @@ public class DeliveryService : BaseService, IDeliveryService
 		}, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
 	}
 
-	public async Task<T> CannotDeliverPackageAsync<T>(string companyDeliveryId)
+	public async Task<T> CannotDeliverPackageAsync<T>(string companyDeliveryId, string reason)
 	{
 		return await SendAsync<T>(new APIRequest()
 		{

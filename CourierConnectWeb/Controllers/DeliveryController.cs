@@ -247,5 +247,101 @@ namespace CourierConnectWeb.Controllers
 
             return RedirectToAction("IndexAll");
         }
+
+
+        #region Courier
+
+        //[Authorize(Roles = SD.Role_User_Courier)]
+        public async Task<IActionResult> IndexAllCourier()
+        {
+            string courierUserName = _userManager.GetUserName(User); //= "hryshko.alina@gmail.com";
+
+            IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == 0).FirstOrDefault();
+            var deliveryService = serviceFactory.createDeliveryService();
+
+            var response = await deliveryService.GetAllCourierDeliveryAsync<APIResponse>(courierUserName);
+            if (response != null && response.IsSuccess)
+            {
+                List<DeliveryDto>? offerDto = JsonConvert.DeserializeObject<List<DeliveryDto>>(Convert.ToString(response.Result));
+                return View(offerDto);
+            }
+
+            return View(null);
+        }
+
+        //[Authorize(Roles = SD.Role_User_Courier)]
+        public async Task<IActionResult> PickUp(string id)
+        {
+
+            IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == 0).FirstOrDefault();
+            var deliveryService = serviceFactory.createDeliveryService();
+
+            var response = await deliveryService.PickUpPackageAsync<APIResponse>(id);
+            if (response != null && response.IsSuccess)
+            {
+                TempData["SuccessMessage"] = "Status updated successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to update status. Try again.";
+            }
+
+            return RedirectToAction("IndexAllCourier");
+        }
+
+        //[Authorize(Roles = SD.Role_User_Courier)]
+        public async Task<IActionResult> Deliver(string id)
+        {
+
+            IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == 0).FirstOrDefault();
+            var deliveryService = serviceFactory.createDeliveryService();
+
+            var response = await deliveryService.DeliverPackageAsync<APIResponse>(id);
+            if (response != null && response.IsSuccess)
+            {
+                TempData["SuccessMessage"] = "Status updated successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to update status. Try again.";
+            }
+
+            return RedirectToAction("IndexAllCourier");
+        }
+
+
+        [HttpGet]
+        //[Authorize(Roles = SD.Role_User_Courier)]
+        public IActionResult CannotDeliver(string id)
+        {
+            CannotDeliverVM cannotDeliverVM = new CannotDeliverVM
+            {
+                deliveryId = id
+            };
+            return View(cannotDeliverVM);
+        }
+
+        [HttpPost]
+        //[Authorize(Roles = SD.Role_User_Courier)]
+        public async Task<IActionResult> CannotDeliver(CannotDeliverVM cannotDeliverVM)
+        {
+
+            IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == 0).FirstOrDefault();
+            var deliveryService = serviceFactory.createDeliveryService();
+
+            var response = await deliveryService.CannotDeliverPackageAsync<APIResponse>(cannotDeliverVM.deliveryId, cannotDeliverVM.reason);
+            if (response != null && response.IsSuccess)
+            {
+                TempData["SuccessMessage"] = "Status updated successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to update status. Try again.";
+            }
+
+            return RedirectToAction("IndexAllCourier");
+        }
+
+        #endregion
     }
 }

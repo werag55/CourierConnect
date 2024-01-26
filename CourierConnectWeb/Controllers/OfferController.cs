@@ -92,8 +92,9 @@ namespace CourierConnectWeb.Controllers
         //[Authorize(Roles = SD.Role_User_Worker)]
         public async Task<IActionResult> IndexAll()
         {
-            foreach (var serviceFactory in _serviceFactories)
-            {
+            //foreach (var serviceFactory in _serviceFactories)
+            //{
+                IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == 0).FirstOrDefault();
                 var offerService = serviceFactory.createOfferService();
                 var response = await offerService.GetAllAsync<APIResponse>();
                 if (response != null && response.IsSuccess)
@@ -101,7 +102,7 @@ namespace CourierConnectWeb.Controllers
                     List<OfferDto>? offerDto = JsonConvert.DeserializeObject<List<OfferDto>>(Convert.ToString(response.Result));
                     return View(offerDto);
                 }
-            }
+            //}
             return NotFound();
         }
 

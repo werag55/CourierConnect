@@ -460,11 +460,12 @@ namespace CourierCompanyApi.Controllers
 					return BadRequest(_response);
 				}
 
-				if (delivery.deliveryStatus == DeliveryStatus.Delivered)
+				if (delivery.deliveryStatus == DeliveryStatus.Delivered || delivery.deliveryStatus == DeliveryStatus.CannotDeliver
+					|| delivery.deliveryStatus == DeliveryStatus.Canceled)
 				{
 					_response.IsSuccess = false;
 					_response.ErrorMessages
-						 = new List<string>() { "Due to the current delivery status, the package cannot be delivered (the package was already delivered)" };
+						 = new List<string>() { "Due to the current delivery status, the package cannot be droped" };
 					_response.StatusCode = HttpStatusCode.BadRequest;
 					return BadRequest(_response);
 				}

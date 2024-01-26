@@ -1,0 +1,91 @@
+﻿@model List<DeliveryDto>
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Your deliveries</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success" role="alert">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+        <table id="tblData" class="table table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Requested pickup date</th>
+                    <th>Requested delivery date</th>
+                    <th>Cancelation deadline</th>
+                    <th>Pickup Date</th>
+                    <th>(Try to) Delivery Date</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var obj in Model)
+                {
+                    <tr>
+                        <td>@obj.request.offer.inquiry.pickupDate.Date</td>
+                        <td>@obj.request.offer.inquiry.deliveryDate.Date</td>
+                        <td>@obj.cancelationDeadline.Date</td>
+                        <td>@obj.pickUpDate</td>
+                        <td>@obj.deliveryDate</td>
+                        <td>@obj.reason</td>
+                        <td>@obj.deliveryStatus</td>
+                        <td>
+                            <div class="w-75 btn-group" role="group">
+                                @if (obj.cancelationDeadline < DateTime.Now && @obj.deliveryStatus == DeliveryStatus.Proccessing)
+                                {
+                                    <a asp-controller="Delivery" asp-action="PickUp" asp-route-id="@obj.companyDeliveryId" class="btn btn-primary mx-2">
+                                        <i class="bi bi-pencil-square"></i> Pick up
+                                    </a>
+                                }
+                                @if (@obj.deliveryStatus == DeliveryStatus.PickedUp)
+                                {
+                                    <a asp-controller="Delivery" asp-action="Deliver" asp-route-id="@obj.companyDeliveryId" class="btn btn-primary mx-2">
+                                        <i class="bi bi-pencil-square"></i> Deliver
+                                    </a>
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <div class="w-75 btn-group" role="group">
+                                @if (@obj.deliveryStatus == DeliveryStatus.Proccessing || @obj.deliveryStatus == DeliveryStatus.PickedUp)
+                                {
+                                    <a asp-controller="Delivery" asp-action="CannotDeliver" asp-route-id="@obj.companyDeliveryId" class="btn btn-danger mx-2">
+                                        <i class="bi bi-pencil-square"></i> Cannot deliver
+                                    </a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/product.js"></script>
+}
+
