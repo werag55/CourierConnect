@@ -55,6 +55,7 @@ builder.Services.AddSwaggerGen( c =>
 
 builder.Services.AddScoped<ApiKeyAuthFilter>();
 builder.Services.AddScoped<SpecialApiKeyAuthFilter>();
+builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
