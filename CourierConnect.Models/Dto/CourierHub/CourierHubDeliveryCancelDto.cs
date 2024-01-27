@@ -8,6 +8,6 @@ namespace CourierConnect.Models.Dto.CourierHub
 {
     public class CourierHubDeliveryCancelDto
     {
-        string? code {  get; set; }
+        public string? code {  get; set; }
     }
 }

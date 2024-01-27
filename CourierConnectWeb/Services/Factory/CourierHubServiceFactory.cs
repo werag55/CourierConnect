@@ -1,25 +1,27 @@
 ﻿using AutoMapper;
 using CourierConnectWeb.Services.CourierHub;
 using CourierConnectWeb.Services.IServices;
+using CourierConnect.DataAccess.Repository.IRepository;
 
 namespace CourierConnectWeb.Services.Factory
 {
     public class CourierHubServiceFactory : IServiceFactory
     {
-        public int serviceId { get; } = 1;
+        public int serviceId { get; } = 2;
         public IHttpClientFactory _httpClient { get; set; }
-
+        private IUnitOfWork _unitOfWork;
         private IConfiguration _configuration;
         private IMapper _mapper;
-        public CourierHubServiceFactory(IHttpClientFactory httpClient, IConfiguration configuration, IMapper mapper)
+        public CourierHubServiceFactory(IUnitOfWork unitOfWork, IHttpClientFactory httpClient, IConfiguration configuration, IMapper mapper)
         {
             _configuration = configuration;
             _httpClient = httpClient;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
         public IDeliveryService createDeliveryService()
         {
-            return new CourierHubDeliveryService(_httpClient, _configuration, _mapper, serviceId);
+            return new CourierHubDeliveryService(_unitOfWork, _httpClient, _configuration, _mapper, serviceId);
         }
         public IOfferService createOfferService()
         {

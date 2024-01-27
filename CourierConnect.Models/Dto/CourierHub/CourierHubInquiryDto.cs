@@ -14,6 +14,8 @@ namespace CourierConnect.Models.Dto.CourierHub
         public int mass { get; set; }
         public CourierHubAddressDto sourceAddress { get; set; }
         public CourierHubAddressDto destinationAddress { get; set; }
+        public DateTime sourceDate { get; set; }
+        public DateTime destinationDate { get; set; }
         public DateTime datetime { get; set; }
         public bool isCompany { get; set; }
         public bool isWeekend { get; set; }

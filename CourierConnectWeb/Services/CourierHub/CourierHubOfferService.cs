@@ -7,10 +7,12 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text;
+using CourierConnect.Models;
+using CourierConnect.Models.Dto.Currier;
 
 namespace CourierConnectWeb.Services.CourierHub
 {
-    public class CourierHubOfferService : IOfferService
+    public class CourierHubOfferService : CourierHubBaseService, IOfferService
     {
         private readonly IConfiguration _configuration;
         private readonly IHttpClientFactory _clientFactory;
@@ -18,10 +20,10 @@ namespace CourierConnectWeb.Services.CourierHub
         private readonly IMapper _mapper;
         private readonly int _serviceId;
 
-        public CourierHubOfferService(IHttpClientFactory clientFactory, IConfiguration configuration, IMapper mapper, int serviceId)
+        public CourierHubOfferService(IHttpClientFactory clientFactory, IConfiguration configuration, IMapper mapper, int serviceId) : base(clientFactory)
         {
             _clientFactory = clientFactory;
-            apiUrl = configuration.GetValue<string>(SD.CurrierApiUrlSectionName);
+            apiUrl = configuration.GetValue<string>(SD.CourierHubApiUrlSectionName);
             _configuration = configuration;
             _mapper = mapper;
             _serviceId = serviceId;
@@ -34,7 +36,27 @@ namespace CourierConnectWeb.Services.CourierHub
 
         public async Task<T> GetOfferAsync<T>(InquiryDto inquiryDto)
         {
-            
+            CourierHubInquiryDto courierHubInquiryDto = _mapper.Map<CourierHubInquiryDto>(inquiryDto);
+            APIResponse apiResponse = await SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = courierHubInquiryDto,
+                Url = apiUrl + "/api/Inquire",
+            }, _configuration.GetValue<string>(SD.CourierHubApiKeySectionName));
+
+            OfferDto offerDto = null;
+            if (apiResponse.StatusCode == System.Net.HttpStatusCode.Created)
+            {
+                CourierHubOfferDto courierHubOfferDto = JsonConvert.DeserializeObject<CourierHubOfferDto>(Convert.ToString(apiResponse.Result));
+                offerDto = _mapper.Map<OfferDto>(courierHubOfferDto);
+                offerDto.inquiry = inquiryDto;
+                offerDto.companyId = _serviceId;
+            }
+
+            apiResponse.Result = offerDto;
+
+            var res = JsonConvert.SerializeObject(apiResponse);
+            return JsonConvert.DeserializeObject<T>(res);
         }
     }
 }

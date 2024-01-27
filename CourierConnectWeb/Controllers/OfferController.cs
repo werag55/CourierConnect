@@ -22,12 +22,13 @@ namespace CourierConnectWeb.Controllers
         private List<IServiceFactory> _serviceFactories = new List<IServiceFactory>();
         private readonly IMapper _mapper;
         public OfferController(IUnitOfWork unitOfWork, /*IOfferService offerService,*/ OurServiceFactory ourServiceFactory, CurrierServiceFactory currierServiceFactory,
-            IMapper mapper, UserManager<IdentityUser> userManager)
+            CourierHubServiceFactory courierHubServiceFactory, IMapper mapper, UserManager<IdentityUser> userManager)
         {
             _unitOfWork = unitOfWork;
             //_offerService = offerService;
-            _serviceFactories.Add(ourServiceFactory);
-            _serviceFactories.Add(currierServiceFactory);
+            //_serviceFactories.Add(ourServiceFactory);
+            //_serviceFactories.Add(currierServiceFactory);
+            _serviceFactories.Add(courierHubServiceFactory);
             _mapper = mapper;
             _userManager = userManager;
         }

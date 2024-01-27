@@ -21,14 +21,15 @@ namespace CourierConnectWeb.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private List<IServiceFactory> _serviceFactories = new List<IServiceFactory>();
         private readonly IMapper _mapper;
-        public InquiryController(IUnitOfWork unitOfWork, OurServiceFactory ourServiceFactory, CurrierServiceFactory currierServiceFactory,
-            IMapper mapper, UserManager<IdentityUser> userManager, ApplicationDbContext context)
+        public InquiryController(IUnitOfWork unitOfWork, OurServiceFactory ourServiceFactory, CurrierServiceFactory currierServiceFactory, 
+            CourierHubServiceFactory courierHubServiceFactory, IMapper mapper, UserManager<IdentityUser> userManager, ApplicationDbContext context)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _context = context;
-            _serviceFactories.Add(ourServiceFactory);
-            _serviceFactories.Add(currierServiceFactory);
+            //_serviceFactories.Add(ourServiceFactory);
+            //_serviceFactories.Add(currierServiceFactory);
+            _serviceFactories.Add(courierHubServiceFactory);
             _mapper = mapper;
         }
 

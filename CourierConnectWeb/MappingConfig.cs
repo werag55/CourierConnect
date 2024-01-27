@@ -234,14 +234,16 @@ namespace CourierConnect
                 .ForMember(dest => dest.mass, opt => opt.MapFrom(src => src.package.weight))
                 .ForMember(dest => dest.sourceAddress, opt => opt.MapFrom(src => src.sourceAddress))
                 .ForMember(dest => dest.destinationAddress, opt => opt.MapFrom(src => src.destinationAddress))
-                .ForMember(dest => dest.datetime, opt => opt.MapFrom(src => src.pickupDate))
+                .ForMember(dest => dest.sourceDate, opt => opt.MapFrom(src => src.pickupDate))
+                .ForMember(dest => dest.destinationDate, opt => opt.MapFrom(src => src.deliveryDate))
+                .ForMember(dest => dest.datetime, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.isCompany, opt => opt.MapFrom(src => src.isCompany))
                 .ForMember(dest => dest.isWeekend, opt => opt.MapFrom(src => src.weekendDelivery))
                 .ForMember(dest => dest.priority, opt => opt.MapFrom(src => src.isPriority ? PriorityType.High : PriorityType.Low));
 
             CreateMap<CourierHubInquiryDto, InquiryDto>()
-                .ForMember(dest => dest.pickupDate, opt => opt.MapFrom(src => src.datetime))
-                .ForMember(dest => dest.deliveryDate, opt => opt.MapFrom(src => src.datetime)) 
+                .ForMember(dest => dest.pickupDate, opt => opt.MapFrom(src => src.sourceDate))
+                .ForMember(dest => dest.deliveryDate, opt => opt.MapFrom(src => src.destinationDate)) 
                 .ForMember(dest => dest.isPriority, opt => opt.MapFrom(src => src.priority != PriorityType.Low))
                 .ForMember(dest => dest.weekendDelivery, opt => opt.MapFrom(src => src.isWeekend))
                 .ForMember(dest => dest.isCompany, opt => opt.MapFrom(src => src.isCompany))
@@ -273,7 +275,7 @@ namespace CourierConnect
                 .ForMember(dest => dest.clientName, opt => opt.MapFrom(src => src.personalData.name))
                 .ForMember(dest => dest.clientSurname, opt => opt.MapFrom(src => src.personalData.surname))
                 .ForMember(dest => dest.clientEmail, opt => opt.MapFrom(src => src.personalData.email))
-                .ForMember(dest => dest.clientPhoneNumber, opt => opt.MapFrom(src => string.Empty))
+                .ForMember(dest => dest.clientPhoneNumber, opt => opt.MapFrom(src => "234457234"))
                 .ForMember(dest => dest.clientCompany, opt => opt.MapFrom(src => src.personalData.companyName))
                 .ForMember(dest => dest.clientAddress, opt => opt.MapFrom(src => src.personalData.address));
 

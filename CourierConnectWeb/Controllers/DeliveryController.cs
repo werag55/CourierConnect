@@ -21,12 +21,13 @@ namespace CourierConnectWeb.Controllers
         private List<IServiceFactory> _serviceFactories = new List<IServiceFactory>();
         //private readonly IRequestService _requestService;
         public DeliveryController(IUnitOfWork unitOfWork, /*IDeliveryService deliveryService, IRequestService requestService,*/
-            OurServiceFactory ourServiceFactory, CurrierServiceFactory currierServiceFactory, UserManager<IdentityUser> userManager)
+            OurServiceFactory ourServiceFactory, CurrierServiceFactory currierServiceFactory, CourierHubServiceFactory courierHubServiceFactory, UserManager<IdentityUser> userManager)
         {
             _unitOfWork = unitOfWork;
             //_deliveryService = deliveryService;
-            _serviceFactories.Add(ourServiceFactory);
-            _serviceFactories.Add(currierServiceFactory);
+            //_serviceFactories.Add(ourServiceFactory);
+            //_serviceFactories.Add(currierServiceFactory);
+            _serviceFactories.Add(courierHubServiceFactory);
             //_requestService = requestService;
             _userManager = userManager;
         }
