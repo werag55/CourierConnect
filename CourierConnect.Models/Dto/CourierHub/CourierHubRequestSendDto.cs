@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CourierConnect.Models.Dto.CourierHub
 {
-    public class CourierHubRequestDto
+    public class CourierHubRequestSendDto
     {
         public string? inquireCode { get; set; }
         public string? clientName { get; set; }

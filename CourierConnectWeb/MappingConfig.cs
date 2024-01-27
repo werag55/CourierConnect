@@ -3,6 +3,8 @@ using CourierConnect.Models;
 using CourierConnect.Models.Dto;
 using CourierConnect.Models.Dto.Currier;
 using CourierConnectWeb.Services.Currier;
+using CourierConnect.Models.Dto.CourierHub;
+using CourierConnectWeb.Services.CourierHub;
 
 namespace CourierConnect
 {
@@ -34,7 +36,7 @@ namespace CourierConnect
             CreateMap<PersonalData, PersonalDataDto>().ReverseMap();
 
 
-
+            #region Currier
             CreateMap<CurrierInquiryDto, InquiryDto>()
                .ForMember(dest => dest.pickupDate, opt => opt.MapFrom(src => src.pickupDate))
                .ForMember(dest => dest.deliveryDate, opt => opt.MapFrom(src => src.deliveryDay))
@@ -205,7 +207,82 @@ namespace CourierConnect
                 .ForMember(dest => dest.pickUpDate, opt => opt.MapFrom(src => src.pickupDate))
                 .ForMember(dest => dest.deliveryDate, opt => opt.MapFrom(src => src.deliveryDate))
                 .ForMember(dest => dest.deliveryStatus, opt => opt.MapFrom(src => MapDeliveryStatus(src.offerStatus)))
-                .ForMember(dest => dest.reason, opt => opt.Ignore()); 
+                .ForMember(dest => dest.reason, opt => opt.Ignore());
+
+            #endregion
+
+            #region CourierHub
+
+            CreateMap<AddressDto, CourierHubAddressDto>()
+                .ForMember(dest => dest.city, opt => opt.MapFrom(src => src.city))
+                .ForMember(dest => dest.postalCode, opt => opt.MapFrom(src => src.postcode))
+                .ForMember(dest => dest.street, opt => opt.MapFrom(src => src.streetName))
+                .ForMember(dest => dest.number, opt => opt.MapFrom(src => src.houseNumber.ToString()))
+                .ForMember(dest => dest.flat, opt => opt.MapFrom(src => src.flatNumber.HasValue ? src.flatNumber.ToString() : null));
+
+            CreateMap<CourierHubAddressDto, AddressDto>()
+                .ForMember(dest => dest.city, opt => opt.MapFrom(src => src.city))
+                .ForMember(dest => dest.postcode, opt => opt.MapFrom(src => src.postalCode))
+                .ForMember(dest => dest.streetName, opt => opt.MapFrom(src => src.street))
+                .ForMember(dest => dest.houseNumber, opt => opt.MapFrom(src => stringIntConverter(src.number)))
+                .ForMember(dest => dest.flatNumber, opt => opt.MapFrom(src => stringIntConverter(src.flat)));
+
+            CreateMap<InquiryDto, CourierHubInquiryDto>()
+                .ForMember(dest => dest.depth, opt => opt.MapFrom(src => src.package.height))
+                .ForMember(dest => dest.width, opt => opt.MapFrom(src => src.package.width))
+                .ForMember(dest => dest.length, opt => opt.MapFrom(src => src.package.length))
+                .ForMember(dest => dest.mass, opt => opt.MapFrom(src => src.package.weight))
+                .ForMember(dest => dest.sourceAddress, opt => opt.MapFrom(src => src.sourceAddress))
+                .ForMember(dest => dest.destinationAddress, opt => opt.MapFrom(src => src.destinationAddress))
+                .ForMember(dest => dest.datetime, opt => opt.MapFrom(src => src.pickupDate))
+                .ForMember(dest => dest.isCompany, opt => opt.MapFrom(src => src.isCompany))
+                .ForMember(dest => dest.isWeekend, opt => opt.MapFrom(src => src.weekendDelivery))
+                .ForMember(dest => dest.priority, opt => opt.MapFrom(src => src.isPriority ? PriorityType.High : PriorityType.Low));
+
+            CreateMap<CourierHubInquiryDto, InquiryDto>()
+                .ForMember(dest => dest.pickupDate, opt => opt.MapFrom(src => src.datetime))
+                .ForMember(dest => dest.deliveryDate, opt => opt.MapFrom(src => src.datetime)) 
+                .ForMember(dest => dest.isPriority, opt => opt.MapFrom(src => src.priority != PriorityType.Low))
+                .ForMember(dest => dest.weekendDelivery, opt => opt.MapFrom(src => src.isWeekend))
+                .ForMember(dest => dest.isCompany, opt => opt.MapFrom(src => src.isCompany))
+                .ForMember(dest => dest.sourceAddress, opt => opt.MapFrom(src => src.sourceAddress))
+                .ForMember(dest => dest.destinationAddress, opt => opt.MapFrom(src => src.destinationAddress))
+                .ForMember(dest => dest.package, opt => opt.MapFrom(src => new PackageDto
+                {
+                    height = src.depth,
+                    width = src.width,
+                    length = src.length,
+                    weight = src.mass
+                }));
+
+            CreateMap<OfferDto, CourierHubOfferDto>()
+            .ForMember(dest => dest.price, opt => opt.MapFrom(src => (double)src.price))
+            .ForMember(dest => dest.code, opt => opt.MapFrom(src => src.companyOfferId))
+            .ForMember(dest => dest.expirationDate, opt => opt.MapFrom(src => src.expirationDate));
+
+            CreateMap<CourierHubOfferDto, OfferDto>() // Uzupełnić InquiryDto i companyId
+                .ForMember(dest => dest.price, opt => opt.MapFrom(src => (decimal)src.price))
+                .ForMember(dest => dest.companyOfferId, opt => opt.MapFrom(src => src.code))
+                .ForMember(dest => dest.creationDate, opt => opt.MapFrom(src => DateTime.Now))
+                .ForMember(dest => dest.expirationDate, opt => opt.MapFrom(src => src.expirationDate))
+                .ForMember(dest => dest.taxes, opt => opt.MapFrom(src => 0))
+                .ForMember(dest => dest.fees, opt => opt.MapFrom(src => 0));
+
+            CreateMap<RequestSendDto, CourierHubRequestSendDto>()
+                .ForMember(dest => dest.inquireCode, opt => opt.MapFrom(src => src.companyOfferId))
+                .ForMember(dest => dest.clientName, opt => opt.MapFrom(src => src.personalData.name))
+                .ForMember(dest => dest.clientSurname, opt => opt.MapFrom(src => src.personalData.surname))
+                .ForMember(dest => dest.clientEmail, opt => opt.MapFrom(src => src.personalData.email))
+                .ForMember(dest => dest.clientPhoneNumber, opt => opt.MapFrom(src => string.Empty))
+                .ForMember(dest => dest.clientCompany, opt => opt.MapFrom(src => src.personalData.companyName))
+                .ForMember(dest => dest.clientAddress, opt => opt.MapFrom(src => src.personalData.address));
+
+            CreateMap<CourierHubRequestSendDto, RequestResponseDto>()
+                .ForMember(dest => dest.companyRequestId, opt => opt.MapFrom(src => src.inquireCode))
+                .ForMember(dest => dest.decisionDeadline, opt => opt.MapFrom(src => DateTime.MaxValue));
+
+
+            #endregion
         }
 
         private static int stringIntConverter(string s)
