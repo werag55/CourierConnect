@@ -3,7 +3,7 @@ using System.Net;
 
 namespace CourierCompanyApi.Responses
 {
-	public class RequestResponse
+	public class RequestResponseResponse
 	{
 		public HttpStatusCode StatusCode { get; set; }
 		public bool IsSuccess { get; set; } = true;

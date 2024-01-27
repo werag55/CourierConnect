@@ -6,8 +6,9 @@ namespace CourierConnectWeb.Services.IServices
 	{
 		Task<T> GetRequestAsync<T>(RequestSendDto requestSendDto);
 		Task<T> GetRequestStatusAsync<T>(string companyRequestId);
+		Task<T> GetAllAsync<T>();
 		Task<T> AcceptRequestAsync<T>(string companyRequestId);
-		Task<T> RejectRequestAsync<T>(string companyRequestId);
+		Task<T> RejectRequestAsync<T>(string companyRequestId, string reason);
 
 
 	}

@@ -25,5 +25,10 @@ namespace CourierConnectWeb.Services.Factory
         {
             return new RequestService(_httpClient, _configuration);
         }
+
+        public IInquiryService createInquiryService()
+        {
+            return new InquiryService(_httpClient, _configuration);
+        }
     }
 }

@@ -37,7 +37,16 @@ namespace CourierConnectWeb.Services
 			}, _configuration.GetValue<string>(SD.ApiKeySectionName));
 		}
 
-		public async Task<T> AcceptRequestAsync<T>(string companyRequestId)
+        public async Task<T> GetAllAsync<T>()
+		{
+            return await SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = apiUrl + "/api/Request/GetRequests",
+            }, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
+        }
+
+        public async Task<T> AcceptRequestAsync<T>(string companyRequestId)
 		{
 			return await SendAsync<T>(new APIRequest()
 			{
@@ -45,12 +54,13 @@ namespace CourierConnectWeb.Services
 				Url = apiUrl + $"/api/Request/AcceptRequest/{companyRequestId}",
 			}, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
 		}
-		public async Task<T> RejectRequestAsync<T>(string companyRequestId)
+		public async Task<T> RejectRequestAsync<T>(string companyRequestId, string reason)
 		{
 			return await SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.POST,
 				Url = apiUrl + $"/api/Request/RejectRequest/{companyRequestId}",
+				Data = reason
 			}, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
 		}
 	}

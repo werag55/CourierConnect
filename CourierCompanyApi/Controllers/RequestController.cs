@@ -37,7 +37,7 @@ namespace CourierCompanyApi.Controllers
 		/// <response code="400">Provided request was not valid (e.g. there is no offer with a given Id)</response>
 		[HttpPost]
 		[ServiceFilter(typeof(ApiKeyAuthFilter))]
-		[ProducesResponseType(typeof(RequestResponse), StatusCodes.Status201Created)]
+		[ProducesResponseType(typeof(RequestResponseResponse), StatusCodes.Status201Created)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
 		public async Task<ActionResult<APIResponse>> PostRequest([FromBody] RequestSendDto requestDto)
 		{
@@ -68,7 +68,7 @@ namespace CourierCompanyApi.Controllers
 				request.offerId = offer.Id;
 				request.offer = offer;
 				request.requestStatus = RequestStatus.Pending;
-				request.decisionDeadline = DateTime.Now.AddMinutes(0.5);
+				request.decisionDeadline = DateTime.Now.AddMinutes(5);
 				await _unitOfWork.Request.CreateAsync(request);
 
 
@@ -126,12 +126,51 @@ namespace CourierCompanyApi.Controllers
 			return _response;
 		}
 
-		/// <summary>
-		/// Changes the request status to Accepted (for the office worker)
-		/// </summary>
-		/// <response code="200">Request status has been succesfully updated</response>
-		/// <response code="400">Provided request was not valid or decision cannot be made</response>
-		[HttpPost("{requestId}")]
+        /// <summary>
+        /// Returns all requests related to the company (for the office worker)
+        /// </summary>
+        /// <response code="200">Returns list of all requests</response>
+        /// <response code="404">There is no request to return</response>
+        [HttpGet]
+        [ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
+        [ProducesResponseType(typeof(ListRequestResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponse>> GetRequests()
+        {
+            try
+            {
+
+                IEnumerable<Request> RequestList;
+                RequestList = await _unitOfWork.Request.GetAllAsync(includeProperties:
+                    "offer,personalData,personalData.address,offer.inquiry,offer.inquiry.sourceAddress,offer.inquiry.destinationAddress,offer.inquiry.package");
+
+                if (RequestList == null || RequestList.Count() == 0)
+                {
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    return NotFound(_response);
+                }
+
+                _response.Result = _mapper.Map<List<RequestDto>>(RequestList);
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_response);
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+        }
+
+        /// <summary>
+        /// Changes the request status to Accepted (for the office worker)
+        /// </summary>
+        /// <response code="200">Request status has been succesfully updated</response>
+        /// <response code="400">Provided request was not valid or decision cannot be made</response>
+        [HttpPost("{requestId}")]
 		[ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
 		[ProducesResponseType(typeof(RequestStatusResponse), StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
@@ -190,7 +229,7 @@ namespace CourierCompanyApi.Controllers
 		[ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
 		[ProducesResponseType(typeof(RequestStatusResponse), StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
-		public async Task<ActionResult<APIResponse>> RejectRequest(string requestId)
+		public async Task<ActionResult<APIResponse>> RejectRequest(string requestId, [FromBody] string reason)
 		{
 			try
 			{
@@ -223,6 +262,7 @@ namespace CourierCompanyApi.Controllers
 
 
 				request.requestStatus = RequestStatus.Rejected;
+				request.rejectionReason = reason;
 				await _unitOfWork.Request.UpdateAsync(request);
 				_response.StatusCode = HttpStatusCode.OK;
 				return Ok(_response);

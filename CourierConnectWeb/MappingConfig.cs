@@ -20,7 +20,7 @@ namespace CourierConnect
             CreateMap<Package, PackageDto>().ReverseMap();
             CreateMap<Request, RequestDto>();
             CreateMap<Request, RequestDto>().ReverseMap();
-			CreateMap<Request, RequestStatusDto>();
+            CreateMap<Request, RequestStatusDto>();
 			CreateMap<Request, RequestStatusDto>().ReverseMap();
 			CreateMap<Request, RequestResponseDto>();
 			CreateMap<Request, RequestResponseDto>().ReverseMap();

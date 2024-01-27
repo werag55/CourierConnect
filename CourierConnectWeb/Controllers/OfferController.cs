@@ -102,6 +102,15 @@ namespace CourierConnectWeb.Controllers
                     List<OfferDto>? offerDto = JsonConvert.DeserializeObject<List<OfferDto>>(Convert.ToString(response.Result));
                     return View(offerDto);
                 }
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    TempData["ErrorMessage"] = "There is no offers to display.";
+                    return RedirectToRoute(new
+                    {
+                        controller = "Home",
+                        action = "Index"
+                    });
+                }
             //}
             return NotFound();
         }

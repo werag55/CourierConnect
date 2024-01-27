@@ -8,5 +8,6 @@ namespace CourierConnectWeb.Services.Factory
         public IDeliveryService createDeliveryService();
         public IOfferService createOfferService();
         public IRequestService createRequestService();
+        public IInquiryService createInquiryService();
     }
 }

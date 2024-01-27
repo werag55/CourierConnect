@@ -29,5 +29,10 @@ namespace CourierConnectWeb.Services.Factory
         {
             return new CurrierRequestService(_httpClient, _configuration, _mapper, serviceId);
         }
+
+        public IInquiryService createInquiryService()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -138,7 +138,7 @@ namespace CourierConnectWeb.Controllers
 
         }
 
-        public IActionResult Reject(int id)
+        public IActionResult Rejected(int id)
         {
             Request request = _unitOfWork.Request.Get(u => u.Id == id, includeProperties:
                 "personalData,personalData.address,offer,offer.inquiry,offer.inquiry.sourceAddress,offer.inquiry.destinationAddress,offer.inquiry.package");
@@ -151,5 +151,85 @@ namespace CourierConnectWeb.Controllers
 				"personalData,personalData.address,offer,offer.inquiry,offer.inquiry.sourceAddress,offer.inquiry.destinationAddress,offer.inquiry.package");
 			return View(request);
 		}
-	}
+
+        #region Worker
+
+        // [Authorize(Roles = SD.Role_User_Worker)]
+        public async Task<IActionResult> IndexAll()
+        {
+            IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == 0).FirstOrDefault();
+            var requestService = serviceFactory.createRequestService();
+            var response = await requestService.GetAllAsync<APIResponse>();
+            if (response != null && response.IsSuccess)
+            {
+                List<RequestDto>? requestDto = JsonConvert.DeserializeObject<List<RequestDto>>(Convert.ToString(response.Result));
+                return View(requestDto);
+            }
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                TempData["ErrorMessage"] = "There is no requests to display.";
+                return RedirectToRoute(new
+                {
+                    controller = "Home",
+                    action = "Index"
+                });
+            }
+
+            return NotFound();
+        }
+
+        //[Authorize(Roles = SD.Role_User_Worker)]
+        public async Task<IActionResult> Accept(string id)
+        {
+
+            IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == 0).FirstOrDefault();
+            var requestService = serviceFactory.createRequestService();
+
+            var response = await requestService.AcceptRequestAsync<APIResponse>(id);
+            if (response != null && response.IsSuccess)
+            {
+                TempData["SuccessMessage"] = "Status updated successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to update status. Try again.";
+            }
+
+            return RedirectToAction("IndexAll");
+        }
+
+        [HttpGet]
+        //[Authorize(Roles = SD.Role_User_Worker)]
+        public IActionResult Reject(string id)
+        {
+            RequestRejectVM requestRejectVM = new RequestRejectVM
+            {
+                requestId = id
+            };
+            return View(requestRejectVM);
+        }
+
+        [HttpPost]
+        //[Authorize(Roles = SD.Role_User_Worker)]
+        public async Task<IActionResult> Reject(RequestRejectVM requestRejectVM)
+        {
+
+            IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == 0).FirstOrDefault();
+            var requestService = serviceFactory.createRequestService();
+
+            var response = await requestService.RejectRequestAsync<APIResponse>(requestRejectVM.requestId, requestRejectVM.reason);
+            if (response != null && response.IsSuccess)
+            {
+                TempData["SuccessMessage"] = "Status updated successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to update status. Try again.";
+            }
+
+            return RedirectToAction("IndexAll");
+        }
+
+        #endregion
+    }
 }

@@ -1,15 +1,16 @@
 ﻿using CourierConnect.DataAccess.Data;
 using CourierConnect.DataAccess.Repository.IRepository;
 using CourierConnect.Models;
+using CourierConnect.Models.Dto;
 using CourierConnect.Utility;
 using Microsoft.AspNetCore.Identity;
-
 using Microsoft.AspNetCore.Mvc;
-using CourierConnect.Utility;
-
 using CourierConnect.Models.ViewModels;
 using Google.Apis.Admin.Directory.directory_v1.Data;
 using ICSharpCode.Decompiler.CSharp.Syntax;
+using CourierConnectWeb.Services.Factory;
+using Newtonsoft.Json;
+using AutoMapper;
 
 namespace CourierConnectWeb.Controllers
 {
@@ -18,16 +19,41 @@ namespace CourierConnectWeb.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ApplicationDbContext _context;
         private readonly IUnitOfWork _unitOfWork;
-        public InquiryController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager, ApplicationDbContext context)
+        private List<IServiceFactory> _serviceFactories = new List<IServiceFactory>();
+        private readonly IMapper _mapper;
+        public InquiryController(IUnitOfWork unitOfWork, OurServiceFactory ourServiceFactory, CurrierServiceFactory currierServiceFactory,
+            IMapper mapper, UserManager<IdentityUser> userManager, ApplicationDbContext context)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _context = context;
+            _serviceFactories.Add(ourServiceFactory);
+            _serviceFactories.Add(currierServiceFactory);
+            _mapper = mapper;
         }
-        public IActionResult IndexAll()
+
+        //[Authorize(Roles = SD.Role_User_Worker)]
+        public async Task<IActionResult> IndexAll()
         {
-            List<Inquiry> objInquiryList = _unitOfWork.Inquiry.GetAll().ToList();
-            return View(objInquiryList);
+            IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == 0).FirstOrDefault();
+            var inquiryService = serviceFactory.createInquiryService();
+            var response = await inquiryService.GetAllAsync<APIResponse>();
+            if (response != null && response.IsSuccess)
+            {
+                List<InquiryDto>? inquiryDto = JsonConvert.DeserializeObject<List<InquiryDto>>(Convert.ToString(response.Result));
+                return View(inquiryDto);
+            }
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                TempData["ErrorMessage"] = "There is no offers to display.";
+                return RedirectToRoute(new
+                {
+                    controller = "Home",
+                    action = "Index"
+                });
+            }
+
+            return NotFound();
         }
 
         private bool hasDelivery(int inquiryId)

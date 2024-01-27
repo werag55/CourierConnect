@@ -126,12 +126,15 @@ namespace CourierConnectWeb.Services.Currier
             return JsonConvert.DeserializeObject<T>(res);
         }
 
-
+        public async Task<T> GetAllAsync<T>()
+        {
+            throw new NotImplementedException();
+        }
         public async Task<T> AcceptRequestAsync<T>(string companyRequestId)
         {
             throw new NotImplementedException();
         }
-        public async Task<T> RejectRequestAsync<T>(string companyRequestId)
+        public async Task<T> RejectRequestAsync<T>(string companyRequestId, string reason)
         {
             throw new NotImplementedException();
         }
