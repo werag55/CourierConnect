@@ -23,6 +23,7 @@ namespace CourierCompanyApi.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly bool autoAccept = true;
+		private readonly string apiUrl = "https://couriercompanyapi.azurewebsites.net/";
         public DeliveryController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
@@ -34,11 +35,11 @@ namespace CourierCompanyApi.Controllers
 		/// Creates a delivery based on a given request
 		/// </summary>
 		/// <response code="201">Delivery has been succesfully created. Returns the delivery details.</response>
-		/// <response code="406">The company decided to reject request. Returns rejection reason.</response>
+		/// <response code="422">The company decided to reject request. Returns rejection reason.</response>
 		/// <response code="400">Provided request was not valid (e.g. there is no offer with a given Id) r the decision has not been made yet</response>
 		[HttpPost("{requestId}")]
 		[ServiceFilter(typeof(ApiKeyAuthFilter))]
-		[ProducesResponseType(typeof(RequestRejectResponse), StatusCodes.Status406NotAcceptable)]
+		[ProducesResponseType(typeof(RequestRejectResponse), StatusCodes.Status422UnprocessableEntity)]
 		[ProducesResponseType(typeof(RequestAcceptResponse), StatusCodes.Status201Created)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
 		public async Task<ActionResult<APIResponse>> PostDelivery(string requestId)
@@ -126,7 +127,7 @@ namespace CourierCompanyApi.Controllers
 
 					_response.Result = accept;
 					_response.StatusCode = HttpStatusCode.Created;
-					return Ok(_response);
+					return Created(apiUrl + $"/api/Delivery/GetDelivery/{delivery.GUID}", _response);
 				}
 				else
 				{
@@ -136,9 +137,10 @@ namespace CourierCompanyApi.Controllers
 					await _unitOfWork.Offer.UpdateAsync(request.offer);
 
 					RequestRejectDto reject = _mapper.Map<RequestRejectDto>(request);
+					_response.IsSuccess = false;
 					_response.Result = reject;
-					_response.StatusCode = HttpStatusCode.OK;
-					return Ok(_response);
+					_response.StatusCode = HttpStatusCode.UnprocessableEntity;
+					return UnprocessableEntity(_response);
 				}
 			}
 			catch (Exception ex)
@@ -147,7 +149,7 @@ namespace CourierCompanyApi.Controllers
 				_response.ErrorMessages
 					 = new List<string>() { ex.ToString() };
 			}
-			return _response;
+			return BadRequest(_response);
 		}
 
 		/// <summary>
@@ -188,15 +190,15 @@ namespace CourierCompanyApi.Controllers
                 _response.ErrorMessages
                      = new List<string>() { ex.ToString() };
             }
-            return _response;
+            return BadRequest(_response);
         }
 
-		/// <summary>
-		/// Changes the delivery status to Canceled (if the cancelation deadline has not been exceeded)
-		/// </summary>
-		/// <response code="200">Delivery status has been succesfully updated</response>
-		/// <response code="400">Provided delivery Id was not valid or the cancelation deadline has been exceeded</response>
-		[HttpDelete("{deliveryId}")]
+        /// <summary>
+        /// Changes the delivery status to Canceled (if the cancelation deadline has not been exceeded)
+        /// </summary>
+        /// <response code="200">Delivery status has been succesfully updated</response>
+        /// <response code="400">Provided delivery Id was not valid or the cancelation deadline has been exceeded</response>
+        [HttpDelete("{deliveryId}")]
 		[ServiceFilter(typeof(ApiKeyAuthFilter))]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
@@ -237,15 +239,15 @@ namespace CourierCompanyApi.Controllers
 				_response.ErrorMessages
 					 = new List<string>() { ex.ToString() };
 			}
-			return _response;
-		}
+            return BadRequest(_response);
+        }
 
-		/// <summary>
-		/// Returns all deliveries realated to the company (for the office worker)
-		/// </summary>
-		/// <response code="200">Returns list of al deliveries</response>
-		/// <response code="404">There is no delivery to return</response>
-		[HttpGet]
+        /// <summary>
+        /// Returns all deliveries realated to the company (for the office worker)
+        /// </summary>
+        /// <response code="200">Returns list of al deliveries</response>
+        /// <response code="404">There is no delivery to return</response>
+        [HttpGet]
 		[ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
 		[ProducesResponseType(typeof(ListDeliveryResponse), StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status404NotFound)]
@@ -278,16 +280,16 @@ namespace CourierCompanyApi.Controllers
 				_response.ErrorMessages
 					 = new List<string>() { ex.ToString() };
 			}
-			return _response;
-		}
+            return BadRequest(_response);
+        }
 
-		/// <summary>
-		/// Returns all deliveries related to the courier with a given User Name (for the courier)
-		/// </summary>
-		/// <response code="200">Returns the deliveries</response>
-		/// <response code="400">Provided User Name was not valid</response>
-		/// /// <response code="404">There is no delivery related to provided courier</response>
-		[HttpGet]
+        /// <summary>
+        /// Returns all deliveries related to the courier with a given User Name (for the courier)
+        /// </summary>
+        /// <response code="200">Returns the deliveries</response>
+        /// <response code="400">Provided User Name was not valid</response>
+        /// /// <response code="404">There is no delivery related to provided courier</response>
+        [HttpGet]
 		[ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
 		[ProducesResponseType(typeof(ListDeliveryResponse), StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
@@ -332,15 +334,15 @@ namespace CourierCompanyApi.Controllers
 				_response.ErrorMessages
 					 = new List<string>() { ex.ToString() };
 			}
-			return _response;
-		}
+            return BadRequest(_response);
+        }
 
-		/// <summary>
-		/// Changes the delivery status to PickedUp (for the courier)
-		/// </summary>
-		/// <response code="200">Delivery status has been succesfully updated</response>
-		/// <response code="400">Provided delivery Id was not valid or the package cannot be picked up</response>
-		[HttpPost("{deliveryId}")]
+        /// <summary>
+        /// Changes the delivery status to PickedUp (for the courier)
+        /// </summary>
+        /// <response code="200">Delivery status has been succesfully updated</response>
+        /// <response code="400">Provided delivery Id was not valid or the package cannot be picked up</response>
+        [HttpPost("{deliveryId}")]
 		[ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
@@ -373,10 +375,10 @@ namespace CourierCompanyApi.Controllers
                 delivery.pickUpDate = DateTime.Now;
 				await _unitOfWork.Delivery.UpdateAsync(delivery);
 				_response.StatusCode = HttpStatusCode.OK;
-				return Ok(_response);
+                return BadRequest(_response);
 
-			}
-			catch (Exception ex)
+            }
+            catch (Exception ex)
 			{
 				_response.IsSuccess = false;
 				_response.ErrorMessages
@@ -432,15 +434,15 @@ namespace CourierCompanyApi.Controllers
 				_response.ErrorMessages
 					 = new List<string>() { ex.ToString() };
 			}
-			return _response;
-		}
+            return BadRequest(_response);
+        }
 
-		/// <summary>
-		/// Changes the delivery status to CannotDeliver (for the courier)
-		/// </summary>
-		/// <response code="200">Delivery status has been succesfully updated</response>
-		/// <response code="400">Provided delivery Id was not valid or the package cannot be droped</response>
-		[HttpPost("{deliveryId}")]
+        /// <summary>
+        /// Changes the delivery status to CannotDeliver (for the courier)
+        /// </summary>
+        /// <response code="200">Delivery status has been succesfully updated</response>
+        /// <response code="400">Provided delivery Id was not valid or the package cannot be droped</response>
+        [HttpPost("{deliveryId}")]
 		[ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
@@ -484,7 +486,7 @@ namespace CourierCompanyApi.Controllers
 				_response.ErrorMessages
 					 = new List<string>() { ex.ToString() };
 			}
-			return _response;
-		}
-	}
+            return BadRequest(_response);
+        }
+    }
 }

@@ -62,7 +62,7 @@ namespace CourierCompanyApi.Controllers
                 _response.ErrorMessages
                      = new List<string>() { ex.ToString() };
             }
-            return _response;
+			return BadRequest(_response);
         }
     }
 }
