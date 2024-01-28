@@ -16,7 +16,7 @@ namespace CourierCompanyApi.Repository
         public async Task<Address> UpdateAsync(Address entity)
         {
             _db.Addresses.Update(entity);
-            //await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
             return entity;
         }
     }

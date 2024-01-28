@@ -17,6 +17,11 @@
                     <label asp-for="deliveryDate" class="ms-2"></label>
                     <span asp-validation-for="deliveryDate" class="text-danger"></span>
                 </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="pickupDate" class="form-control border-0 shadow" />
+                    <label asp-for="pickupDate" class="ms-2"></label>
+                    <span asp-validation-for="pickupDate" class="text-danger"></span>
+                </div>
                 <div>Destination addres</div>
                 <div class="form-floating py-2 col-12">
                     <input asp-for="destinationAddress.streetName" class="form-control border-0 shadow" />
@@ -124,7 +129,7 @@
                 </div>
                 <div class="row pt-2">
                     <div class="col-6 col-md-3">
-                        @* <button type="submit" class="btn btn-primary form-control">Create</button> *@
+                        <button type="submit" class="btn btn-primary form-control">Create</button>
 @*                         <a asp-controller="Offer" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-outline-primary border  form-control">
                             View offers
                         </a> *@

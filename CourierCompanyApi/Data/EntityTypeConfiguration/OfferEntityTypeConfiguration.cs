@@ -15,8 +15,11 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
         {
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.inquiryId)
-            .IsRequired();
+			builder.Property(e => e.GUID)
+				.IsRequired();
+
+			builder.Property(e => e.inquiryId)
+                .IsRequired();
 
             builder.HasOne(e => e.inquiry)
                 .WithMany()
@@ -47,6 +50,9 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
             builder.Property(e => e.fees)
                 .IsRequired()
                 .HasColumnType("money");
+
+            builder.Property(e => e.currency)
+                .IsRequired();
         }
     }
 }

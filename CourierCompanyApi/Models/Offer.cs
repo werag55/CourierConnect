@@ -9,6 +9,7 @@ namespace CourierCompanyApi.Models
     public class Offer
     {
         public int Id { get; set; }
+        public string GUID { get; set; }
         public int inquiryId { get; set; }
         public Inquiry inquiry { get; set; }
         public DateTime creationDate { get; set; }
@@ -19,6 +20,7 @@ namespace CourierCompanyApi.Models
         //public string currency {  get; set; }
         public decimal taxes { get; set; }
         public decimal fees { get; set; }   
+        public Currency currency { get; set; }
 
         public Offer()
         {
@@ -32,5 +34,13 @@ namespace CourierCompanyApi.Models
         Pending,
         Accepted,
         Rejected
+    }
+
+    public enum Currency
+    {
+        PLN,
+        EUR,
+        USD,
+        GBP
     }
 }

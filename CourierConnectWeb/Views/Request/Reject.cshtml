@@ -1,0 +1,13 @@
+﻿@model RequestRejectVM
+
+<h2>Why are you rejecting?</h2>
+
+<form asp-action="Reject" method="post">
+    <input asp-for=requestId hidden />
+    <div class="form-floating py-2 col-12">
+        <input asp-for="reason" class="form-control border-0 shadow" />
+        <label asp-for="reason" class="ms-2"></label>
+        <span asp-validation-for="reason" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

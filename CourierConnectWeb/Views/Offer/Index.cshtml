@@ -16,6 +16,7 @@
                     <th>Price</th>
                     <th>Taxes</th>
                     <th>Fees</th>
+                    <th>Currency</th>
                     <th>Expiration Date</th>
                     <th></th>
                 </tr>
@@ -28,10 +29,11 @@
                         <td>@obj.price</td>
                         <td>@obj.fees</td>
                         <td>@obj.taxes</td>
+                        <td>@obj.currency</td>
                         <td>@obj.expirationDate</td>
                         <td>
                             <div class="w-75 btn-group" role="group">
-                                @if (obj.expirationDate > DateTime.Now)
+                                @if (obj.expirationDate > DateTime.Now && obj.status == OfferStatus.Pending)
                                 {
                                     <a asp-controller="Request" asp-action="Create" asp-route-id="@obj.Id" class="btn btn-primary mx-2">
                                         <i class="bi bi-pencil-square"></i> Choose
