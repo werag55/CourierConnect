@@ -26,8 +26,8 @@ namespace CourierConnectWeb.Controllers
         {
             _unitOfWork = unitOfWork;
             //_offerService = offerService;
-            //_serviceFactories.Add(ourServiceFactory);
-            //_serviceFactories.Add(currierServiceFactory);
+            _serviceFactories.Add(ourServiceFactory);
+            _serviceFactories.Add(currierServiceFactory);
             _serviceFactories.Add(courierHubServiceFactory);
             _mapper = mapper;
             _userManager = userManager;
