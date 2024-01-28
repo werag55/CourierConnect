@@ -255,7 +255,7 @@ namespace CourierCompanyApi.Controllers
 		{
 			try
 			{
-				IEnumerable<Delivery> DeliveryList;
+                IEnumerable<Delivery> DeliveryList;
 				DeliveryList = await _unitOfWork.Delivery.GetAllAsync(includeProperties:
 					"courier,request,request.offer,request.personalData,request.personalData.address,request.offer.inquiry,request.offer.inquiry.sourceAddress,request.offer.inquiry.destinationAddress,request.offer.inquiry.package");
 
