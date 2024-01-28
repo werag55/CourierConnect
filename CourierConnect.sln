@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CourierConnect.Utility", "C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CourierCompanyApi", "CourierCompanyApi\CourierCompanyApi.csproj", "{2E3972E7-6AB0-41FA-8B22-0BDE3905F4C5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CourierConnectWeb.Tests", "CourierConnectWeb.Tests\CourierConnectWeb.Tests.csproj", "{97429308-D44B-4C66-B482-B6CE77B04CEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "CourierConnectWeb.Tests\UnitTests.csproj", "{97429308-D44B-4C66-B482-B6CE77B04CEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{322DB43C-FDA4-44C5-B00A-8DE3B0B2A4F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{97429308-D44B-4C66-B482-B6CE77B04CEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97429308-D44B-4C66-B482-B6CE77B04CEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97429308-D44B-4C66-B482-B6CE77B04CEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{322DB43C-FDA4-44C5-B00A-8DE3B0B2A4F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{322DB43C-FDA4-44C5-B00A-8DE3B0B2A4F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{322DB43C-FDA4-44C5-B00A-8DE3B0B2A4F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{322DB43C-FDA4-44C5-B00A-8DE3B0B2A4F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
