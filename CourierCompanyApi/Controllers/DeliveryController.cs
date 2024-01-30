@@ -36,7 +36,7 @@ namespace CourierCompanyApi.Controllers
 		/// </summary>
 		/// <response code="201">Delivery has been succesfully created. Returns the delivery details.</response>
 		/// <response code="422">The company decided to reject request. Returns rejection reason.</response>
-		/// <response code="400">Provided request was not valid (e.g. there is no offer with a given Id) r the decision has not been made yet</response>
+		/// <response code="400">Provided request was not valid (e.g. there is no offer with a given Id), the decision has not been made yet or the delivery for this request has already been made</response>
 		[HttpPost("{requestId}")]
 		[ServiceFilter(typeof(ApiKeyAuthFilter))]
 		[ProducesResponseType(typeof(RequestRejectResponse), StatusCodes.Status422UnprocessableEntity)]
@@ -66,6 +66,16 @@ namespace CourierCompanyApi.Controllers
 					_response.StatusCode = HttpStatusCode.BadRequest;
 					return BadRequest(_response);
 				}
+
+				List<Delivery> exisitingDelivery = await _unitOfWork.Delivery.GetAllAsync(u => u.request.GUID == requestId);
+				if (exisitingDelivery != null && exisitingDelivery.Count != 0) 
+				{
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages
+                         = new List<string>() { "There was already a delivery made for that request" };
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    return BadRequest(_response);
+                }
 
 				if (request.requestStatus == RequestStatus.Pending)
 					request.requestStatus = RequestStatus.Accepted;
