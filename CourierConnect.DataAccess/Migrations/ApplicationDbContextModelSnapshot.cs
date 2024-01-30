@@ -34,7 +34,7 @@ namespace CourierConnect.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("flatNumber")
+                    b.Property<int?>("flatNumber")
                         .HasColumnType("int")
                         .HasColumnName("flatNumber")
                         .HasAnnotation("DisplayName", "Flat number");
@@ -61,6 +61,46 @@ namespace CourierConnect.DataAccess.Migrations
                     b.ToTable("Addresses");
                 });
 
+            modelBuilder.Entity("CourierConnect.Models.Company", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("companyId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Companies");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "CourierCompany",
+                            companyId = 0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Currier",
+                            companyId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "CourierHub",
+                            companyId = 2
+                        });
+                });
+
             modelBuilder.Entity("CourierConnect.Models.Delivery", b =>
                 {
                     b.Property<int>("Id")
@@ -69,8 +109,9 @@ namespace CourierConnect.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("companyDeliveryId")
-                        .HasColumnType("int");
+                    b.Property<string>("companyDeliveryId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("companyId")
                         .HasColumnType("int");
@@ -155,8 +196,9 @@ namespace CourierConnect.DataAccess.Migrations
                     b.Property<int>("companyId")
                         .HasColumnType("int");
 
-                    b.Property<int>("companyOfferId")
-                        .HasColumnType("int");
+                    b.Property<string>("companyOfferId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("creationDate")
                         .HasColumnType("datetime2");
@@ -200,9 +242,8 @@ namespace CourierConnect.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("dimensionsUnit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<int>("dimensionsUnit")
+                        .HasColumnType("int")
                         .HasColumnName("dimensionsUnit")
                         .HasAnnotation("DisplayName", "Unit of package dimensions");
 
@@ -221,9 +262,8 @@ namespace CourierConnect.DataAccess.Migrations
                         .HasColumnName("weight")
                         .HasAnnotation("DisplayName", "Package weight");
 
-                    b.Property<string>("weightUnit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<int>("weightUnit")
+                        .HasColumnType("int")
                         .HasColumnName("weightUnit")
                         .HasAnnotation("DisplayName", "Unit of package weight");
 
@@ -282,8 +322,11 @@ namespace CourierConnect.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("isAccepted")
-                        .HasColumnType("bit");
+                    b.Property<string>("companyRequestId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("decisionDeadline")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("offerId")
                         .HasColumnType("int");
@@ -293,6 +336,9 @@ namespace CourierConnect.DataAccess.Migrations
 
                     b.Property<string>("rejectionReason")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("requestStatus")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

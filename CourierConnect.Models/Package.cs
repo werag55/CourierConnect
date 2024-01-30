@@ -12,20 +12,22 @@ namespace CourierConnect.Models
         public double width { get; set; }
         public double height { get; set; }
         public double length { get; set; }
-        public string dimensionsUnit { get; set; }
+        public DimensionUnit dimensionsUnit { get; set; }
         public double weight { get; set; }
-        public string weightUnit { get; set; }
+        public WeightUnit weightUnit { get; set; }
 
 
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
+    }
 
-            sb.AppendLine($"{width} x {height} x {length} {dimensionsUnit}");
-            sb.AppendLine($"{weight} {weightUnit}");
+    public enum DimensionUnit
+    {
+        Meters,
+        Inches
+    }
 
-            return sb.ToString();
-        }
-
+    public enum WeightUnit
+    {
+        Kilograms,
+        Pounds
     }
 }

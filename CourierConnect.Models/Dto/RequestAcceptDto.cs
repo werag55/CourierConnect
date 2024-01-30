@@ -2,10 +2,9 @@
 {
     public class RequestAcceptDto
     {
-        public int companyOfferId { get; set; }
-        public int companyDeliveryId { get; set; }
-        public bool isAccepted { get; set; }
-        //TODO: Agreement
-        //TODO: Receipt
-    }
+		public string companyDeliveryId { get; set; }
+		public RequestStatus requestStatus { get; set; }
+		//TODO: Agreement
+		//TODO: Receipt
+	}
 }

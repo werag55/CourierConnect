@@ -15,10 +15,13 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
         {
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.courierId)
+			builder.Property(e => e.GUID)
+	            .IsRequired();
+
+			builder.Property(e => e.courierId)
                 .IsRequired();
 
-            builder.HasOne(e => e.courier)
+			builder.HasOne(e => e.courier)
                 .WithMany()
                 .HasForeignKey(e => e.courierId)
                 .IsRequired()

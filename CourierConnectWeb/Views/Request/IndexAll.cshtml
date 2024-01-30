@@ -1,0 +1,203 @@
+﻿ @model List<RequestDto>
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Company requests</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success" role="alert">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+        <div class="row pb-3">
+            <div class="col-6">
+                @using (Html.BeginForm())
+                {
+                    <p>
+                        Filtr by Status: @Html.TextBox("SearchString")
+                        <input type="submit" value="Search" />
+                    </p>
+                }
+            </div>
+        </div>
+
+        @foreach (var obj in Model)
+        {
+            <h2 class="section-header text-center bg-secondary text-white py-3">Request</h2>
+
+            <table id="tblData" class="table table-bordered table-striped" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Total price</th>
+                        <th>Request status</th>
+                        <th>
+                            @Html.ActionLink("Decision deadline", "IndexAll", new { sortOrder = ViewBag.DateSortParm })
+                        </th>
+                        <th>Personal data</th>
+                        <th>Personal address</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>
+                            @obj.offer.price
+                            @obj.offer.currency
+                        </td>
+                        <td>@obj.requestStatus</td>
+                        <td>@obj.decisionDeadline</td>
+                        <td>
+                            <span>
+                                @obj.personalData.name
+                                @obj.personalData.surname
+                            </span>
+                            <br />
+                            <span>
+                                @obj.personalData.companyName
+                                @obj.personalData.email
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                @obj.personalData.address.streetName
+                                @obj.personalData.address.houseNumber
+                                @if (@obj.personalData.address.flatNumber != null)
+                                {
+                                    <text>/</text>
+                                    @obj.personalData.address.flatNumber
+                                }
+                            </span>
+                            <br />
+                            <span>
+                                @obj.personalData.address.postcode
+                                @obj.personalData.address.city
+                            </span>
+                        </td>
+                        <td>
+                            <div class="w-75 btn-group" role="group">
+                                @if (obj.decisionDeadline > DateTime.Now && @obj.requestStatus == RequestStatus.Pending)
+                                {
+                                    <a asp-controller="Request" asp-action="Accept" asp-route-id="@obj.companyRequestId" class="btn btn-primary mx-2">
+                                        <i class="bi bi-pencil-square"></i> Accept
+                                    </a>
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <div class="w-75 btn-group" role="group">
+                                @if (obj.decisionDeadline > DateTime.Now && @obj.requestStatus == RequestStatus.Pending)
+                                {
+                                    <a asp-controller="Request" asp-action="Reject" asp-route-id="@obj.companyRequestId" class="btn btn-danger mx-2">
+                                        <i class="bi bi-pencil-square"></i> Reject
+                                    </a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Inquiry</h4>
+            <table id="tblData" class="table table-bordered table-striped" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Pickup date </th>
+                        <th>Delivery date</th>
+                        <th>Source address</th>
+                        <th>Destination address</th>
+                        <th>Package</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>@obj.offer.inquiry.pickupDate</td>
+                        <td>@obj.offer.inquiry.deliveryDate</td>
+                        <td>
+                            <span>
+                                @obj.offer.inquiry.sourceAddress.streetName
+                                @obj.offer.inquiry.sourceAddress.houseNumber
+                                @if (@obj.offer.inquiry.sourceAddress.flatNumber != null)
+                                {
+                                    <text>/</text>
+                                    @obj.offer.inquiry.sourceAddress.flatNumber
+                                }
+                            </span>
+                            <br />
+                            <span>
+                                @obj.offer.inquiry.sourceAddress.postcode
+                                @obj.offer.inquiry.sourceAddress.city
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                @obj.offer.inquiry.destinationAddress.streetName
+                                @obj.offer.inquiry.destinationAddress.houseNumber
+                                @if (@obj.offer.inquiry.destinationAddress.flatNumber != null)
+                                {
+                                    <text>/</text>
+                                    @obj.offer.inquiry.destinationAddress.flatNumber
+                                }
+                            </span>
+                            <br />
+                            <span>
+                                @obj.offer.inquiry.destinationAddress.postcode
+                                @obj.offer.inquiry.destinationAddress.city
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                @obj.offer.inquiry.package.width
+                                x
+                                @obj.offer.inquiry.package.height
+                                x
+                                @obj.offer.inquiry.package.length
+                                @obj.offer.inquiry.package.dimensionsUnit.ToString()
+                            </span>
+                            <br />
+                            <span>
+                                @obj.offer.inquiry.package.weight
+                                @obj.offer.inquiry.package.weightUnit.ToString()
+                            </span>
+                        </td>
+                        <td>
+                            @if (obj.offer.inquiry.isPriority)
+                            {
+                                <text>Priority</text>
+                            }
+                            @if (obj.offer.inquiry.weekendDelivery)
+                            {
+                                <text>Weekend delivery</text>
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+        }
+
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/product.js"></script>
+}
+

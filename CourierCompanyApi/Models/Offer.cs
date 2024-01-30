@@ -9,6 +9,7 @@ namespace CourierCompanyApi.Models
     public class Offer
     {
         public int Id { get; set; }
+        public string GUID { get; set; }
         public int inquiryId { get; set; }
         public Inquiry inquiry { get; set; }
         public DateTime creationDate { get; set; }
@@ -39,6 +40,7 @@ namespace CourierCompanyApi.Models
     {
         PLN,
         EUR,
-        USD
+        USD,
+        GBP
     }
 }

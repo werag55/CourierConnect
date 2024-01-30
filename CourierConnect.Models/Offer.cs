@@ -9,7 +9,7 @@ namespace CourierConnect.Models
     public class Offer
     {
         public int Id { get; set; }
-        public int companyOfferId { get; set; }
+        public string companyOfferId { get; set; }
         public int companyId { get; set; }
         public int inquiryId { get; set; }
         public Inquiry inquiry { get; set; }
@@ -35,6 +35,7 @@ namespace CourierConnect.Models
     {
         PLN,
         EUR,
-        USD
+        USD,
+        GBP
     }
 }

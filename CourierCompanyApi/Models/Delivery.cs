@@ -9,6 +9,7 @@ namespace CourierCompanyApi.Models
     public class Delivery
     {
         public int Id { get; set; }
+        public string GUID { get; set; }
         public int courierId { get; set; }
         public Courier courier { get; set; }
         public int requestId { get; set; }
@@ -25,8 +26,8 @@ namespace CourierCompanyApi.Models
     {
         Proccessing,
         PickedUp,
-        Deliverd,
+        Delivered,
         CannotDeliver,
-        Cancelled
+        Canceled
     }
 }

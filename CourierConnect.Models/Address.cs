@@ -16,27 +16,11 @@ namespace CourierConnect.Models
 
         public int houseNumber { get; set; }
 
-        public int flatNumber { get; set; }
+        public int? flatNumber { get; set; }
 
         public string postcode { get; set; }
 
         public string city { get; set; }
 
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append($"{streetName}, {houseNumber}");
-
-            if (flatNumber != null)
-            {
-                sb.Append($"/{flatNumber}");
-            }
-
-            sb.Append("\n");
-            sb.Append($"{postcode}, {city}");
-
-            return sb.ToString();
-        }
     }
 }

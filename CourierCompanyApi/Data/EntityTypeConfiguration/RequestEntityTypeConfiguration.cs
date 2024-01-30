@@ -15,7 +15,10 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
         {
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.offerId)
+			builder.Property(e => e.GUID)
+	            .IsRequired();
+
+			builder.Property(e => e.offerId)
                 .IsRequired();
 
             builder.HasOne(e => e.offer)
@@ -24,7 +27,10 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Property(e => e.isAccepted)
+            builder.Property(e => e.requestStatus)
+                .IsRequired();
+
+            builder.Property(e => e.decisionDeadline)
                 .IsRequired();
 
             builder.Property(e => e.personalDataId)

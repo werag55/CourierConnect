@@ -2,7 +2,8 @@
 {
     public class OfferDto
     {
-        public int companyOfferId { get; set; } 
+        public string companyOfferId { get; set; }
+        public int companyId { get; set; }
         public InquiryDto inquiry { get; set; }
         public DateTime creationDate { get; set; } 
         public DateTime expirationDate { get; set; }

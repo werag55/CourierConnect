@@ -1,0 +1,13 @@
+﻿@model CannotDeliverVM
+
+<h2>Why can't you deliver?</h2>
+
+<form asp-action="CannotDeliver" method="post">
+    <input asp-for=deliveryId hidden />
+    <div class="form-floating py-2 col-12">
+        <input asp-for="reason" class="form-control border-0 shadow" />
+        <label asp-for="reason" class="ms-2"></label>
+        <span asp-validation-for="reason" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

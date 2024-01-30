@@ -1,4 +1,4 @@
-﻿@model List<OfferDto>
+﻿@model List<OfferPOCO>
 
 <div class="card shadow border-0 my-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
@@ -7,17 +7,33 @@
                 <h2 class="text-white py-2">Offers</h2>
             </div>
         </div>
-    </div>
+    </div>s
     <div class="card-body p-4">
+
+        <div class="row pb-3">
+            <div class="col-6">
+                @using (Html.BeginForm())
+                {
+                    <p>
+                        Filtr by Currency: @Html.TextBox("SearchString")
+                        <input type="submit" value="Search" />
+                    </p>
+                }
+            </div>
+        </div>
 
         <table id="tblData" class="table table-bordered table-striped" style="width:100%">
             <thead>
                 <tr>
-                    <th>Price</th>
+                    <th>
+                        @Html.ActionLink("Price", "IndexAll", new { sortOrder = ViewBag.PriceSortParm })
+                    </th>
                     <th>Taxes</th>
                     <th>Fees</th>
-                    <th>Expiration Date</th>
-                    <th></th>
+                    <th>Currency</th>
+                    <th>
+                        @Html.ActionLink("Expiration date", "IndexAll", new { sortOrder = ViewBag.DateSortParm })
+                    </th>
                 </tr>
             </thead>
 
@@ -28,6 +44,7 @@
                         <td>@obj.price</td>
                         <td>@obj.fees</td>
                         <td>@obj.taxes</td>
+                        <td>@obj.currency</td>
                         <td>@obj.expirationDate</td>
                     </tr>
                 }

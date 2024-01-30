@@ -2,9 +2,12 @@
 using CourierConnect.Models;
 using CourierConnect.Utility;
 using CourierConnectWeb.Services.IServices;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
+
+using System.IO;
 
 namespace CourierConnectWeb.Services
 {
@@ -17,15 +20,15 @@ namespace CourierConnectWeb.Services
             this.responseModel = new();
             this.httpClient = httpClient;
         }
-        public async Task<T> SendAsync<T>(APIRequest apiRequest, string? apiKey)
+        public async Task<T> SendAsync<T>(APIRequest apiRequest, string? apiKey = null)
         {
             try
             {
-                var client = httpClient.CreateClient("CourierCompanyAPI");
+                var client = httpClient.CreateClient("CourierConnect");
                 
                 HttpRequestMessage message = new HttpRequestMessage();
                 //message.Headers.Add("Accept", "application/json");
-                message.Headers.Add("x-api-key", apiKey);
+                
                 message.RequestUri = new Uri(apiRequest.Url);
                 if (apiRequest.Data != null)
                 {
@@ -49,8 +52,13 @@ namespace CourierConnectWeb.Services
 
                 }
 
-                HttpResponseMessage apiResponse = null;
+                if(!string.IsNullOrEmpty(apiKey))
+                    message.Headers.Add("x-api-key", apiKey);
 
+                if (!string.IsNullOrEmpty(apiRequest.Token))
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiRequest.Token);
+
+                HttpResponseMessage apiResponse = null;
                 apiResponse = await client.SendAsync(message);
 
                 var apiContent = await apiResponse.Content.ReadAsStringAsync();

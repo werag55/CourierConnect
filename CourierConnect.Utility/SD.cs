@@ -17,6 +17,16 @@ namespace CourierConnect.Utility
         public const string SpecialApiKeySectionName = "Authentication:SpecialApiKey";
         public const string ApiUrlSectionName = "ServiceUrls:API";
 
+        public const string CourierHubApiKeySectionName = "Authentication:CourierHubApiKey";
+        public const string CourierHubApiUrlSectionName = "ServiceUrls:CourierHub";
+
+        public const string TokenUrlSectionName = "Authentication:TokenUrl";
+        public const string CurrierGrandTypeSectionName = "Authentication:GrandType";
+        public const string CurrierClientIdSectionName = "Authentication:ClientId";
+        public const string CurrierClientSecretSectionName = "Authentication:ClientSecret";
+        public const string CurrierScopeSectionName = "Authentication:Scope";
+        public const string CurrierApiUrlSectionName = "ServiceUrls:Currier";
+
         public enum ApiType
         {
             GET,

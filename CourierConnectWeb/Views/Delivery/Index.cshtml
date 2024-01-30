@@ -1,6 +1,210 @@
-﻿@model DeliveryDto
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model DeliveryVM
+<br />
+<div class="container p-4 border">
+	<div>
+		<h1 class="text-primary">Delivery details</h1>
+	</div>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Courier</th>
+				<th>Delivery Status</th>
+				<th>Pickup Date</th>
+				<th>(Try to) Delivery Date</th>
+				<th>Reason</th>
+				<th>Cancelation deadline</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					@Model.deliveryDto.courier.name
+					@Model.deliveryDto.courier.surname
+				</td>
+				<td>@Model.deliveryDto.deliveryStatus</td>
+				<td>@Model.deliveryDto.pickUpDate</td>
+				<td>@Model.deliveryDto.deliveryDate</td>
+				<td>
+					@if (@Model.deliveryDto.reason != null)
+					{
+						@Model.deliveryDto.reason
+					}
+				</td>
+				<td>@Model.deliveryDto.cancelationDeadline.Date</td>
+				<td>
+					@if (Model.deliveryDto.cancelationDeadline > DateTime.Now && Model.deliveryDto.deliveryStatus == DeliveryStatus.Proccessing)
+					{
+						<a asp-controller="Delivery" asp-action="Cancel" asp-route-id="@Model.delivery.companyDeliveryId" class="btn btn-danger mx-2">
+							<i class="bi bi-pencil-square"></i> Cancel
+						</a>
+					}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div>
+		<h2 class="text-primary">Personal data</h2>
+	</div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Surname</th>
+				<th>Company name</th>
+				<th>Address</th>
+				<th>Email</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>@Model.deliveryDto.request.personalData.name</td>
+				<td>@Model.deliveryDto.request.personalData.surname</td>
+				<td>@Model.deliveryDto.request.personalData.companyName</td>
+				<td>
+					<span>
+						@Model.deliveryDto.request.personalData.address.streetName
+						@Model.deliveryDto.request.personalData.address.houseNumber
+						@if (@Model.deliveryDto.request.personalData.address.flatNumber != null)
+						{
+							<text>/</text>
+							@Model.deliveryDto.request.personalData.address.flatNumber
+						}
+					</span>
+					<br />
+					<span>
+						@Model.deliveryDto.request.personalData.address.postcode
+						@Model.deliveryDto.request.personalData.address.city
+					</span>
+				</td>
+				<td>@Model.deliveryDto.request.personalData.email</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div>
+		<h2 class="text-primary">Offer</h2>
+	</div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Price</th>
+				<th>Taxes</th>
+				<th>Fees</th>
+				<th>Currency</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>@Model.deliveryDto.request.offer.price</td>
+				<td>@Model.deliveryDto.request.offer.taxes</td>
+				<td>@Model.deliveryDto.request.offer.fees</td>
+				<td>@Model.deliveryDto.request.offer.currency</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div>
+		<h2 class="text-primary">Inquiry</h2>
+	</div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Pickup date</th>
+				<th>Delivery date</th>
+				<th>Priority</th>
+				<th>Weekend delivery</th>
+				<th>Company</th>
+				<th>Source address</th>
+				<th>Delivery address</th>
+				<th>Package details</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>@Model.deliveryDto.request.offer.inquiry.pickupDate.Date</td>
+				<td>@Model.deliveryDto.request.offer.inquiry.deliveryDate.Date</td>
+				<td>
+					@if (Model.deliveryDto.request.offer.inquiry.isPriority)
+					{
+						<text>Yes</text>
+					}
+					else
+					{
+						<text>No</text>
+					}
+				</td>
+				<td>
+					@if (Model.deliveryDto.request.offer.inquiry.weekendDelivery)
+					{
+						<text>Yes</text>
+					}
+					else
+					{
+						<text>No</text>
+					}
+				</td>
+				<td>
+					@if (Model.deliveryDto.request.offer.inquiry.isCompany)
+					{
+						<text>Yes</text>
+					}
+					else
+					{
+						<text>No</text>
+					}
+				</td>
+				<td>
+					<span>
+						@Model.deliveryDto.request.offer.inquiry.sourceAddress.streetName
+						@Model.deliveryDto.request.offer.inquiry.sourceAddress.houseNumber
+						@if (@Model.deliveryDto.request.offer.inquiry.sourceAddress.flatNumber != null)
+						{
+							<text>/</text>
+							@Model.deliveryDto.request.offer.inquiry.sourceAddress.flatNumber
+						}
+					</span>
+					<br />
+					<span>
+						@Model.deliveryDto.request.offer.inquiry.sourceAddress.postcode
+						@Model.deliveryDto.request.offer.inquiry.sourceAddress.city
+					</span>
+				</td>
+				<td>
+					<span>
+						@Model.deliveryDto.request.offer.inquiry.destinationAddress.streetName
+						@Model.deliveryDto.request.offer.inquiry.destinationAddress.houseNumber
+						@if (@Model.deliveryDto.request.offer.inquiry.destinationAddress.flatNumber != null)
+						{
+							<text>/</text>
+							@Model.deliveryDto.request.offer.inquiry.destinationAddress.flatNumber
+						}
+					</span>
+					<br />
+					<span>
+						@Model.deliveryDto.request.offer.inquiry.destinationAddress.postcode
+						@Model.deliveryDto.request.offer.inquiry.destinationAddress.city
+					</span>
+				</td>
+				<td>
+					<span>
+						@Model.deliveryDto.request.offer.inquiry.package.width
+						x
+						@Model.deliveryDto.request.offer.inquiry.package.height
+						x
+						@Model.deliveryDto.request.offer.inquiry.package.length
+						@Model.deliveryDto.request.offer.inquiry.package.dimensionsUnit.ToString()
+					</span>
+					<br />
+					<span>
+						@Model.deliveryDto.request.offer.inquiry.package.weight
+						@Model.deliveryDto.request.offer.inquiry.package.weightUnit.ToString()
+					</span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+</div>

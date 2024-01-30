@@ -2,6 +2,8 @@
 using CourierConnect.Models.Dto;
 using CourierConnect.Utility;
 using CourierConnectWeb.Services.IServices;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace CourierConnectWeb.Services
 {
@@ -18,12 +20,12 @@ namespace CourierConnectWeb.Services
             _configuration = configuration;
         }
 
-        public Task<T> GetAllAsync<T>()
+        public async Task<T> GetAllAsync<T>()
         {
-            return SendAsync<T>(new APIRequest()
+            return await SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = apiUrl + "/api/Offer/GetOffers",
+                Url = /*"https://couriercompanyapi.azurewebsites.net"*/ apiUrl + "/api/Offer/GetOffers",
             }, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
         }
 
@@ -37,13 +39,13 @@ namespace CourierConnectWeb.Services
         //    }, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
         //}
 
-        public Task<T> GetOfferAsync<T>(InquiryDto inquiryDto)
+        public async Task<T> GetOfferAsync<T>(InquiryDto inquiryDto)
         {
-            return SendAsync<T>(new APIRequest()
+            return await SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.POST,
                 Data = inquiryDto,
-                Url = apiUrl + "/api/Offer/Get",
+                Url = apiUrl + "/api/Offer/PostOffer",
             }, _configuration.GetValue<string>(SD.ApiKeySectionName));
         }
 
