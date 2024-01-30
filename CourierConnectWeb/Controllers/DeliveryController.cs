@@ -141,10 +141,10 @@ namespace CourierConnectWeb.Controllers
                     deliveriesDto = deliveriesDto.OrderBy(s => s.deliveryDto.deliveryDate).ToList();
                     break;
                 case "date_desc":
-                    deliveriesDto = deliveriesDto.OrderByDescending(s => s.deliveryDto.deliveryDate).ToList().ToList();
+                    deliveriesDto = deliveriesDto.OrderByDescending(s => s.deliveryDto.deliveryDate).ToList();
                     break;
                 default:
-                    deliveriesDto = deliveriesDto.OrderBy(s => s.deliveryDto.cancelationDeadline).ToList();
+                    deliveriesDto = deliveriesDto.OrderByDescending(s => s.deliveryDto.cancelationDeadline).ToList();
                     break;
             }
             return View(deliveriesDto);
@@ -279,16 +279,16 @@ namespace CourierConnectWeb.Controllers
                         deliveriesDto = deliveriesDto.OrderBy(s => s.request.offer.inquiry.deliveryDate).ToList();
                         break;
                     case "date_desc":
-                        deliveriesDto = deliveriesDto.OrderByDescending(s => s.request.offer.inquiry.deliveryDate).ToList().ToList();
+                        deliveriesDto = deliveriesDto.OrderByDescending(s => s.request.offer.inquiry.deliveryDate).ToList();
                         break;
                     case "PickUpDate":
                         deliveriesDto = deliveriesDto.OrderBy(s => s.request.offer.inquiry.pickupDate).ToList();
                         break;
                     case "pickup_date_desc":
-                        deliveriesDto = deliveriesDto.OrderByDescending(s => s.request.offer.inquiry.pickupDate).ToList().ToList();
+                        deliveriesDto = deliveriesDto.OrderByDescending(s => s.request.offer.inquiry.pickupDate).ToList();
                         break;
                     default:
-                        deliveriesDto = deliveriesDto.OrderBy(s => s.cancelationDeadline).ToList();
+                        deliveriesDto = deliveriesDto.OrderByDescending(s => s.cancelationDeadline).ToList();
                         break;
                 }
                 return View(deliveriesDto);
