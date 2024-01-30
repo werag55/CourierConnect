@@ -21,6 +21,8 @@ namespace CourierCompanyApi.Controllers
         protected APIResponse _response;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly string apiUrl = "https://couriercompanyapi.azurewebsites.net/";
+
         public OfferController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
@@ -125,7 +127,7 @@ namespace CourierCompanyApi.Controllers
                 offerDto.companyOfferId = offer.GUID;
                 _response.Result = offerDto;
                 _response.StatusCode = HttpStatusCode.Created;
-                return Ok(_response);
+                return Created(apiUrl + $"/api/Request/GetOffers", _response);
                 //return CreatedAtRoute("Offer/GetOffer", new { id = offer.Id }, _response);
             }
             catch (Exception ex)
@@ -134,16 +136,16 @@ namespace CourierCompanyApi.Controllers
                 _response.ErrorMessages
                      = new List<string>() { ex.ToString() };
             }
-            return _response;
+            return BadRequest(_response);
         }
 
-		/// <summary>
-		/// Returns all offers realated to the company (for the office worker)
-		/// </summary>
-		/// <response code="200">Returns list of all offers</response>
-		/// <response code="404">There is no offer to return</response>
-		// GET: api/<OffersController>
-		[HttpGet]
+        /// <summary>
+        /// Returns all offers realated to the company (for the office worker)
+        /// </summary>
+        /// <response code="200">Returns list of all offers</response>
+        /// <response code="404">There is no offer to return</response>
+        // GET: api/<OffersController>
+        [HttpGet]
 		[ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
 		[ProducesResponseType(typeof(ListOfferResponse), StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status404NotFound)]
@@ -173,10 +175,10 @@ namespace CourierCompanyApi.Controllers
 				_response.ErrorMessages
 					 = new List<string>() { ex.ToString() };
 			}
-			return _response;
-		}
+            return BadRequest(_response);
+        }
 
-		/*        // PUT api/<OffersController>/5
+        /*        // PUT api/<OffersController>/5
 				[HttpPut("{id}")]
 				public void Put(int id, [FromBody] string value)
 				{
@@ -187,5 +189,5 @@ namespace CourierCompanyApi.Controllers
 				public void Delete(int id)
 				{
 				}*/
-	}
+    }
 }

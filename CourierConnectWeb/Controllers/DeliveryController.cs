@@ -37,7 +37,8 @@ namespace CourierConnectWeb.Controllers
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
 
-            var pendingRequests = _unitOfWork.Request.FindAll(u => u.requestStatus == RequestStatus.Pending, includeProperties:
+            var clientId = _userManager.GetUserId(User);
+            var pendingRequests = _unitOfWork.Request.FindAll(u => (u.requestStatus == RequestStatus.Pending && u.offer.inquiry.clientId.Equals(clientId)), includeProperties:
 				"personalData,personalData.address,offer,offer.inquiry,offer.inquiry.sourceAddress,offer.inquiry.destinationAddress,offer.inquiry.package");
 
             foreach (var pendingRequest in pendingRequests)
@@ -58,7 +59,7 @@ namespace CourierConnectWeb.Controllers
                             var responseDelivery = await deliveryService.GetNewDeliveryAsync<APIResponse>(pendingRequest.companyRequestId);
                             if (responseDelivery != null && responseDelivery.IsSuccess)
                             {
-                                if (responseDelivery.StatusCode == System.Net.HttpStatusCode.NotAcceptable) // request rejected
+                                if (responseDelivery.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity) // request rejected
                                 {
                                     RequestRejectDto reject = JsonConvert.DeserializeObject<RequestRejectDto>(Convert.ToString(responseDelivery.Result));
                                     pendingRequest.requestStatus = reject.requestStatus;
