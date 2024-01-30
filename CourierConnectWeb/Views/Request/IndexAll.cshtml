@@ -64,13 +64,31 @@
                         <td>@obj.requestStatus</td>
                         <td>@obj.decisionDeadline</td>
                         <td>
-                            @obj.personalData.name
-                            @obj.personalData.surname
-                            @obj.personalData.companyName
-                            @obj.personalData.email
+                            <span>
+                                @obj.personalData.name
+                                @obj.personalData.surname
+                            </span>
+                            <br />
+                            <span>
+                                @obj.personalData.companyName
+                                @obj.personalData.email
+                            </span>
                         </td>
                         <td>
-                            @obj.personalData.address.streetName.ToString() 
+                            <span>
+                                @obj.personalData.address.streetName
+                                @obj.personalData.address.houseNumber
+                                @if (@obj.personalData.address.flatNumber != null)
+                                {
+                                    <text>/</text>
+                                    @obj.personalData.address.flatNumber
+                                }
+                            </span>
+                            <br />
+                            <span>
+                                @obj.personalData.address.postcode
+                                @obj.personalData.address.city
+                            </span>
                         </td>
                         <td>
                             <div class="w-75 btn-group" role="group">
@@ -113,9 +131,53 @@
                     <tr>
                         <td>@obj.offer.inquiry.pickupDate</td>
                         <td>@obj.offer.inquiry.deliveryDate</td>
-                        <td>@obj.offer.inquiry.sourceAddress.ToString()</td>
-                        <td>@obj.offer.inquiry.destinationAddress.ToString()</td>
-                        <td>@obj.offer.inquiry.package.ToString()</td>
+                        <td>
+                            <span>
+                                @obj.offer.inquiry.sourceAddress.streetName
+                                @obj.offer.inquiry.sourceAddress.houseNumber
+                                @if (@obj.offer.inquiry.sourceAddress.flatNumber != null)
+                                {
+                                    <text>/</text>
+                                    @obj.offer.inquiry.sourceAddress.flatNumber
+                                }
+                            </span>
+                            <br />
+                            <span>
+                                @obj.offer.inquiry.sourceAddress.postcode
+                                @obj.offer.inquiry.sourceAddress.city
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                @obj.offer.inquiry.destinationAddress.streetName
+                                @obj.offer.inquiry.destinationAddress.houseNumber
+                                @if (@obj.offer.inquiry.destinationAddress.flatNumber != null)
+                                {
+                                    <text>/</text>
+                                    @obj.offer.inquiry.destinationAddress.flatNumber
+                                }
+                            </span>
+                            <br />
+                            <span>
+                                @obj.offer.inquiry.destinationAddress.postcode
+                                @obj.offer.inquiry.destinationAddress.city
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                @obj.offer.inquiry.package.width
+                                x
+                                @obj.offer.inquiry.package.height
+                                x
+                                @obj.offer.inquiry.package.length
+                                @obj.offer.inquiry.package.dimensionsUnit.ToString()
+                            </span>
+                            <br />
+                            <span>
+                                @obj.offer.inquiry.package.weight
+                                @obj.offer.inquiry.package.weightUnit.ToString()
+                            </span>
+                        </td>
                         <td>
                             @if (obj.offer.inquiry.isPriority)
                             {

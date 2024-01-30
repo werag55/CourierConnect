@@ -383,7 +383,7 @@ namespace CourierCompanyApi.Controllers
                 delivery.pickUpDate = DateTime.Now;
 				await _unitOfWork.Delivery.UpdateAsync(delivery);
 				_response.StatusCode = HttpStatusCode.OK;
-                return BadRequest(_response);
+                return Ok(_response);
 
             }
             catch (Exception ex)
@@ -392,7 +392,7 @@ namespace CourierCompanyApi.Controllers
 				_response.ErrorMessages
 					 = new List<string>() { ex.ToString() };
 			}
-			return _response;
+			return BadRequest(_response);
 		}
 
 		/// <summary>

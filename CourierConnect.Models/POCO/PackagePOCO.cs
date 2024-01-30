@@ -15,15 +15,5 @@ namespace CourierConnect.Models.POCO
         public double weight { get; set; }
         public WeightUnit weightUnit { get; set; }
 
-
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            sb.AppendLine($"{width} x {height} x {length} {dimensionsUnit.ToString()}");
-            sb.AppendLine($"{weight} {weightUnit.ToString()}");
-
-            return sb.ToString();
-        }
     }
 }

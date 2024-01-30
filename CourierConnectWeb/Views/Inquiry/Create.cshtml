@@ -102,11 +102,17 @@
                     <label asp-for="package.weight" class="ms-2"></label>
                     <span asp-validation-for="package.weight" class="text-danger"></span>
                 </div>
-                 <div class="form-floating py-2 col-12">
-                 <input asp-for="package.weightUnit" class="form-control border-0 shadow" />
+                <div class="form-floating py-2 col-12">
+                    <select asp-for="package.weightUnit" class="form-control border-0 shadow">
+                        @foreach (var value in Enum.GetValues(typeof(WeightUnit)))
+                        {
+                            <option value="@value">@value</option>
+                        }
+                    </select>
                     <label asp-for="package.weightUnit" class="ms-2"></label>
                     <span asp-validation-for="package.weightUnit" class="text-danger"></span>
                 </div>
+
                 <div class="form-floating py-2 col-12">
                     <input asp-for="package.height" class="form-control border-0 shadow" />
                     <label asp-for="package.height" class="ms-2"></label>
@@ -122,8 +128,13 @@
                     <label asp-for="package.width" class="ms-2"></label>
                     <span asp-validation-for="package.width" class="text-danger"></span>
                 </div>
-                 <div class="form-floating py-2 col-12">
-                    <input asp-for="package.dimensionsUnit" class="form-control border-0 shadow" />
+                <div class="form-floating py-2 col-12">
+                    <select asp-for="package.dimensionsUnit" class="form-control border-0 shadow">
+                        @foreach (var value in Enum.GetValues(typeof(DimensionUnit)))
+                        {
+                            <option value="@value">@value</option>
+                        }
+                    </select>
                     <label asp-for="package.dimensionsUnit" class="ms-2"></label>
                     <span asp-validation-for="package.dimensionsUnit" class="text-danger"></span>
                 </div>
