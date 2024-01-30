@@ -26,6 +26,13 @@
 
         <div class="row pb-3">
             <div class="col-6">
+                @using (Html.BeginForm())
+                {
+                    <p>
+                        Filtr by Company: @Html.TextBox("SearchString")
+                        <input type="submit" value="Search" />
+                    </p>
+                }
             </div>
             <div class="col-6 text-end">
                 <a asp-controller="Delivery" asp-action="Add" class="btn btn-primary">
@@ -39,7 +46,9 @@
                 <tr>
                     <th>Company name</th>
                     <th>Pickup date</th>
-                    <th>Delivery date</th>
+                    <th>
+                        @Html.ActionLink("Delivery Date", "IndexAll", new { sortOrder = ViewBag.DateSortParm })
+                    </th>
                     <th>Cancelation deadline</th>
                     <th>Details</th>
                     <th>Status</th>
@@ -51,7 +60,7 @@
                 @foreach (var obj in Model)
                 {
                     <tr>
-                        <td>@obj.delivery.companyId</td>
+                        <td>@obj.deliveryDto.companyName</td>
                         <td>@obj.deliveryDto.request.offer.inquiry.pickupDate.Date</td>
                         <td>@obj.deliveryDto.request.offer.inquiry.deliveryDate.Date</td>
                         <td>@obj.deliveryDto.cancelationDeadline.Date</td>

@@ -15,6 +15,7 @@ namespace CourierConnect.DataAccess.Repository.IRepository
         IOfferRepository Offer { get; }
         IRequestRepository Request { get; }
         IDeliveryRepository Delivery { get; }
+        ICompanyRepository Company { get; }
         void Save();
     }
 }

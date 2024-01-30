@@ -3,6 +3,7 @@
     public class DeliveryDto
     {
         public string companyDeliveryId { get; set; }
+        public string companyName { get; set; }
         public CourierDto courier { get; set; }
         public RequestDto request { get; set; }
         public DateTime cancelationDeadline { get; set; }
