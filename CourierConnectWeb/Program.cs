@@ -92,3 +92,4 @@ app.MapControllerRoute(
 app.Seed();
 
 app.Run();
+public partial class Program { }

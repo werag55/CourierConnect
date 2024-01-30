@@ -15,8 +15,8 @@ namespace CourierConnectWeb.Controllers
 {
     public class DeliveryController : Controller
     {
-		private readonly UserManager<IdentityUser> _userManager;
-		private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IUnitOfWork _unitOfWork;
         //private readonly IDeliveryService _deliveryService;
         private List<IServiceFactory> _serviceFactories = new List<IServiceFactory>();
         //private readonly IRequestService _requestService;
@@ -32,14 +32,14 @@ namespace CourierConnectWeb.Controllers
             _userManager = userManager;
         }
 
-		public async Task<IActionResult> IndexAll(string sortOrder, string searchString)
+        public async Task<IActionResult> IndexAll(string sortOrder, string searchString)
         {
             //ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
 
             var clientId = _userManager.GetUserId(User);
             var pendingRequests = _unitOfWork.Request.FindAll(u => (u.requestStatus == RequestStatus.Pending && u.offer.inquiry.clientId.Equals(clientId)), includeProperties:
-				"personalData,personalData.address,offer,offer.inquiry,offer.inquiry.sourceAddress,offer.inquiry.destinationAddress,offer.inquiry.package");
+                "personalData,personalData.address,offer,offer.inquiry,offer.inquiry.sourceAddress,offer.inquiry.destinationAddress,offer.inquiry.package");
 
             foreach (var pendingRequest in pendingRequests)
             {
@@ -100,12 +100,12 @@ namespace CourierConnectWeb.Controllers
                         }
                     }
                 }
-			}
+            }
 
             List<DeliveryVM> deliveriesDto = new List<DeliveryVM>();
 
-			var id = _userManager.GetUserId(User);
-			var deliveries = _unitOfWork.Delivery.FindAll(u => u.request.offer.inquiry.clientId == id, includeProperties:
+            var id = _userManager.GetUserId(User);
+            var deliveries = _unitOfWork.Delivery.FindAll(u => u.request.offer.inquiry.clientId == id, includeProperties:
                 "request,request.offer");
 
             foreach (var delivery in deliveries)
@@ -129,7 +129,7 @@ namespace CourierConnectWeb.Controllers
                     }
                 }
 
-			}
+            }
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -152,18 +152,18 @@ namespace CourierConnectWeb.Controllers
         }
         public async Task<IActionResult> DeliveryStatus()
         {
-			//var response = await _deliveryService.GetDeliveryAsync<APIResponse>(companyDeliveryId);
-			//if (response != null && response.IsSuccess)
-			//{
-			//	DeliveryDto deliveryDto = JsonConvert.DeserializeObject<DeliveryDto>(Convert.ToString(response.Result));
-			//	return View(deliveryDto);
-			//}
-			return NotFound();
-		}
+            //var response = await _deliveryService.GetDeliveryAsync<APIResponse>(companyDeliveryId);
+            //if (response != null && response.IsSuccess)
+            //{
+            //	DeliveryDto deliveryDto = JsonConvert.DeserializeObject<DeliveryDto>(Convert.ToString(response.Result));
+            //	return View(deliveryDto);
+            //}
+            return NotFound();
+        }
 
         public async Task<IActionResult> Index(int id)
         {
-            
+
             Delivery delivery = _unitOfWork.Delivery.Get(u => u.Id == id);
             if (delivery == null)
                 return NotFound();
@@ -201,15 +201,15 @@ namespace CourierConnectWeb.Controllers
 
         [HttpGet]
         public IActionResult Add()
-		{
-			return View();
-		}
+        {
+            return View();
+        }
 
         [HttpPost]
         public IActionResult Add(string id)
         {
-			Delivery delivery = _unitOfWork.Delivery.Get(u => u.companyDeliveryId == id,
-                includeProperties:"request,request.offer,request.offer.inquiry");
+            Delivery delivery = _unitOfWork.Delivery.Get(u => u.companyDeliveryId == id,
+                includeProperties: "request,request.offer,request.offer.inquiry");
 
             if (delivery != null)
             {
@@ -218,15 +218,15 @@ namespace CourierConnectWeb.Controllers
                 _unitOfWork.Delivery.Update(delivery);
                 _unitOfWork.Save();
 
-				TempData["SuccessMessage"] = "Delivery added successfully.";
-			}
-			else
-			{
-				TempData["ErrorMessage"] = "Failed to add delivery. Delivery not found.";
-			}
+                TempData["SuccessMessage"] = "Delivery added successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to add delivery. Delivery not found.";
+            }
 
-			return RedirectToAction("IndexAll");
-		}
+            return RedirectToAction("IndexAll");
+        }
 
         public async Task<IActionResult> Cancel(int id)
         {
