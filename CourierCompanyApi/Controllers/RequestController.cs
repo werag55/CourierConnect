@@ -22,8 +22,9 @@ namespace CourierCompanyApi.Controllers
 		protected APIResponse _response;
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
+        private readonly string apiUrl = "https://couriercompanyapi.azurewebsites.net/";
 
-		public RequestController(IUnitOfWork unitOfWork, IMapper mapper)
+        public RequestController(IUnitOfWork unitOfWork, IMapper mapper)
 		{
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
@@ -75,8 +76,8 @@ namespace CourierCompanyApi.Controllers
 				RequestResponseDto requestResponse = _mapper.Map<RequestResponseDto>(request);
 				requestResponse.companyRequestId = request.GUID;
 				_response.Result = requestResponse;
-				_response.StatusCode = HttpStatusCode.OK;
-				return Ok(_response);
+				_response.StatusCode = HttpStatusCode.Created;
+				return Created(apiUrl + $"/api/Request/GetRequests", _response);
 			}
 			catch (Exception ex)
 			{
@@ -84,15 +85,15 @@ namespace CourierCompanyApi.Controllers
 				_response.ErrorMessages
 					 = new List<string>() { ex.ToString() };
 			}
-			return _response;
-		}
+            return BadRequest(_response);
+        }
 
-		/// <summary>
-		/// Returns information whether a decision regarding a given request has already been made
-		/// </summary>
-		/// <response code="200">Returns decision status of the given request.</response>
-		/// <response code="400">Provided request was not valid (e.g. there is no request with a given Id)</response>
-		[HttpGet("{requestId}")]
+        /// <summary>
+        /// Returns information whether a decision regarding a given request has already been made
+        /// </summary>
+        /// <response code="200">Returns decision status of the given request.</response>
+        /// <response code="400">Provided request was not valid (e.g. there is no request with a given Id)</response>
+        [HttpGet("{requestId}")]
 		[ServiceFilter(typeof(ApiKeyAuthFilter))]
 		[ProducesResponseType(typeof(RequestStatusResponse), StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
@@ -123,8 +124,8 @@ namespace CourierCompanyApi.Controllers
 				_response.ErrorMessages
 					 = new List<string>() { ex.ToString() };
 			}
-			return _response;
-		}
+            return BadRequest(_response);
+        }
 
         /// <summary>
         /// Returns all requests related to the company (for the office worker)
@@ -162,7 +163,7 @@ namespace CourierCompanyApi.Controllers
                 _response.ErrorMessages
                      = new List<string>() { ex.ToString() };
             }
-            return _response;
+            return BadRequest(_response);
         }
 
         /// <summary>
@@ -217,15 +218,15 @@ namespace CourierCompanyApi.Controllers
 				_response.ErrorMessages
 					 = new List<string>() { ex.ToString() };
 			}
-			return _response;
-		}
+            return BadRequest(_response);
+        }
 
-		/// <summary>
-		/// Changes the request status to Rejected (for the office worker)
-		/// </summary>
-		/// <response code="200">Request status has been succesfully updated</response>
-		/// <response code="400">Provided request was not valid or decision cannot be made</response>
-		[HttpPost("{requestId}")]
+        /// <summary>
+        /// Changes the request status to Rejected (for the office worker)
+        /// </summary>
+        /// <response code="200">Request status has been succesfully updated</response>
+        /// <response code="400">Provided request was not valid or decision cannot be made</response>
+        [HttpPost("{requestId}")]
 		[ServiceFilter(typeof(SpecialApiKeyAuthFilter))]
 		[ProducesResponseType(typeof(RequestStatusResponse), StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
@@ -273,7 +274,7 @@ namespace CourierCompanyApi.Controllers
 				_response.ErrorMessages
 					 = new List<string>() { ex.ToString() };
 			}
-			return _response;
-		}
-	}
+            return BadRequest(_response);
+        }
+    }
 }

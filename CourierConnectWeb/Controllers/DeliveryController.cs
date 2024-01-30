@@ -59,7 +59,7 @@ namespace CourierConnectWeb.Controllers
                             var responseDelivery = await deliveryService.GetNewDeliveryAsync<APIResponse>(pendingRequest.companyRequestId);
                             if (responseDelivery != null)
                             {
-                                if (responseDelivery.StatusCode == System.Net.HttpStatusCode.NotAcceptable) // request rejected
+                                if (responseDelivery.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity) // request rejected
                                 {
                                     RequestRejectDto reject = JsonConvert.DeserializeObject<RequestRejectDto>(Convert.ToString(responseDelivery.Result));
                                     pendingRequest.requestStatus = reject.requestStatus;

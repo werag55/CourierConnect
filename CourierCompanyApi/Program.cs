@@ -3,14 +3,37 @@ using CourierCompanyApi.Authentication;
 using CourierCompanyApi.Data;
 using CourierCompanyApi.Repository;
 using CourierCompanyApi.Repository.IRepository;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.AzureAppServices;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using static TimingMiddleware;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.AddAzureWebAppDiagnostics();
+
+builder.Services.Configure<AzureBlobLoggerOptions>(options =>
+{
+    options.BlobName = "log.txt";
+});
+
+builder.Services.AddHttpLogging(logging =>
+{
+    // Customize HTTP logging here.
+    logging.LoggingFields = HttpLoggingFields.All;
+    logging.RequestHeaders.Add("sec-ch-ua");
+    logging.ResponseHeaders.Add("X-Execution-Time");
+    logging.ResponseHeaders.Add("my-response-header");
+    logging.MediaTypeOptions.AddText("application/json");
+    logging.RequestBodyLogLimit = 4096;
+    logging.ResponseBodyLogLimit = 4096;
+    
+});
 
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(option => {
@@ -64,6 +87,9 @@ var app = builder.Build();
     app.UseSwagger();
     app.UseSwaggerUI();
 //}
+
+app.UseTimingMiddleware();
+app.UseHttpLogging();
 
 app.UseHttpsRedirection();
 
