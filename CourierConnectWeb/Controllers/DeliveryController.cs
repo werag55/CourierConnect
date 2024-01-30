@@ -185,7 +185,7 @@ namespace CourierConnectWeb.Controllers
             return NotFound();
         }
 
-        public async Task<IActionResult> Details(int id)
+        public IActionResult Details(int id)
         {
             Delivery delivery = _unitOfWork.Delivery.Get(u => u.request.offer.inquiryId == id);
             if (delivery == null)
@@ -254,9 +254,12 @@ namespace CourierConnectWeb.Controllers
         #region Courier
 
         //[Authorize(Roles = SD.Role_User_Courier)]
-        public async Task<IActionResult> IndexAllCourier()
+        public async Task<IActionResult> IndexAllCourier(string sortOrder, string searchString)
         {
-            string courierUserName = _userManager.GetUserName(User); //= "hryshko.alina@gmail.com";
+            ViewBag.PickUpDateSortParm = sortOrder == "PickUpDate" ? "pickup_date_desc" : "PickUpDate";
+            ViewBag.DeliveryDateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+
+            string courierUserName = "hryshko.alina@gmail.com";
 
             IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == 0).FirstOrDefault();
             var deliveryService = serviceFactory.createDeliveryService();
@@ -264,8 +267,31 @@ namespace CourierConnectWeb.Controllers
             var response = await deliveryService.GetAllCourierDeliveryAsync<APIResponse>(courierUserName);
             if (response != null && response.IsSuccess)
             {
-                List<DeliveryDto>? offerDto = JsonConvert.DeserializeObject<List<DeliveryDto>>(Convert.ToString(response.Result));
-                return View(offerDto);
+                List<DeliveryDto>? deliveriesDto = JsonConvert.DeserializeObject<List<DeliveryDto>>(Convert.ToString(response.Result));
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    deliveriesDto = deliveriesDto.Where(s => s.deliveryStatus.ToString() == searchString).ToList();
+                }
+                switch (sortOrder)
+                {
+                    case "Date":
+                        deliveriesDto = deliveriesDto.OrderBy(s => s.request.offer.inquiry.deliveryDate).ToList();
+                        break;
+                    case "date_desc":
+                        deliveriesDto = deliveriesDto.OrderByDescending(s => s.request.offer.inquiry.deliveryDate).ToList().ToList();
+                        break;
+                    case "PickUpDate":
+                        deliveriesDto = deliveriesDto.OrderBy(s => s.request.offer.inquiry.pickupDate).ToList();
+                        break;
+                    case "pickup_date_desc":
+                        deliveriesDto = deliveriesDto.OrderByDescending(s => s.request.offer.inquiry.pickupDate).ToList().ToList();
+                        break;
+                    default:
+                        deliveriesDto = deliveriesDto.OrderBy(s => s.cancelationDeadline).ToList();
+                        break;
+                }
+                return View(deliveriesDto);
             }
 
             return View(null);
