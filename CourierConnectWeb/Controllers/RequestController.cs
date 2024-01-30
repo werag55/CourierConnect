@@ -167,6 +167,8 @@ namespace CourierConnectWeb.Controllers
             if (response != null && response.IsSuccess)
             {
                 List<RequestDto>? requestDto = JsonConvert.DeserializeObject<List<RequestDto>>(Convert.ToString(response.Result));
+                if (requestDto == null)
+                    requestDto = new List<RequestDto>();
 
                 if (!String.IsNullOrEmpty(searchString))
                 {

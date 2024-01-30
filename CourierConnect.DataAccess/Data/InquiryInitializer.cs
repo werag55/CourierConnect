@@ -41,6 +41,8 @@ namespace CourierConnect.DataAccess.Data
                             }
                         );
 
+                        context.SaveChanges();
+
                         context.Packages.AddRange(
                             new Models.Package
                             {
@@ -62,6 +64,8 @@ namespace CourierConnect.DataAccess.Data
                             }
                         );
 
+                        context.SaveChanges();
+
                         context.Inquiries.AddRange(
                             new Models.Inquiry
                             {
@@ -69,9 +73,9 @@ namespace CourierConnect.DataAccess.Data
                                 deliveryDate = DateTime.Now.AddDays(8),
                                 isPriority = true,
                                 isCompany = false,
-                                sourceAddressId = 1,
-                                destinationAddressId = 2,
-                                packageId = 1,
+                                sourceAddressId = context.Addresses.First().Id,
+                                destinationAddressId = context.Addresses.First().Id,
+                                packageId = context.Packages.First().Id,
                                 creationDate = DateTime.Now,
                             },
                             new Models.Inquiry
@@ -80,9 +84,9 @@ namespace CourierConnect.DataAccess.Data
                                 deliveryDate = DateTime.Now.AddDays(10),
                                 isPriority = false,
                                 isCompany = true,
-                                sourceAddressId = 2,
-                                destinationAddressId = 1,
-                                packageId = 2,
+                                sourceAddressId = context.Addresses.First().Id,
+                                destinationAddressId = context.Addresses.First().Id,
+                                packageId = context.Packages.First().Id,
                                 creationDate = DateTime.Now,
                             }
                         );

@@ -12,6 +12,7 @@ using ICSharpCode.Decompiler.CSharp.Syntax;
 using CourierConnectWeb.Services.Factory;
 using Newtonsoft.Json;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CourierConnectWeb.Controllers
 {
@@ -46,6 +47,8 @@ namespace CourierConnectWeb.Controllers
             if (response != null && response.IsSuccess)
             {
                 List<InquiryDto>? inquiryDto = JsonConvert.DeserializeObject<List<InquiryDto>>(Convert.ToString(response.Result));
+                if (inquiryDto == null)
+                    inquiryDto = new List<InquiryDto>();
 
                 switch (sortOrder)
                 {
@@ -94,7 +97,8 @@ namespace CourierConnectWeb.Controllers
                 return false;
             return true;
         }
-  
+
+        [Authorize(Roles = SD.Role_User_Client)]
         public IActionResult ClientInquiries()
         {
             var id = _userManager.GetUserId(User);

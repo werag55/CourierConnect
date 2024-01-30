@@ -106,6 +106,9 @@ namespace CourierConnectWeb.Controllers
                 {
                     List<OfferPOCO>? offerDto = _mapper.Map<List<OfferPOCO>>(JsonConvert.DeserializeObject<List<OfferDto>>(Convert.ToString(response.Result)));
 
+                    if (offerDto == null)
+                        offerDto = new List<OfferPOCO>();
+
                     if (!String.IsNullOrEmpty(searchString))
                     {
                     offerDto = offerDto.Where(s => s.currency.ToString() == searchString).ToList();

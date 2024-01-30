@@ -147,7 +147,7 @@ namespace CourierCompanyApi.Controllers
 
                 if (RequestList == null || RequestList.Count() == 0)
                 {
-                    _response.IsSuccess = false;
+                    _response.IsSuccess = true;
                     _response.StatusCode = HttpStatusCode.NotFound;
                     return NotFound(_response);
                 }
