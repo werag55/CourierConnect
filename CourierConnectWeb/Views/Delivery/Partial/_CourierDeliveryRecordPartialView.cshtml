@@ -1,0 +1,43 @@
+﻿@model DeliveryDto
+
+<tr data-delivery-id="@Model.companyDeliveryId">
+    <td>@Model.request.offer.inquiry.pickupDate.Date</td>
+    <td>@Model.request.offer.inquiry.deliveryDate.Date</td>
+    <td>@Model.cancelationDeadline.Date</td>
+    <td>@Model.pickUpDate</td>
+    <td>@Model.deliveryDate</td>
+    <td>@Model.reason</td>
+    <td>@Model.deliveryStatus</td>
+    <td>
+        <div class="w-75 btn-group" role="group">
+            @if (Model.cancelationDeadline < DateTime.Now && @Model.deliveryStatus == DeliveryStatus.Proccessing)
+            {
+                <a href="#" class="btn btn-primary mx-2" onclick="pickupDelivery('@Model.companyDeliveryId')">
+                    <i class="bi bi-pencil-square"></i> Pick up
+                </a>
+@*                 <a asp-controller="Delivery" asp-action="PickUp" asp-route-id="@Model.companyDeliveryId" class="btn btn-primary mx-2">
+                    <i class="bi bi-pencil-square"></i> Pick up
+                </a> *@
+            }
+            @if (@Model.deliveryStatus == DeliveryStatus.PickedUp)
+            {
+                @* <a asp-controller="Delivery" asp-action="Deliver" asp-route-id="@Model.companyDeliveryId" class="btn btn-primary mx-2">
+                    <i class="bi bi-pencil-square"></i> Deliver
+                </a> *@
+                <a href="#" class="btn btn-primary mx-2" onclick="deliverDelivery('@Model.companyDeliveryId')">
+                    <i class="bi bi-pencil-square"></i> Deliver
+                </a>
+            }
+        </div>
+    </td>
+    <td>
+        <div class="w-75 btn-group" role="group">
+            @if (@Model.deliveryStatus == DeliveryStatus.Proccessing || @Model.deliveryStatus == DeliveryStatus.PickedUp)
+            {
+                <a asp-controller="Delivery" asp-action="CannotDeliver" asp-route-id="@Model.companyDeliveryId" class="btn btn-danger mx-2">
+                    <i class="bi bi-pencil-square"></i> Cannot deliver
+                </a>
+            }
+        </div>
+    </td>
+</tr>

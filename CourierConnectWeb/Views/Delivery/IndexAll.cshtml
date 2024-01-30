@@ -59,7 +59,8 @@
             <tbody>
                 @foreach (var obj in Model)
                 {
-                    <tr>
+                    await Html.RenderPartialAsync("./Partial/_DeliveryRecordPartialView", obj);
+                    @* <tr>
                         <td>@obj.deliveryDto.companyName</td>
                         <td>@obj.deliveryDto.request.offer.inquiry.pickupDate.Date</td>
                         <td>@obj.deliveryDto.request.offer.inquiry.deliveryDate.Date</td>
@@ -80,7 +81,7 @@
                                 }
                             </div>
                         </td>
-                    </tr>
+                    </tr> *@
                 }
             </tbody>
 
@@ -91,7 +92,28 @@
 
 @section Scripts{
     <script src="~/js/product.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        function cancelDelivery(deliveryId) {
+            $.ajax({
+                url: '@Url.Action("Cancel", "Delivery")',
+                type: 'POST',
+                data: { id: deliveryId },
+                success: function (partialView) {
+                    var rowToUpdate = $('#tblData').find('tr[data-delivery-id="' + deliveryId + '"]');
+                    rowToUpdate.replaceWith(partialView);
+                },
+                error: function () {
+                    alert('Failed to cancel delivery. Try again.');
+                }
+            });
+        }
+    </script>
 }
+
+
 
 @* <div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
