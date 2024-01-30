@@ -15,11 +15,17 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
         {
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.courierName)
+            builder.Property(e => e.companyId)
                 .IsRequired();
 
-            builder.Property(e => e.courierSurname)
+            builder.Property(e => e.companyDeliveryId)
                 .IsRequired();
+
+            //builder.Property(e => e.courierName)
+            //    .IsRequired();
+
+            //builder.Property(e => e.courierSurname)
+            //    .IsRequired();
 
             builder.Property(e => e.requestId)
                 .IsRequired();
@@ -30,15 +36,17 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Property(e => e.pickUpDate)
-                .IsRequired();
+            //builder.Property(e => e.cancelationDeadline)
+            //    .IsRequired();
 
-            builder.Property(e => e.deliveryDate);
+            //builder.Property(e => e.pickUpDate);
 
-            builder.Property(e => e.deliveryStatus)
-                .IsRequired();
+            //builder.Property(e => e.deliveryDate);
 
-            builder.Property(e => e.reason);
+            //builder.Property(e => e.deliveryStatus)
+            //    .IsRequired();
+
+            //builder.Property(e => e.reason);
         }
     }
 }

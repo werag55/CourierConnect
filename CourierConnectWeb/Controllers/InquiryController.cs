@@ -89,12 +89,11 @@ namespace CourierConnectWeb.Controllers
 
 
             }
-          var destinationAddress = _context.Addresses
-         .FirstOrDefault(a =>
-         a.streetName == obj.destinationAddress.streetName &&
-         a.flatNumber == obj.destinationAddress.flatNumber &&
-         a.houseNumber == obj.destinationAddress.houseNumber &&
-         a.postcode == obj.destinationAddress.postcode);
+            var destinationAddress = _context.Addresses.FirstOrDefault(a =>
+                a.streetName == obj.destinationAddress.streetName &&
+                a.flatNumber == obj.destinationAddress.flatNumber &&
+                a.houseNumber == obj.destinationAddress.houseNumber &&
+                a.postcode == obj.destinationAddress.postcode);
 
 
             if (destinationAddress== null)
@@ -130,10 +129,16 @@ namespace CourierConnectWeb.Controllers
                 EmailSender email = new EmailSender();
 
                 email.SendEmailAsync(emailSubject, toEmail, message).Wait();
-                return RedirectToAction("Index");
-            //}
+				//return RedirectToAction("Index");
+				return RedirectToRoute(new
+				{
+					controller = "Offer",
+					action = "Create",
+					id = obj.Id
+				});
+			//}
 
-            return View();
+            return View(obj);
 
         }
 

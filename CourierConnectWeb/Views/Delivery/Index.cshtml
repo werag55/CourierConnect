@@ -1,53 +1,6 @@
-﻿@model List<Delivery>
-
-<div class="card shadow border-0 mt-4">
-    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
-        <div class="row">
-            <div class="col-12 text-center">
-                <h2 class="text-white py-2">Delivery List</h2>
-            </div>
-        </div>
-    </div>
-    <div class="card-body p-4">
-        <div class="row pb-3">
-            <div class="col-6">
-            </div>
-        </div>
-        @using (Html.BeginForm())
-        {
-            <p>
-                Find by ID: @Html.TextBox("SearchString")
-                <input type="submit" value="Search" />
-            </p>
-        }
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.ActionLink("Id", "Index", new { sortOrder = ViewBag.NameSortParm })
-                    </th>
-                    <th>
-                        @Html.ActionLink("Delivery Date", "Index", new { sortOrder = ViewBag.DateSortParm })
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var obj in Model)
-                {
-                    <tr>
-                        <td>@obj.Id</td>
-                        <td>
-                            <div class="w-40 btn-group" role="group">
-                                <a asp-controller="Delivery" asp-action="DeliveryStatus" asp-route-id="@obj.Id" class="btn btn-primary mx-2">
-                                    <i class="bi bi-pencil-square"></i> Delivery Status
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-    </div>
-</div>
+﻿@model DeliveryDto
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}

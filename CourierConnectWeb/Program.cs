@@ -39,6 +39,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddHttpClient<IOfferService, OfferService>();
 builder.Services.AddScoped<IOfferService, OfferService>();
+builder.Services.AddHttpClient<IDeliveryService, DeliveryService>();
+builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -75,3 +77,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+public partial class Program { }

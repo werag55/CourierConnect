@@ -13,9 +13,10 @@
             <div class="col-6">
             </div>
             <div class="col-6 text-end">
-                <a asp-controller="Inquiry" asp-action="Create" class="btn btn-primary">
+                @* <a asp-controller="Inquiry" asp-action="Create" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i>  Create new Inquiry
-                </a>
+                </a> *@
+                @Html.ActionLink("Create new Inquiry", "Create", "Inquiry", null, new { @class = "btn btn-primary" })
             </div>
         </div>
 
@@ -35,24 +36,26 @@
                 @foreach (var obj in Model)
                 {
                     <tr>
-                        <td>@obj.Inquiry.pickupDate.Date</td>
-                        <td>@obj.Inquiry.deliveryDate.Date</td>
-                        <td>@obj.Inquiry.sourceAddress.ToString()</td>
-                        <td>@obj.Inquiry.destinationAddress.ToString()</td>
-                        <td>@obj.Inquiry.package.ToString()</td>
+                        <td>@Html.DisplayFor(model => obj.Inquiry.pickupDate.Date)</td>
+                        <td>@Html.DisplayFor(model => obj.Inquiry.deliveryDate.Date)</td>
+                        <td>@Html.DisplayFor(model => obj.Inquiry.sourceAddress.ToString())</td>
+                        <td>@Html.DisplayFor(model => obj.Inquiry.destinationAddress.ToString())</td>
+                        <td>@Html.DisplayFor(model => obj.Inquiry.package.ToString())</td>
                         <td>
                             <div class="w-75 btn-group" role="group">
                                 @if (obj.hasDelivery)
                                 {
-                                     <a asp-controller="Category" asp-action="Edit" asp-route-id="@obj.Inquiry.Id" class="btn btn-primary mx-2">
+                                     @* <a asp-controller="Category" asp-action="Edit" asp-route-id="@obj.Inquiry.Id" class="btn btn-primary mx-2">
                                         <i class="bi bi-pencil-square"></i> View delivery
-                                    </a>
+                                    </a> *@
+                                    @Html.ActionLink("View delivery", "Edit", "Inquiry", new { id = obj.Inquiry.Id }, new { @class = "btn btn-primary mx-2" })
                                 }
                                 else
                                 {
-                                    <a asp-controller="Offer" asp-action="Index" asp-route-id="@obj.Inquiry.Id" class="btn btn-outline-primary border  form-control">
+                                    @* <a asp-controller="Offer" asp-action="Index" asp-route-id="@obj.Inquiry.Id" class="btn btn-outline-primary border  form-control">
                                         View offers
-                                    </a>
+                                    </a> *@
+                                    @Html.ActionLink("View offers", "Index", "Offer", new { id = obj.Inquiry.Id }, new { @class = "btn btn-outline-primary border  form-control" })
                                 }
                                 </div>
                         </td>

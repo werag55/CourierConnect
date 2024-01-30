@@ -19,6 +19,7 @@ namespace CourierCompanyApi.Models
         //public string currency {  get; set; }
         public decimal taxes { get; set; }
         public decimal fees { get; set; }   
+        public Currency currency { get; set; }
 
         public Offer()
         {
@@ -32,5 +33,12 @@ namespace CourierCompanyApi.Models
         Pending,
         Accepted,
         Rejected
+    }
+
+    public enum Currency
+    {
+        PLN,
+        EUR,
+        USD
     }
 }

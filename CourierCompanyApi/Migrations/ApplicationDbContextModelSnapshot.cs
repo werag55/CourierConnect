@@ -94,6 +94,9 @@ namespace CourierCompanyApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("cancelationDeadline")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("courierId")
                         .HasColumnType("int");
 
@@ -103,7 +106,7 @@ namespace CourierCompanyApi.Migrations
                     b.Property<int>("deliveryStatus")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("pickUpDate")
+                    b.Property<DateTime?>("pickUpDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("reason")
@@ -184,6 +187,9 @@ namespace CourierCompanyApi.Migrations
 
                     b.Property<DateTime>("creationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("currency")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("expirationDate")
                         .HasColumnType("datetime2");

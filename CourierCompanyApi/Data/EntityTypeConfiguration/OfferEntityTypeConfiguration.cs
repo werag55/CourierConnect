@@ -47,6 +47,9 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
             builder.Property(e => e.fees)
                 .IsRequired()
                 .HasColumnType("money");
+
+            builder.Property(e => e.currency)
+                .IsRequired();
         }
     }
 }

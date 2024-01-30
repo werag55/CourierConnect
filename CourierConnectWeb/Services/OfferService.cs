@@ -9,12 +9,12 @@ namespace CourierConnectWeb.Services
     {
         private readonly IConfiguration _configuration;
         private readonly IHttpClientFactory _clientFactory;
-        private string offerUrl;
+        private string apiUrl;
 
         public OfferService(IHttpClientFactory clientFactory, IConfiguration configuration) : base(clientFactory)
         {
             _clientFactory = clientFactory;
-            offerUrl = configuration.GetValue<string>("ServiceUrls:OfferAPI");
+            apiUrl = configuration.GetValue<string>(SD.ApiUrlSectionName);
             _configuration = configuration;
         }
 
@@ -23,7 +23,7 @@ namespace CourierConnectWeb.Services
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = offerUrl + "/api/Offer/GetOffers",
+                Url = apiUrl + "/api/Offer/GetOffers",
             }, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
         }
 
@@ -43,7 +43,7 @@ namespace CourierConnectWeb.Services
             {
                 ApiType = SD.ApiType.POST,
                 Data = inquiryDto,
-                Url = offerUrl + "/api/Offer/Get",
+                Url = apiUrl + "/api/Offer/Get",
             }, _configuration.GetValue<string>(SD.ApiKeySectionName));
         }
 

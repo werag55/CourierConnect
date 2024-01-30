@@ -15,6 +15,7 @@ namespace CourierConnect.Utility
 
         public const string ApiKeySectionName = "Authentication:ApiKey";
         public const string SpecialApiKeySectionName = "Authentication:SpecialApiKey";
+        public const string ApiUrlSectionName = "ServiceUrls:API";
 
         public enum ApiType
         {

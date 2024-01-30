@@ -12,36 +12,31 @@
     @if (User.IsInRole(SD.Role_User_Client) && SignInManager.IsSignedIn(User))
     {
         <div class="w-200 btn-group" role="group">
-            <a asp-area="" asp-controller="Delivery" asp-action="Index" class="btn btn-primary mx-2">
-                <i class="bi bi-pencil-square"></i> Go to MyDeliveries 
-            </a>
-            <a asp-area="" asp-controller="Inquiry" asp-action="Create" class="btn btn-primary mx-2">
+            @Html.ActionLink("Go to MyDeliveries", "Index", "Delivery", new { area = "" }, new { @class = "btn btn-primary mx-2" })
+            @Html.ActionLink("Create New Inquiry", "Create", "Inqiury", new { area = "" }, new { @class = "btn btn-primary mx-2" })
+            @Html.ActionLink("My Inquiries", "ClientInquiries", "Inquiry", new { area = "" }, new { @class = "btn btn-primary mx-2" })
+            @* <a asp-area="" asp-controller="Delivery" asp-action="Index" class="btn btn-primary mx-2">
+                <i class="bi bi-pencil-square"></i> Go to MyDeliveries
+            </a> *@
+            @* <a asp-area="" asp-controller="Inquiry" asp-action="Create" class="btn btn-primary mx-2">
                 <i class="bi bi-plus-circle"></i>  Create New Inquiry
             </a>
             <a asp-area="" asp-controller="Inquiry" asp-action="ClientInquiries" class="btn btn-primary mx-2">
                 <i class="bi bi-plus-circle"></i>  My Inquiries
-            </a>
+            </a> *@
         </div>
     }
     else if (User.IsInRole(SD.Role_User_Courier))
     {
-        <a asp-area="" asp-controller="Delivery" asp-action="Index" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i>  Courier's Delivery
-        </a>
+        @Html.ActionLink("Courier's Delivry", "Index", "Delivery", new { area = "" }, new { @class = "btn btn-primary mx-2" })
     }
     else if(User.IsInRole(SD.Role_User_Worker))
     {
-        <a asp-area="" asp-controller="Inquiry" asp-action="Index" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i>  Show all inquiries to the company
-        </a>
-        <a asp-area="" asp-controller="Offer" asp-action="Index" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i>  Show all offers to the company
-        </a>
+        @Html.ActionLink("Show all inquiries to the company", "Index", "Inquiry", new { area = "" }, new { @class = "btn btn-primary mx-2" })
+        @Html.ActionLink("Show all offers to the company", "Index", "Offer", new { area = "" }, new { @class = "btn btn-primary mx-2" })
     }
     else
     {
-        <a asp-area="" asp-controller="Inquiry" asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i>  Create New Inquiry
-        </a>
+        @Html.ActionLink("Create New Inquiry", "Create", "Inquiry", new { area = "" }, new { @class = "btn btn-primary mx-2" })
     }
 </div>

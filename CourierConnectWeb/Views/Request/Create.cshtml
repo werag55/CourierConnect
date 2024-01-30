@@ -1,0 +1,127 @@
+﻿@model RequestCreateVM
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Fill Personal Data</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form method="post" class="row">
+            <div class="border p-3">
+                @*<div asp-validation-summary="ModelOnly"></div>*@
+
+                @* <input asp-for=offerId hidden />
+                <input asp-for=requestSendDto.companyOfferId hidden /> *@
+                @Html.HiddenFor(model => model.offerId)
+                @Html.HiddenFor(model => model.requestSendDto.companyOfferId)
+                <div class="form-floating py-2 col-12">
+                    @* <input asp-for="requestSendDto.personalData.name" class="form-control border-0 shadow" />
+                    <label asp-for="requestSendDto.personalData.name" class="ms-2"></label>
+                    <span asp-validation-for="requestSendDto.personalData.name" class="text-danger"></span> *@
+                    @Html.EditorFor(model => model.requestSendDto.personalData.name, new { htmlAttributes = new { @class = "form-control border-0 shadow" } })
+                    @Html.LabelFor(model => model.requestSendDto.personalData.name, new { @class = "ms-2" })
+                    @Html.ValidationMessageFor(model => model.requestSendDto.personalData.name, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-floating py-2 col-12">
+                    @Html.EditorFor(model => model.requestSendDto.personalData.surname, new { htmlAttributes = new { @class = "form-control border-0 shadow" } })
+                    @Html.LabelFor(model => model.requestSendDto.personalData.surname, new { @class = "ms-2" })
+                    @Html.ValidationMessageFor(model => model.requestSendDto.personalData.surname, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-floating py-2 col-12">
+                    @Html.EditorFor(model => model.requestSendDto.personalData.surname, new { htmlAttributes = new { @class = "form-control border-0 shadow" } })
+                    @Html.LabelFor(model => model.requestSendDto.personalData.surname, new { @class = "ms-2" })
+                    @Html.ValidationMessageFor(model => model.requestSendDto.personalData.surname, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-floating py-2 col-12">
+                    @Html.EditorFor(model => model.requestSendDto.personalData.companyName, new { htmlAttributes = new { @class = "form-control border-0 shadow" } })
+                    @Html.LabelFor(model => model.requestSendDto.personalData.companyName, new { @class = "ms-2" })
+                    @Html.ValidationMessageFor(model => model.requestSendDto.personalData.companyName, "", new { @class = "text-danger" })
+                </div>
+                <div>Addres</div>
+                <div class="form-floating py-2 col-12">
+                    @Html.EditorFor(model => model.requestSendDto.personalData.address.streetName, new { htmlAttributes = new { @class = "form-control border-0 shadow" } })
+                    @Html.LabelFor(model => model.requestSendDto.personalData.address.streetName, new { @class = "ms-2" })
+                    @Html.ValidationMessageFor(model => model.requestSendDto.personalData.address.streetName, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-floating py-2 col-12">
+                    @Html.EditorFor(model => model.requestSendDto.personalData.address.houseNumber, new { htmlAttributes = new { @class = "form-control border-0 shadow" } })
+                    @Html.LabelFor(model => model.requestSendDto.personalData.address.houseNumber, new { @class = "ms-2" })
+                    @Html.ValidationMessageFor(model => model.requestSendDto.personalData.address.houseNumber, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-floating py-2 col-12">
+                    @Html.EditorFor(model => model.requestSendDto.personalData.address.flatNumber, new { htmlAttributes = new { @class = "form-control border-0 shadow" } })
+                    @Html.LabelFor(model => model.requestSendDto.personalData.address.flatNumber, new { @class = "ms-2" })
+                    @Html.ValidationMessageFor(model => model.requestSendDto.personalData.address.flatNumber, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-floating py-2 col-12">
+                    @Html.EditorFor(model => model.requestSendDto.personalData.address.city, new { htmlAttributes = new { @class = "form-control border-0 shadow" } })
+                    @Html.LabelFor(model => model.requestSendDto.personalData.address.city, new { @class = "ms-2" })
+                    @Html.ValidationMessageFor(model => model.requestSendDto.personalData.address.city, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-floating py-2 col-12">
+                    @Html.EditorFor(model => model.requestSendDto.personalData.address.postcode, new { htmlAttributes = new { @class = "form-control border-0 shadow" } })
+                    @Html.LabelFor(model => model.requestSendDto.personalData.address.postcode, new { @class = "ms-2" })
+                    @Html.ValidationMessageFor(model => model.requestSendDto.personalData.address.postcode, "", new { @class = "text-danger" })
+                </div>
+                <div class="row pt-2">
+                    <div class="col-6 col-md-3">
+                        <button type="submit" class="btn btn-primary form-control">Submit</button>
+                        @*                         <a asp-controller="Offer" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-outline-primary border  form-control">
+                        View offers
+                        </a> *@
+                    </div>
+                    <div class="col-6 col-md-3">
+                        @Html.ActionLink("Back to Home", "Index", "Home", null, new { @class = "btn btn-outline-primary border  form-control" })
+                    </div>
+                </div>
+
+
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
+
+@* @model Request
+
+@using (Html.BeginForm())
+{
+    <!-- Formularz dla pól związanych z PersonalData -->
+    <div>
+        @Html.LabelFor(model => model.personalData.name)
+        @Html.EditorFor(model => model.personalData.name)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.personalData.surname)
+        @Html.EditorFor(model => model.personalData.surname)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.personalData.surname)
+        @Html.EditorFor(model => model.personalData.surname)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.personalData.companyName)
+        @Html.EditorFor(model => model.personalData.companyName)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.personalData.email)
+        @Html.EditorFor(model => model.personalData.email)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.personalData.address.)
+        @Html.EditorFor(model => model.personalData.email)
+    </div>
+
+    <input type="submit" value="Create" />
+} *@

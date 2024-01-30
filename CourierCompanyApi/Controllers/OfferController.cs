@@ -38,7 +38,7 @@ namespace CourierCompanyApi.Controllers
             {
 
                 IEnumerable<Offer> OfferList;
-                OfferList = await _unitOfWork.Offer.GetAllAsync(includeProperties:"inquiry");
+                OfferList = await _unitOfWork.Offer.GetAllAsync(includeProperties:"inquiry,inquiry.sourceAddress,inquiry.destinationAddress,inquiry.package");
                 _response.Result = _mapper.Map<List<OfferDto>>(OfferList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
@@ -67,7 +67,7 @@ namespace CourierCompanyApi.Controllers
         //            _response.StatusCode = HttpStatusCode.BadRequest;
         //            return BadRequest(_response);
         //        }
-        //        var Offer = await _unitOfWork.Offer.GetAsync(u => u.Id == id,includeProperties:"inquiry");
+        //        var Offer = await _unitOfWork.Offer.GetAsync(u => u.Id == id,includeProperties:"inquiry,inquiry.sourceAddress,inquiry.destinationAddress,inquiry.package");
         //        if (Offer == null)
         //        {
         //            _response.StatusCode = HttpStatusCode.NotFound;
@@ -104,6 +104,9 @@ namespace CourierCompanyApi.Controllers
                 taxes = (decimal)(weight + length * 2.5 * 0.23),
                 fees = (decimal)(weight + length * 2.5 * 0.1),
             };
+            offer.creationDate = offer.creationDate.AddTicks(-offer.creationDate.Ticks % TimeSpan.TicksPerSecond);
+            offer.updatedDate = offer.updatedDate.AddTicks(-offer.updatedDate.Ticks % TimeSpan.TicksPerSecond);
+            offer.expirationDate = offer.expirationDate.AddTicks(-offer.expirationDate.Ticks % TimeSpan.TicksPerSecond);
             return offer;
         }
 
@@ -133,8 +136,9 @@ namespace CourierCompanyApi.Controllers
                 Offer offer = createOffer(inquiry);
                 await _unitOfWork.Offer.CreateAsync(offer);
                 //await _unitOfWork.SaveAsync();
-
-                _response.Result = _mapper.Map<OfferDto>(offer);
+                OfferDto offerDto = _mapper.Map<OfferDto>(offer);
+                offerDto.companyOfferId = offer.Id;
+                _response.Result = offerDto;
                 _response.StatusCode = HttpStatusCode.Created;
                 return Ok(_response);
                 //return CreatedAtRoute("Offer/GetOffer", new { id = offer.Id }, _response);
@@ -148,7 +152,7 @@ namespace CourierCompanyApi.Controllers
             return _response;
         }
 
-        // PUT api/<OffersController>/5
+/*        // PUT api/<OffersController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
@@ -158,6 +162,6 @@ namespace CourierCompanyApi.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-        }
+        }*/
     }
 }

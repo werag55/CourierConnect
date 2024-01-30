@@ -26,17 +26,17 @@ namespace CourierConnectWeb.Controllers
             _userManager = userManager;
         }
 
-        private Offer GetOfferToSave(OfferDto offerDto, Inquiry inquiry)
+        private Offer GetOfferToSave(OfferDto offerDto, Inquiry inquiry, int companyId)
         {
             Offer offer = _mapper.Map<Offer>(offerDto);
             offer.inquiry = inquiry;
             offer.inquiryId = inquiry.Id;
-            offer.creationDate = DateTime.Now;
             offer.updatedDate = DateTime.Now;
+            offer.companyId = companyId;
             return offer;
         }
 
-        [Authorize(Roles = SD.Role_User_Client)]
+        //[Authorize(Roles = SD.Role_User_Client)]
         public async Task<IActionResult> Create(int Id)
         {
             //Inquiry? inquiry = _unitOfWork.Inquiry.GetAll(includeProperties:"sourceAddress,destinationAddress,package").FirstOrDefault();
@@ -46,7 +46,7 @@ namespace CourierConnectWeb.Controllers
             if (response != null && response.IsSuccess)
             {
                 OfferDto? offerDto = JsonConvert.DeserializeObject<OfferDto>(Convert.ToString(response.Result));
-                Offer offer = GetOfferToSave(offerDto, inquiry);
+                Offer offer = GetOfferToSave(offerDto, inquiry, 1);
                 _unitOfWork.Offer.Add(offer);
                 _unitOfWork.Save();
 
@@ -58,7 +58,8 @@ namespace CourierConnectWeb.Controllers
         [Authorize(Roles = SD.Role_User_Client)]
         public IActionResult Index(int Id)
         {
-            IEnumerable<Offer> offers = _unitOfWork.Offer.FindAll(u => u.inquiry.Id == Id, includeProperties:"inquiry");
+            IEnumerable<Offer> offers = _unitOfWork.Offer.FindAll(u => u.inquiry.Id == Id, 
+                includeProperties:"inquiry,inquiry.sourceAddress,inquiry.destinationAddress,inquiry.package");
             if (offers != null)
             {
                 return View(offers);

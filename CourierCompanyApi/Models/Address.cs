@@ -21,5 +21,6 @@ namespace CourierCompanyApi.Models
         public string postcode { get; set; }
 
         public string city { get; set; }
+
     }
 }
