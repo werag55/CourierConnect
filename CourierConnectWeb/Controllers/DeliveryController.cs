@@ -228,6 +228,7 @@ namespace CourierConnectWeb.Controllers
             return RedirectToAction("IndexAll");
         }
 
+        [HttpPost]
         public async Task<IActionResult> Cancel(int id)
         {
             Delivery delivery = _unitOfWork.Delivery.Get(u => u.Id == id);
@@ -247,7 +248,20 @@ namespace CourierConnectWeb.Controllers
                 TempData["ErrorMessage"] = "Failed to cancel delivery. Try again.";
             }
 
+            response = await deliveryService.GetDeliveryAsync<APIResponse>(delivery.companyDeliveryId);
+            if (response != null && response.IsSuccess)
+            {
+                DeliveryDto deliveryDto = JsonConvert.DeserializeObject<DeliveryDto>(Convert.ToString(response.Result));
+                deliveryDto.companyName = _unitOfWork.Company.Get(u => u.companyId.Equals(delivery.companyId)).Name;
+                DeliveryVM deliveryVM = new DeliveryVM
+                {
+                    delivery = delivery,
+                    deliveryDto = deliveryDto
+                };
+                return PartialView("Partial/_DeliveryRecordPartialView", deliveryVM);
+            }
             return RedirectToAction("IndexAll");
+
         }
 
 
@@ -298,6 +312,7 @@ namespace CourierConnectWeb.Controllers
         }
 
         //[Authorize(Roles = SD.Role_User_Courier)]
+        [HttpPost]
         public async Task<IActionResult> PickUp(string id)
         {
 
@@ -314,10 +329,18 @@ namespace CourierConnectWeb.Controllers
                 TempData["ErrorMessage"] = "Failed to update status. Try again.";
             }
 
+            response = await deliveryService.GetDeliveryAsync<APIResponse>(id);
+            if (response != null && response.IsSuccess)
+            {
+                DeliveryDto deliveryDto = JsonConvert.DeserializeObject<DeliveryDto>(Convert.ToString(response.Result));
+                return PartialView("Partial/_CourierDeliveryRecordPartialView", deliveryDto);
+            }
+
             return RedirectToAction("IndexAllCourier");
         }
 
         //[Authorize(Roles = SD.Role_User_Courier)]
+        [HttpPost]
         public async Task<IActionResult> Deliver(string id)
         {
 
@@ -332,6 +355,13 @@ namespace CourierConnectWeb.Controllers
             else
             {
                 TempData["ErrorMessage"] = "Failed to update status. Try again.";
+            }
+
+            response = await deliveryService.GetDeliveryAsync<APIResponse>(id);
+            if (response != null && response.IsSuccess)
+            {
+                DeliveryDto deliveryDto = JsonConvert.DeserializeObject<DeliveryDto>(Convert.ToString(response.Result));
+                return PartialView("Partial/_CourierDeliveryRecordPartialView", deliveryDto);
             }
 
             return RedirectToAction("IndexAllCourier");

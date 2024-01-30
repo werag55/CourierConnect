@@ -1,0 +1,155 @@
+﻿@model RequestDto
+
+<h2 class="section-header text-center bg-secondary text-white py-3">Request</h2>
+
+<table id="tblData" class="table table-bordered table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>Total price</th>
+            <th>Request status</th>
+            <th>
+                @Html.ActionLink("Decision deadline", "IndexAll", new { sortOrder = ViewBag.DateSortParm })
+            </th>
+            <th>Personal data</th>
+            <th>Personal address</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>
+                @Model.offer.price
+                @Model.offer.currency
+            </td>
+            <td>@Model.requestStatus</td>
+            <td>@Model.decisionDeadline</td>
+            <td>
+                <span>
+                    @Model.personalData.name
+                    @Model.personalData.surname
+                </span>
+                <br />
+                <span>
+                    @Model.personalData.companyName
+                    @Model.personalData.email
+                </span>
+            </td>
+            <td>
+                <span>
+                    @Model.personalData.address.streetName
+                    @Model.personalData.address.houseNumber
+                    @if (@Model.personalData.address.flatNumber != null)
+                    {
+                        <text>/</text>
+                        @Model.personalData.address.flatNumber
+                    }
+                </span>
+                <br />
+                <span>
+                    @Model.personalData.address.postcode
+                    @Model.personalData.address.city
+                </span>
+            </td>
+            <td>
+                <div class="w-75 btn-group" role="group">
+                    @if (Model.decisionDeadline > DateTime.Now && @Model.requestStatus == RequestStatus.Pending)
+                    {
+                        <a asp-controller="Request" asp-action="Accept" asp-route-id="@Model.companyRequestId" class="btn btn-primary mx-2">
+                            <i class="bi bi-pencil-square"></i> Accept
+                        </a>
+                    }
+                </div>
+            </td>
+            <td>
+                <div class="w-75 btn-group" role="group">
+                    @if (Model.decisionDeadline > DateTime.Now && @Model.requestStatus == RequestStatus.Pending)
+                    {
+                        <a asp-controller="Request" asp-action="Reject" asp-route-id="@Model.companyRequestId" class="btn btn-danger mx-2">
+                            <i class="bi bi-pencil-square"></i> Reject
+                        </a>
+                    }
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h4>Inquiry</h4>
+<table id="tblData" class="table table-bordered table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>Pickup date </th>
+            <th>Delivery date</th>
+            <th>Source address</th>
+            <th>Destination address</th>
+            <th>Package</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>@Model.offer.inquiry.pickupDate</td>
+            <td>@Model.offer.inquiry.deliveryDate</td>
+            <td>
+                <span>
+                    @Model.offer.inquiry.sourceAddress.streetName
+                    @Model.offer.inquiry.sourceAddress.houseNumber
+                    @if (@Model.offer.inquiry.sourceAddress.flatNumber != null)
+                    {
+                        <text>/</text>
+                        @Model.offer.inquiry.sourceAddress.flatNumber
+                    }
+                </span>
+                <br />
+                <span>
+                    @Model.offer.inquiry.sourceAddress.postcode
+                    @Model.offer.inquiry.sourceAddress.city
+                </span>
+            </td>
+            <td>
+                <span>
+                    @Model.offer.inquiry.destinationAddress.streetName
+                    @Model.offer.inquiry.destinationAddress.houseNumber
+                    @if (@Model.offer.inquiry.destinationAddress.flatNumber != null)
+                    {
+                        <text>/</text>
+                        @Model.offer.inquiry.destinationAddress.flatNumber
+                    }
+                </span>
+                <br />
+                <span>
+                    @Model.offer.inquiry.destinationAddress.postcode
+                    @Model.offer.inquiry.destinationAddress.city
+                </span>
+            </td>
+            <td>
+                <span>
+                    @Model.offer.inquiry.package.width
+                    x
+                    @Model.offer.inquiry.package.height
+                    x
+                    @Model.offer.inquiry.package.length
+                    @Model.offer.inquiry.package.dimensionsUnit.ToString()
+                </span>
+                <br />
+                <span>
+                    @Model.offer.inquiry.package.weight
+                    @Model.offer.inquiry.package.weightUnit.ToString()
+                </span>
+            </td>
+            <td>
+                @if (Model.offer.inquiry.isPriority)
+                {
+                    <text>Priority</text>
+                }
+                @if (Model.offer.inquiry.weekendDelivery)
+                {
+                    <text>Weekend delivery</text>
+                }
+            </td>
+        </tr>
+    </tbody>
+</table>

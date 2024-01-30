@@ -38,6 +38,7 @@
 
         @foreach (var obj in Model)
         {
+            @* @await Html.PartialAsync("./Partial/RequestRecordPartialView", obj) *@
             <h2 class="section-header text-center bg-secondary text-white py-3">Request</h2>
 
             <table id="tblData" class="table table-bordered table-striped" style="width:100%">
@@ -189,7 +190,7 @@
                             }
                         </td>
                     </tr>
-                </tbody>
+                </tbody> 
 
             </table>
         }

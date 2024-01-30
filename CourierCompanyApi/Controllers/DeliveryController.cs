@@ -72,6 +72,7 @@ namespace CourierCompanyApi.Controllers
                     _response.ErrorMessages
                          = new List<string>() { "There was already a delivery made for that request" };
                     _response.StatusCode = HttpStatusCode.BadRequest;
+					_response.Result = exisitingDelivery;
                     return BadRequest(_response);
                 }
 
