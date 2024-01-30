@@ -86,6 +86,7 @@ public class DeliveryService : BaseService, IDeliveryService
 		return await SendAsync<T>(new APIRequest()
 		{
 			ApiType = SD.ApiType.POST,
+			Data = reason,
 			Url = apiUrl + $"/api/Delivery/CannotDeliverPackage/{companyDeliveryId}",
 		}, _configuration.GetValue<string>(SD.SpecialApiKeySectionName));
 	}

@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CourierConnect.Models
+namespace CourierConnect.Models.POCO
 {
-    public class Package
+    public class PackagePOCO
     {
-        public int Id { get; set; }
         public double width { get; set; }
         public double height { get; set; }
         public double length { get; set; }
@@ -16,18 +15,5 @@ namespace CourierConnect.Models
         public double weight { get; set; }
         public WeightUnit weightUnit { get; set; }
 
-
-    }
-
-    public enum DimensionUnit
-    {
-        Meters,
-        Inches
-    }
-
-    public enum WeightUnit
-    {
-        Kilograms,
-        Pounds
     }
 }

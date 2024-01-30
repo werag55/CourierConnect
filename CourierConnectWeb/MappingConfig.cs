@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CourierConnect.Models;
+using CourierConnect.Models.POCO;
 using CourierConnect.Models.Dto;
 using CourierConnect.Models.Dto.Currier;
 using CourierConnectWeb.Services.Currier;
@@ -283,6 +284,24 @@ namespace CourierConnect
                 .ForMember(dest => dest.companyRequestId, opt => opt.MapFrom(src => src.inquireCode))
                 .ForMember(dest => dest.decisionDeadline, opt => opt.MapFrom(src => DateTime.MaxValue));
 
+
+            #endregion
+
+            #region POCO
+            CreateMap<Address, AddressPOCO>();
+            CreateMap<Address, AddressPOCO>().ReverseMap();
+            CreateMap<Package, PackagePOCO>();
+            CreateMap<Package, PackagePOCO>().ReverseMap();
+            CreateMap<Inquiry, InquiryPOCO>();
+            CreateMap<Inquiry, InquiryPOCO>().ReverseMap();
+            CreateMap<AddressDto, AddressPOCO>();
+            CreateMap<AddressDto, AddressPOCO>().ReverseMap();
+            CreateMap<PackageDto, PackagePOCO>();
+            CreateMap<PackageDto, PackagePOCO>().ReverseMap();
+            CreateMap<InquiryDto, InquiryPOCO>();
+            CreateMap<InquiryDto, InquiryPOCO>().ReverseMap();
+            CreateMap<OfferPOCO, OfferDto>();
+            CreateMap<OfferPOCO, OfferDto>().ReverseMap();
 
             #endregion
         }

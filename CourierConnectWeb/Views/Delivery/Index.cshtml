@@ -63,7 +63,22 @@
 				<td>@Model.deliveryDto.request.personalData.name</td>
 				<td>@Model.deliveryDto.request.personalData.surname</td>
 				<td>@Model.deliveryDto.request.personalData.companyName</td>
-				<td>@Model.deliveryDto.request.personalData.address.ToString()</td>
+				<td>
+					<span>
+						@Model.deliveryDto.request.personalData.address.streetName
+						@Model.deliveryDto.request.personalData.address.houseNumber
+						@if (@Model.deliveryDto.request.personalData.address.flatNumber != null)
+						{
+							<text>/</text>
+							@Model.deliveryDto.request.personalData.address.flatNumber
+						}
+					</span>
+					<br />
+					<span>
+						@Model.deliveryDto.request.personalData.address.postcode
+						@Model.deliveryDto.request.personalData.address.city
+					</span>
+				</td>
 				<td>@Model.deliveryDto.request.personalData.email</td>
 			</tr>
 		</tbody>
@@ -141,9 +156,53 @@
 						<text>No</text>
 					}
 				</td>
-				<td>@Model.deliveryDto.request.offer.inquiry.sourceAddress.ToString()</td>
-				<td>@Model.deliveryDto.request.offer.inquiry.destinationAddress.ToString()</td>
-				<td>@Model.deliveryDto.request.offer.inquiry.package.ToString()</td>
+				<td>
+					<span>
+						@Model.deliveryDto.request.offer.inquiry.sourceAddress.streetName
+						@Model.deliveryDto.request.offer.inquiry.sourceAddress.houseNumber
+						@if (@Model.deliveryDto.request.offer.inquiry.sourceAddress.flatNumber != null)
+						{
+							<text>/</text>
+							@Model.deliveryDto.request.offer.inquiry.sourceAddress.flatNumber
+						}
+					</span>
+					<br />
+					<span>
+						@Model.deliveryDto.request.offer.inquiry.sourceAddress.postcode
+						@Model.deliveryDto.request.offer.inquiry.sourceAddress.city
+					</span>
+				</td>
+				<td>
+					<span>
+						@Model.deliveryDto.request.offer.inquiry.destinationAddress.streetName
+						@Model.deliveryDto.request.offer.inquiry.destinationAddress.houseNumber
+						@if (@Model.deliveryDto.request.offer.inquiry.destinationAddress.flatNumber != null)
+						{
+							<text>/</text>
+							@Model.deliveryDto.request.offer.inquiry.destinationAddress.flatNumber
+						}
+					</span>
+					<br />
+					<span>
+						@Model.deliveryDto.request.offer.inquiry.destinationAddress.postcode
+						@Model.deliveryDto.request.offer.inquiry.destinationAddress.city
+					</span>
+				</td>
+				<td>
+					<span>
+						@Model.deliveryDto.request.offer.inquiry.package.width
+						x
+						@Model.deliveryDto.request.offer.inquiry.package.height
+						x
+						@Model.deliveryDto.request.offer.inquiry.package.length
+						@Model.deliveryDto.request.offer.inquiry.package.dimensionsUnit.ToString()
+					</span>
+					<br />
+					<span>
+						@Model.deliveryDto.request.offer.inquiry.package.weight
+						@Model.deliveryDto.request.offer.inquiry.package.weightUnit.ToString()
+					</span>
+				</td>
 			</tr>
 		</tbody>
 	</table>
