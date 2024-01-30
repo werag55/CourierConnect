@@ -1,0 +1,137 @@
+﻿@model List<DeliveryVM>
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Your deliveries</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success" role="alert">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+        <div class="row pb-3">
+            <div class="col-6">
+                @using (Html.BeginForm())
+                {
+                    <p>
+                        Filtr by Company: @Html.TextBox("SearchString")
+                        <input type="submit" value="Search" />
+                    </p>
+                }
+            </div>
+            <div class="col-6 text-end">
+                <a asp-controller="Delivery" asp-action="Add" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i>  Add delivery by Id
+                </a>
+            </div>
+        </div>
+
+        <table id="tblData" class="table table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Company name</th>
+                    <th>Pickup date</th>
+                    <th>
+                        @Html.ActionLink("Delivery Date", "IndexAll", new { sortOrder = ViewBag.DateSortParm })
+                    </th>
+                    <th>Cancelation deadline</th>
+                    <th>Details</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var obj in Model)
+                {
+                    <tr>
+                        <td>@obj.deliveryDto.companyName</td>
+                        <td>@obj.deliveryDto.request.offer.inquiry.pickupDate.Date</td>
+                        <td>@obj.deliveryDto.request.offer.inquiry.deliveryDate.Date</td>
+                        <td>@obj.deliveryDto.cancelationDeadline.Date</td>
+                        <td>
+                            <a asp-controller="Delivery" asp-action="Index" asp-route-id="@obj.delivery.Id" class="btn btn-primary mx-2">
+                                <i class="bi bi-pencil-square"></i> View details
+                            </a>
+                        </td>
+                        <td>@obj.deliveryDto.deliveryStatus</td>
+                        <td>
+                            <div class="w-75 btn-group" role="group">
+                                @if (obj.deliveryDto.cancelationDeadline > DateTime.Now && @obj.deliveryDto.deliveryStatus == DeliveryStatus.Proccessing)
+                                {
+                                    <a asp-controller="Delivery" asp-action="Cancel" asp-route-id="@obj.delivery.Id" class="btn btn-danger mx-2">
+                                        <i class="bi bi-pencil-square"></i> Cancel
+                                    </a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/product.js"></script>
+}
+
+@* <div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Delivery List</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row pb-3">
+            <div class="col-6">
+            </div>
+        </div>
+        @using (Html.BeginForm())
+        {
+            <p>
+                Find by ID: @Html.TextBox("SearchString")
+                <input type="submit" value="Search" />
+            </p>
+        }
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.ActionLink("Delivery Date", "Index", new { sortOrder = ViewBag.DateSortParm })
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var obj in Model)
+                {
+                    <tr>
+                        <td>DeliveryDate: @obj.deliveryDate.ToString()</td>
+                        <td>DeliveryStatus: @obj.deliveryStatus</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>  *@

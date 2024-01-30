@@ -1,46 +1,99 @@
-﻿using CourierConnect.DataAccess.Repository.IRepository;
-using CourierConnect.DataAccess.Data;
+﻿using CourierConnect.DataAccess.Data;
+using CourierConnect.DataAccess.Repository.IRepository;
 using CourierConnect.Models;
+using CourierConnect.Models.Dto;
 using CourierConnect.Utility;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using CourierConnectWeb.Email;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using CourierConnect.Models.ViewModels;
+using Google.Apis.Admin.Directory.directory_v1.Data;
+using ICSharpCode.Decompiler.CSharp.Syntax;
+using CourierConnectWeb.Services.Factory;
+using Newtonsoft.Json;
+using AutoMapper;
 
 namespace CourierConnectWeb.Controllers
 {
     public class InquiryController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IEmailSender _emailsender;
         private readonly UserManager<IdentityUser> _userManager;
-        public InquiryController(IUnitOfWork unitOfWork, IEmailSender emailSender, UserManager<IdentityUser> userManager)
+        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
+        private List<IServiceFactory> _serviceFactories = new List<IServiceFactory>();
+        private readonly IMapper _mapper;
+        public InquiryController(IUnitOfWork unitOfWork, OurServiceFactory ourServiceFactory, CurrierServiceFactory currierServiceFactory, 
+            CourierHubServiceFactory courierHubServiceFactory, IMapper mapper, UserManager<IdentityUser> userManager, ApplicationDbContext context)
         {
             _unitOfWork = unitOfWork;
-            _emailsender = emailSender;
             _userManager = userManager;
+            _context = context;
+            _serviceFactories.Add(ourServiceFactory);
+            _serviceFactories.Add(currierServiceFactory);
+            _serviceFactories.Add(courierHubServiceFactory);
+            _mapper = mapper;
         }
-        public IActionResult Index()
+
+        //[Authorize(Roles = SD.Role_User_Worker)]
+        public async Task<IActionResult> IndexAll(string sortOrder)
         {
-            List<Inquiry> objInquiryList = _unitOfWork.Inquiry.GetAll().ToList();
-            return View(objInquiryList);
+            ViewBag.PickUpDateSortParm = sortOrder == "PickUpDate" ? "pickup_date_desc" : "PickUpDate";
+            ViewBag.DeliveryDateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+
+            IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == 0).FirstOrDefault();
+            var inquiryService = serviceFactory.createInquiryService();
+            var response = await inquiryService.GetAllAsync<APIResponse>();
+            if (response != null && response.IsSuccess)
+            {
+                List<InquiryDto>? inquiryDto = JsonConvert.DeserializeObject<List<InquiryDto>>(Convert.ToString(response.Result));
+
+                switch (sortOrder)
+                {
+                    case "Date":
+                        inquiryDto = inquiryDto.OrderBy(s => s.deliveryDate).ToList();
+                        break;
+                    case "date_desc":
+                        inquiryDto = inquiryDto.OrderByDescending(s => s.deliveryDate).ToList();
+                        break;
+                    case "PickUpDate":
+                        inquiryDto = inquiryDto.OrderBy(s => s.pickupDate).ToList();
+                        break;
+                    case "pickup_date_desc":
+                        inquiryDto = inquiryDto.OrderByDescending(s => s.pickupDate).ToList();
+                        break;
+                    default:
+                        inquiryDto = inquiryDto.OrderByDescending(s => s.pickupDate).ToList();
+                        break;
+                }
+
+                return View(inquiryDto);
+            }
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                TempData["ErrorMessage"] = "There is no offers to display.";
+                return RedirectToRoute(new
+                {
+                    controller = "Home",
+                    action = "Index"
+                });
+            }
+
+            return NotFound();
         }
 
         private bool hasDelivery(int inquiryId)
         {
-            var offer = _unitOfWork.Offer.Get(u => u.Id == inquiryId);
+            var offer = _unitOfWork.Offer.Get(u => u.inquiryId == inquiryId);
             if (offer == default)
                 return false;
-            var request = _unitOfWork.Request.Get(u => u.Id == offer.Id);
+            var request = _unitOfWork.Request.Get(u => u.offerId == offer.Id);
             if (request == default)
                 return false;
-            var delivery = _unitOfWork.Delivery.Get(u => u.Id == request.Id);
+            var delivery = _unitOfWork.Delivery.Get(u => u.requestId == request.Id);
             if (delivery == default)
                 return false;
             return true;
         }
-
+  
         public IActionResult ClientInquiries()
         {
             var id = _userManager.GetUserId(User);
@@ -54,55 +107,88 @@ namespace CourierConnectWeb.Controllers
                 bool hasDelivery = this.hasDelivery(inquiry.Id);
                 objInquiryVMList.Add(new ClientInquiryVM(inquiry, hasDelivery));
             }
-            return View(objInquiryVMList);
+            return View(objInquiryVMList.OrderByDescending(s => s.Inquiry.creationDate).ToList());
         }
 
         public IActionResult Create()
         {
-            return View();
-        }
-
-        //public IActionResult Create(Inquiry obj)
-        //{
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        _unitOfWork.Inquiry.Add(obj);
-        //        _unitOfWork.Save();
-        //        TempData["success"] = "Inquiry created successfully";
-        //        return RedirectToAction("Index");
-        //    }
-        //    return View();
-
-        //}
-
-        public async Task<IActionResult> SendEmail(Inquiry obj) 
-        {
-            var receiver = "gina.grant@ethereal.email";
-            var subject = "New Inquiry was created";
-            var message = "hello!\n u have just created new inquiry at CourierConnect!\n" +
-                "Delivery Date: " + obj.deliveryDate.ToShortDateString() + "\nInquiry ID: " + obj.Id.ToString() +
-                "Destination Address:" + obj.destinationAddress.streetName.ToString() + obj.destinationAddress.houseNumber.ToString() +
-                obj.destinationAddress.flatNumber.ToString() + obj.destinationAddress.postcode.ToString();
-
-            await _emailsender.SendEmailAsync(receiver, subject, message);
 
             return View();
         }
         [HttpPost]
         public IActionResult Create(Inquiry obj)
         {
-
-            if (ModelState.IsValid)
+            string userId = _userManager.GetUserId(User);
+            obj.clientId = userId;
+            var sourceAddress = _context.Addresses
+                .FirstOrDefault(a =>
+                a.streetName == obj.sourceAddress.streetName &&
+                a.flatNumber == obj.sourceAddress.flatNumber &&
+                a.houseNumber == obj.sourceAddress.houseNumber &&
+                a.postcode == obj.sourceAddress.postcode);
+          
+            
+            if (sourceAddress == null)
             {
+
+                sourceAddress = obj.sourceAddress;
+                _context.Addresses.Add(sourceAddress);
+            }
+            else
+            {
+
+
+            }
+            var destinationAddress = _context.Addresses.FirstOrDefault(a =>
+                a.streetName == obj.destinationAddress.streetName &&
+                a.flatNumber == obj.destinationAddress.flatNumber &&
+                a.houseNumber == obj.destinationAddress.houseNumber &&
+                a.postcode == obj.destinationAddress.postcode);
+
+
+            if (destinationAddress== null)
+            {
+                destinationAddress = obj.destinationAddress;
+                _context.Addresses.Add(destinationAddress);
+            }
+
+            destinationAddress = obj.destinationAddress;
+            Package package = obj.package;
+            _context.Packages.Add(package);
+            
+            
+            _context.SaveChanges();
+
+            
+            obj.creationDate = DateTime.Now;
+            obj.destinationAddressId = destinationAddress.Id;
+            obj.sourceAddressId = sourceAddress.Id;
+            obj.packageId = package.Id;
+
+          
+
+            //if (ModelState.IsValid)
+            //{
+
                 _unitOfWork.Inquiry.Add(obj);
-                _unitOfWork.Address.Add(obj.destinationAddress);
                 _unitOfWork.Save();
                 TempData["success"] = "Inquiry created successfully";
-                _ = SendEmail(obj);
-                return RedirectToAction("Index");
-            }
-            return View();
+                string emailSubject = "Created Inqury";
+                string toEmail = _userManager.GetUserName(User);
+                string message = "Your inquiry was created corectly\nThanks for using our Website";
+                EmailSender email = new EmailSender();
+
+                email.SendEmailAsync(emailSubject, toEmail, message).Wait();
+				//return RedirectToAction("Index");
+				return RedirectToRoute(new
+				{
+					controller = "Offer",
+					action = "Create",
+					id = obj.Id
+				});
+			//}
+
+            return View(obj);
 
         }
 

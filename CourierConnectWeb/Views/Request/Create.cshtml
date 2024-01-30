@@ -1,0 +1,124 @@
+﻿@model RequestCreateVM
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Fill Personal Data</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form method="post" class="row">
+            <div class="border p-3">
+                @*<div asp-validation-summary="ModelOnly"></div>*@
+                <input asp-for=offerId hidden />
+                <input asp-for=companyId hidden />
+                <input asp-for=requestSendDto.companyOfferId hidden />
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="requestSendDto.personalData.name" class="form-control border-0 shadow" />
+                    <label asp-for="requestSendDto.personalData.name" class="ms-2"></label>
+                    <span asp-validation-for="requestSendDto.personalData.name" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="requestSendDto.personalData.surname" class="form-control border-0 shadow" />
+                    <label asp-for="requestSendDto.personalData.surname" class="ms-2"></label>
+                    <span asp-validation-for="requestSendDto.personalData.surname" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="requestSendDto.personalData.email" class="form-control border-0 shadow" />
+                    <label asp-for="requestSendDto.personalData.email" class="ms-2"></label>
+                    <span asp-validation-for="requestSendDto.personalData.email" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="requestSendDto.personalData.companyName" class="form-control border-0 shadow" />
+                    <label asp-for="requestSendDto.personalData.companyName" class="ms-2"></label>
+                    <span asp-validation-for="requestSendDto.personalData.companyName" class="text-danger"></span>
+                </div>
+                <div>Addres</div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="requestSendDto.personalData.address.streetName" class="form-control border-0 shadow" />
+                    <label asp-for="requestSendDto.personalData.address.streetName" class="ms-2"></label>
+                    <span asp-validation-for="requestSendDto.personalData.address.streetName" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="requestSendDto.personalData.address.houseNumber" class="form-control border-0 shadow" />
+                    <label asp-for="requestSendDto.personalData.address.houseNumber" class="ms-2"></label>
+                    <span asp-validation-for="requestSendDto.personalData.address.houseNumber" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="requestSendDto.personalData.address.flatNumber" class="form-control border-0 shadow" />
+                    <label asp-for="requestSendDto.personalData.address.flatNumber" class="ms-2"></label>
+                    <span asp-validation-for="requestSendDto.personalData.address.flatNumber" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="requestSendDto.personalData.address.city" class="form-control border-0 shadow" />
+                    <label asp-for="requestSendDto.personalData.address.city" class="ms-2"></label>
+                    <span asp-validation-for="requestSendDto.personalData.address.city" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="requestSendDto.personalData.address.postcode" class="form-control border-0 shadow" />
+                    <label asp-for="requestSendDto.personalData.address.postcode" class="ms-2"></label>
+                    <span asp-validation-for="requestSendDto.personalData.address.postcode" class="text-danger"></span>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-6 col-md-3">
+                        <button type="submit" class="btn btn-primary form-control">Submit</button>
+                        @*                         <a asp-controller="Offer" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-outline-primary border  form-control">
+                        View offers
+                        </a> *@
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary border  form-control">
+                            Back to Home
+                        </a>
+                    </div>
+                </div>
+
+
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
+
+@* @model Request
+
+@using (Html.BeginForm())
+{
+    <!-- Formularz dla pól związanych z PersonalData -->
+    <div>
+        @Html.LabelFor(model => model.personalData.name)
+        @Html.EditorFor(model => model.personalData.name)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.personalData.surname)
+        @Html.EditorFor(model => model.personalData.surname)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.personalData.surname)
+        @Html.EditorFor(model => model.personalData.surname)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.personalData.companyName)
+        @Html.EditorFor(model => model.personalData.companyName)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.personalData.email)
+        @Html.EditorFor(model => model.personalData.email)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.personalData.address.)
+        @Html.EditorFor(model => model.personalData.email)
+    </div>
+
+    <input type="submit" value="Create" />
+} *@

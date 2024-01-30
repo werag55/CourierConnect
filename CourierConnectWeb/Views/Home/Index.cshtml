@@ -2,7 +2,46 @@
     ViewData["Title"] = "Home Page";
 }
 
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to CourierConnect</h1>
+    @if (User.IsInRole(SD.Role_User_Client) && SignInManager.IsSignedIn(User))
+    {
+        <div class="w-200 btn-group" role="group">
+            <a asp-area="" asp-controller="Delivery" asp-action="IndexAll" class="btn btn-primary mx-2">
+                <i class="bi bi-pencil-square"></i> Go to MyDeliveries 
+            </a>
+            <a asp-area="" asp-controller="Inquiry" asp-action="Create" class="btn btn-primary mx-2">
+                <i class="bi bi-plus-circle"></i>  Create New Inquiry
+            </a>
+            <a asp-area="" asp-controller="Inquiry" asp-action="ClientInquiries" class="btn btn-primary mx-2">
+                <i class="bi bi-plus-circle"></i>  My Inquiries
+            </a>
+        </div>
+    }
+    else if (User.IsInRole(SD.Role_User_Courier))
+    {
+        <a asp-area="" asp-controller="Delivery" asp-action="Index" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i>  Courier's Delivery
+        </a>
+    }
+    else if(User.IsInRole(SD.Role_User_Worker))
+    {
+        <a asp-area="" asp-controller="Inquiry" asp-action="Index" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i>  Show all inquiries to the company
+        </a>
+        <a asp-area="" asp-controller="Offer" asp-action="Index" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i>  Show all offers to the company
+        </a>
+    }
+    else
+    {
+        <a asp-area="" asp-controller="Inquiry" asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i>  Create New Inquiry
+        </a>
+    }
 </div>

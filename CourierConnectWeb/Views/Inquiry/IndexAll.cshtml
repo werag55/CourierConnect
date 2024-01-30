@@ -1,0 +1,75 @@
+﻿@model List<InquiryDto>
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Inquiry List</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.ActionLink("Pickup date", "IndexAll", new { sortOrder = ViewBag.PickUpDateSortParm })
+                    </th>
+                    <th>
+                        @Html.ActionLink("Delivery date", "IndexAll", new { sortOrder = ViewBag.DeliveryDateSortParm })
+                    </th>
+                    <th>Priority</th>
+                    <th>Weekend delivery</th>
+                    <th>Company</th>
+                    <th>Source address</th>
+                    <th>Delivery address</th>
+                    <th>Package details</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var obj in Model)
+                {
+                    <tr>
+                        <td>@obj.pickupDate.Date</td>
+                        <td>@obj.deliveryDate.Date</td>
+                        <td>
+                            @if (obj.isPriority)
+                            {
+                                <text>Yes</text>
+                            }
+                            else
+                            {
+                                <text>No</text>
+                            }
+                        </td>
+                        <td>
+                            @if (obj.weekendDelivery)
+                            {
+                                <text>Yes</text>
+                            }
+                            else
+                            {
+                                <text>No</text>
+                            }
+                        </td>
+                        <td>
+                            @if (obj.isCompany)
+                            {
+                                <text>Yes</text>
+                            }
+                            else
+                            {
+                                <text>No</text>
+                            }
+                        </td>
+                        <td>@obj.sourceAddress.ToString()</td>
+                        <td>@obj.destinationAddress.ToString()</td>
+                        <td>@obj.package.ToString()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>

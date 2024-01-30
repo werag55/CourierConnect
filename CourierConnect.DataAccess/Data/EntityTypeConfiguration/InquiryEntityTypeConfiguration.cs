@@ -16,8 +16,7 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
         {
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.clientId)
-                .IsRequired();
+            builder.Property(e => e.clientId);
 
             builder.Property(e => e.pickupDate)
                 .IsRequired()
@@ -62,7 +61,7 @@ namespace CourierConnect.DataAccess.Data.EntityTypeConfiguration
 
             builder.Property(e => e.packageId)
                 .IsRequired();
-
+            builder.Property(e=>e.creationDate).IsRequired();
             builder.HasOne(e => e.package)
                 .WithMany()
                 .HasForeignKey(e => e.packageId)

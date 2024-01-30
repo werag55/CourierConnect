@@ -13,7 +13,7 @@ namespace CourierConnect.Models
     {
         public int Id { get; set; }
         //TODO: clientId
-        public string clientId { get; set; }
+        public string? clientId { get; set; }
         public DateTime pickupDate { get; set; }
 
         public DateTime deliveryDate { get; set; }
@@ -32,5 +32,8 @@ namespace CourierConnect.Models
         public Address destinationAddress { get; set; }
         public int packageId { get; set; }
         public Package package { get; set; }
+
+        public DateTime creationDate { get; set; }
+
     }
 }

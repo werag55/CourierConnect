@@ -17,6 +17,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using CourierConnect.Utility;
 
 namespace CourierConnectWeb.Areas.Identity.Pages.Account
 {
@@ -25,6 +28,7 @@ namespace CourierConnectWeb.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUserStore<IdentityUser> _userStore;
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly IEmailSender _emailSender;
@@ -32,6 +36,7 @@ namespace CourierConnectWeb.Areas.Identity.Pages.Account
 
         public ExternalLoginModel(
             SignInManager<IdentityUser> signInManager,
+             RoleManager<IdentityRole> roleManager,
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             ILogger<ExternalLoginModel> logger,
@@ -43,6 +48,7 @@ namespace CourierConnectWeb.Areas.Identity.Pages.Account
             _emailStore = GetEmailStore();
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -84,13 +90,32 @@ namespace CourierConnectWeb.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             public string Email { get; set; }
+            public string? Role { get; set; }
+
+            public IEnumerable<SelectListItem> RoleList = new List<SelectListItem>
+{
+    new SelectListItem { Text = "Admin", Value = "Admin" },
+    new SelectListItem { Text = "Worker", Value = "Worker" },
+        new SelectListItem { Text = "Courier", Value = "Courier" },
+            new SelectListItem { Text = "Client", Value = "Client" }
+};
+
+
         }
-        
-        public IActionResult OnGet() => RedirectToPage("./Login");
+
+
+        public IActionResult OnGet()
+        {
+
+            return RedirectToPage("./Login");
+        }
+
 
         public IActionResult OnPost(string provider, string returnUrl = null)
         {
             // Request a redirect to the external login provider.
+
+
             var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return new ChallengeResult(provider, properties);
@@ -98,6 +123,7 @@ namespace CourierConnectWeb.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
+
             returnUrl = returnUrl ?? Url.Content("~/");
             if (remoteError != null)
             {
@@ -140,6 +166,7 @@ namespace CourierConnectWeb.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
+
             returnUrl = returnUrl ?? Url.Content("~/");
             // Get the information about the user from the external login provider
             var info = await _signInManager.GetExternalLoginInfoAsync();
@@ -152,7 +179,20 @@ namespace CourierConnectWeb.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+                string emailSubject = "Created Account";
+                string toEmail = Input.Email;
+                string message = "Thanks for creating an account on our websiter\n";
+                EmailSender email = new EmailSender();
 
+                email.SendEmailAsync(emailSubject, toEmail, message).Wait();
+                if (!string.IsNullOrEmpty(Input.Role))
+                {
+                    await _userManager.AddToRoleAsync(user, Input.Role);
+                }
+                else
+                {
+                    await _userManager.AddToRoleAsync(user, SD.Role_User_Worker);
+                }
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
@@ -185,6 +225,7 @@ namespace CourierConnectWeb.Areas.Identity.Pages.Account
                         await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
                         return LocalRedirect(returnUrl);
                     }
+
                 }
                 foreach (var error in result.Errors)
                 {
