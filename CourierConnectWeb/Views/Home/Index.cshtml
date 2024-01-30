@@ -25,16 +25,16 @@
     }
     else if (User.IsInRole(SD.Role_User_Courier))
     {
-        <a asp-area="" asp-controller="Delivery" asp-action="Index" class="btn btn-primary">
+        <a asp-area="" asp-controller="Delivery" asp-action="IndexAllCourier" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i>  Courier's Delivery
         </a>
     }
     else if(User.IsInRole(SD.Role_User_Worker))
     {
-        <a asp-area="" asp-controller="Inquiry" asp-action="Index" class="btn btn-primary">
+        <a asp-area="" asp-controller="Inquiry" asp-action="IndexAll" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i>  Show all inquiries to the company
         </a>
-        <a asp-area="" asp-controller="Offer" asp-action="Index" class="btn btn-primary">
+        <a asp-area="" asp-controller="Offer" asp-action="IndexAll" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i>  Show all offers to the company
         </a>
     }
