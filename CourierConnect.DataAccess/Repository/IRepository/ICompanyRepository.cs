@@ -2,8 +2,8 @@
 
 namespace CourierConnect.DataAccess.Repository.IRepository
 {
-    public interface IAddressRepository : IRepository<Address>
+    public interface ICompanyRepository : IRepository<Company>
     {
-        void Update(Address obj);
+        void Update(Company obj);
     }
 }

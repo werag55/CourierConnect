@@ -23,27 +23,25 @@ namespace CourierCompanyApi.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly bool autoAccept = true;
-		private readonly string apiUrl = "https://couriercompanyapi.azurewebsites.net/";
+        private readonly string apiUrl = "https://couriercompanyapi.azurewebsites.net/";
         public DeliveryController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _response = new();
         }
-
-		/// <summary>
-		/// Creates a delivery based on a given request
-		/// </summary>
-		/// <response code="201">Delivery has been succesfully created. Returns the delivery details.</response>
-		/// <response code="422">The company decided to reject request. Returns rejection reason.</response>
-		/// <response code="400">Provided request was not valid (e.g. there is no offer with a given Id), the decision has not been made yet or the delivery for this request has already been made</response>
-		[HttpPost("{requestId}")]
-		[ServiceFilter(typeof(ApiKeyAuthFilter))]
-		[ProducesResponseType(typeof(RequestRejectResponse), StatusCodes.Status422UnprocessableEntity)]
-		[ProducesResponseType(typeof(RequestAcceptResponse), StatusCodes.Status201Created)]
-		[ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
-		public async Task<ActionResult<APIResponse>> PostDelivery(string requestId)
-		{
+        /// Creates a delivery based on a given request
+        /// </summary>
+        /// <response code="201">Delivery has been succesfully created. Returns the delivery details.</response>
+        /// <response code="422">The company decided to reject request. Returns rejection reason.</response>
+        /// <response code="400">Provided request was not valid (e.g. there is no offer with a given Id), the decision has not been made yet or the delivery for this request has already been made</response>
+        [HttpPost("{requestId}")]
+        [ServiceFilter(typeof(ApiKeyAuthFilter))]
+        [ProducesResponseType(typeof(RequestRejectResponse), StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(typeof(RequestAcceptResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(APIResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponse>> PostDelivery(string requestId)
+        {
 			try
 			{
 				Request request = await _unitOfWork.Request.GetAsync(u => u.GUID == requestId, includeProperties:
@@ -67,9 +65,9 @@ namespace CourierCompanyApi.Controllers
 					return BadRequest(_response);
 				}
 
-				List<Delivery> exisitingDelivery = await _unitOfWork.Delivery.GetAllAsync(u => u.request.GUID == requestId);
-				if (exisitingDelivery != null && exisitingDelivery.Count != 0) 
-				{
+                List<Delivery> exisitingDelivery = await _unitOfWork.Delivery.GetAllAsync(u => u.request.GUID == requestId);
+                if (exisitingDelivery != null && exisitingDelivery.Count != 0)
+                {
                     _response.IsSuccess = false;
                     _response.ErrorMessages
                          = new List<string>() { "There was already a delivery made for that request" };
@@ -77,7 +75,7 @@ namespace CourierCompanyApi.Controllers
                     return BadRequest(_response);
                 }
 
-				if (request.requestStatus == RequestStatus.Pending)
+                if (request.requestStatus == RequestStatus.Pending)
 					request.requestStatus = RequestStatus.Accepted;
 				if (request.requestStatus == RequestStatus.Rejected)
 					request.rejectionReason = "We changed our mind ;*";
@@ -137,8 +135,8 @@ namespace CourierCompanyApi.Controllers
 
 					_response.Result = accept;
 					_response.StatusCode = HttpStatusCode.Created;
-					return Created(apiUrl + $"/api/Delivery/GetDelivery/{delivery.GUID}", _response);
-				}
+                    return Created(apiUrl + $"/api/Delivery/GetDelivery/{delivery.GUID}", _response);
+                }
 				else
 				{
 
@@ -147,11 +145,11 @@ namespace CourierCompanyApi.Controllers
 					await _unitOfWork.Offer.UpdateAsync(request.offer);
 
 					RequestRejectDto reject = _mapper.Map<RequestRejectDto>(request);
-					_response.IsSuccess = false;
-					_response.Result = reject;
-					_response.StatusCode = HttpStatusCode.UnprocessableEntity;
-					return UnprocessableEntity(_response);
-				}
+                    _response.IsSuccess = false;
+                    _response.Result = reject;
+                    _response.StatusCode = HttpStatusCode.UnprocessableEntity;
+                    return UnprocessableEntity(_response);
+                }
 			}
 			catch (Exception ex)
 			{
@@ -159,8 +157,8 @@ namespace CourierCompanyApi.Controllers
 				_response.ErrorMessages
 					 = new List<string>() { ex.ToString() };
 			}
-			return BadRequest(_response);
-		}
+            return BadRequest(_response);
+        }
 
 		/// <summary>
 		/// Returns delivery matching the provided delivery Id

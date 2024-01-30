@@ -34,7 +34,7 @@ namespace CourierConnectWeb.Controllers
 
 		public async Task<IActionResult> IndexAll(string sortOrder, string searchString)
         {
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            //ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
 
             var clientId = _userManager.GetUserId(User);
@@ -57,7 +57,7 @@ namespace CourierConnectWeb.Controllers
                         {
                             var deliveryService = serviceFactory.createDeliveryService();
                             var responseDelivery = await deliveryService.GetNewDeliveryAsync<APIResponse>(pendingRequest.companyRequestId);
-                            if (responseDelivery != null && responseDelivery.IsSuccess)
+                            if (responseDelivery != null)
                             {
                                 if (responseDelivery.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity) // request rejected
                                 {
@@ -73,8 +73,8 @@ namespace CourierConnectWeb.Controllers
                                     _unitOfWork.Save();
                                 }
 
-                                if (responseDelivery.StatusCode == System.Net.HttpStatusCode.Created
-                                    || responseDelivery.StatusCode == System.Net.HttpStatusCode.OK) // delivery created
+                                if (responseDelivery.IsSuccess && (responseDelivery.StatusCode == System.Net.HttpStatusCode.Created
+                                    || responseDelivery.StatusCode == System.Net.HttpStatusCode.OK)) // delivery created
                                 {
                                     RequestAcceptDto accept = JsonConvert.DeserializeObject<RequestAcceptDto>(Convert.ToString(responseDelivery.Result));
                                     pendingRequest.requestStatus = accept.requestStatus;
@@ -119,6 +119,7 @@ namespace CourierConnectWeb.Controllers
                     if (response != null && response.IsSuccess)
                     {
                         DeliveryDto deliveryDto = JsonConvert.DeserializeObject<DeliveryDto>(Convert.ToString(response.Result));
+                        deliveryDto.companyName = _unitOfWork.Company.Get(u => u.companyId.Equals(delivery.companyId)).Name;
                         DeliveryVM deliveryVM = new DeliveryVM
                         {
                             delivery = delivery,
@@ -130,25 +131,24 @@ namespace CourierConnectWeb.Controllers
 
 			}
 
-			//if (!String.IsNullOrEmpty(searchString))
-			//{
-			//    objInquiryList = objInquiryList.Where(s => s.Id.ToString() == searchString);
-			//}
-			//       switch (sortOrder)
-			//       {
-			//           case "Date":
-			//deliveriesDto = deliveriesDto.OrderBy(s => s.deliveryDate);
-			//               break;
-			//           case "date_desc":
-			//deliveriesDto = deliveriesDto.OrderByDescending(s => s.deliveryDate);
-			//               break;
-			//           default:
-			//deliveriesDto = deliveriesDto.OrderBy(s => s.Id);
-			//               break;
-			//       }
-			//       return View(objInquiryList.ToList());
-			return View(deliveriesDto);
-			return NotFound();
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                deliveriesDto = deliveriesDto.Where(s => s.deliveryDto.companyName == searchString).ToList();
+            }
+            switch (sortOrder)
+            {
+                case "Date":
+                    deliveriesDto = deliveriesDto.OrderBy(s => s.deliveryDto.deliveryDate).ToList();
+                    break;
+                case "date_desc":
+                    deliveriesDto = deliveriesDto.OrderByDescending(s => s.deliveryDto.deliveryDate).ToList();
+                    break;
+                default:
+                    deliveriesDto = deliveriesDto.OrderByDescending(s => s.deliveryDto.cancelationDeadline).ToList();
+                    break;
+            }
+            return View(deliveriesDto);
+
         }
         public async Task<IActionResult> DeliveryStatus()
         {
@@ -185,7 +185,7 @@ namespace CourierConnectWeb.Controllers
             return NotFound();
         }
 
-        public async Task<IActionResult> Details(int id)
+        public IActionResult Details(int id)
         {
             Delivery delivery = _unitOfWork.Delivery.Get(u => u.request.offer.inquiryId == id);
             if (delivery == null)
@@ -254,9 +254,12 @@ namespace CourierConnectWeb.Controllers
         #region Courier
 
         //[Authorize(Roles = SD.Role_User_Courier)]
-        public async Task<IActionResult> IndexAllCourier()
+        public async Task<IActionResult> IndexAllCourier(string sortOrder, string searchString)
         {
-            string courierUserName = _userManager.GetUserName(User); //= "hryshko.alina@gmail.com";
+            ViewBag.PickUpDateSortParm = sortOrder == "PickUpDate" ? "pickup_date_desc" : "PickUpDate";
+            ViewBag.DeliveryDateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+
+            string courierUserName = "hryshko.alina@gmail.com";
 
             IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == 0).FirstOrDefault();
             var deliveryService = serviceFactory.createDeliveryService();
@@ -264,8 +267,31 @@ namespace CourierConnectWeb.Controllers
             var response = await deliveryService.GetAllCourierDeliveryAsync<APIResponse>(courierUserName);
             if (response != null && response.IsSuccess)
             {
-                List<DeliveryDto>? offerDto = JsonConvert.DeserializeObject<List<DeliveryDto>>(Convert.ToString(response.Result));
-                return View(offerDto);
+                List<DeliveryDto>? deliveriesDto = JsonConvert.DeserializeObject<List<DeliveryDto>>(Convert.ToString(response.Result));
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    deliveriesDto = deliveriesDto.Where(s => s.deliveryStatus.ToString() == searchString).ToList();
+                }
+                switch (sortOrder)
+                {
+                    case "Date":
+                        deliveriesDto = deliveriesDto.OrderBy(s => s.request.offer.inquiry.deliveryDate).ToList();
+                        break;
+                    case "date_desc":
+                        deliveriesDto = deliveriesDto.OrderByDescending(s => s.request.offer.inquiry.deliveryDate).ToList();
+                        break;
+                    case "PickUpDate":
+                        deliveriesDto = deliveriesDto.OrderBy(s => s.request.offer.inquiry.pickupDate).ToList();
+                        break;
+                    case "pickup_date_desc":
+                        deliveriesDto = deliveriesDto.OrderByDescending(s => s.request.offer.inquiry.pickupDate).ToList();
+                        break;
+                    default:
+                        deliveriesDto = deliveriesDto.OrderByDescending(s => s.cancelationDeadline).ToList();
+                        break;
+                }
+                return View(deliveriesDto);
             }
 
             return View(null);

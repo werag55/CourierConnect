@@ -34,14 +34,37 @@ namespace CourierConnectWeb.Controllers
         }
 
         //[Authorize(Roles = SD.Role_User_Worker)]
-        public async Task<IActionResult> IndexAll()
+        public async Task<IActionResult> IndexAll(string sortOrder)
         {
+            ViewBag.PickUpDateSortParm = sortOrder == "PickUpDate" ? "pickup_date_desc" : "PickUpDate";
+            ViewBag.DeliveryDateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+
             IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == 0).FirstOrDefault();
             var inquiryService = serviceFactory.createInquiryService();
             var response = await inquiryService.GetAllAsync<APIResponse>();
             if (response != null && response.IsSuccess)
             {
                 List<InquiryDto>? inquiryDto = JsonConvert.DeserializeObject<List<InquiryDto>>(Convert.ToString(response.Result));
+
+                switch (sortOrder)
+                {
+                    case "Date":
+                        inquiryDto = inquiryDto.OrderBy(s => s.deliveryDate).ToList();
+                        break;
+                    case "date_desc":
+                        inquiryDto = inquiryDto.OrderByDescending(s => s.deliveryDate).ToList();
+                        break;
+                    case "PickUpDate":
+                        inquiryDto = inquiryDto.OrderBy(s => s.pickupDate).ToList();
+                        break;
+                    case "pickup_date_desc":
+                        inquiryDto = inquiryDto.OrderByDescending(s => s.pickupDate).ToList();
+                        break;
+                    default:
+                        inquiryDto = inquiryDto.OrderByDescending(s => s.pickupDate).ToList();
+                        break;
+                }
+
                 return View(inquiryDto);
             }
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -84,7 +107,7 @@ namespace CourierConnectWeb.Controllers
                 bool hasDelivery = this.hasDelivery(inquiry.Id);
                 objInquiryVMList.Add(new ClientInquiryVM(inquiry, hasDelivery));
             }
-            return View(objInquiryVMList);
+            return View(objInquiryVMList.OrderByDescending(s => s.Inquiry.creationDate).ToList());
         }
 
         public IActionResult Create()

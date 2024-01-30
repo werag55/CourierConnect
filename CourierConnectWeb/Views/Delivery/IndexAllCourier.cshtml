@@ -24,11 +24,27 @@
             </div>
         }
 
+        <div class="row pb-3">
+            <div class="col-6">
+                @using (Html.BeginForm())
+                {
+                    <p>
+                        Filtr by Status: @Html.TextBox("SearchString")
+                        <input type="submit" value="Search" />
+                    </p>
+                }
+            </div>
+        </div>
+
         <table id="tblData" class="table table-bordered table-striped" style="width:100%">
             <thead>
                 <tr>
-                    <th>Requested pickup date</th>
-                    <th>Requested delivery date</th>
+                    <th>
+                        @Html.ActionLink("Requested pickup Date", "IndexAllCourier", new { sortOrder = ViewBag.PickUpDateSortParm })
+                    </th>
+                    <th>
+                        @Html.ActionLink("Requested delivery Date", "IndexAllCourier", new { sortOrder = ViewBag.DeliveryDateSortParm })
+                    </th>
                     <th>Cancelation deadline</th>
                     <th>Pickup Date</th>
                     <th>(Try to) Delivery Date</th>

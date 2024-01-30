@@ -13,8 +13,12 @@
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>Pickup date</th>
-                    <th>Delivery date</th>
+                    <th>
+                        @Html.ActionLink("Pickup date", "IndexAll", new { sortOrder = ViewBag.PickUpDateSortParm })
+                    </th>
+                    <th>
+                        @Html.ActionLink("Delivery date", "IndexAll", new { sortOrder = ViewBag.DeliveryDateSortParm })
+                    </th>
                     <th>Priority</th>
                     <th>Weekend delivery</th>
                     <th>Company</th>

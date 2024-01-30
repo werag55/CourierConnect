@@ -17,6 +17,7 @@ namespace CourierConnect.DataAccess.Data
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Request> Requests { get; set; }
         public DbSet<Delivery> Deliveries { get; set; }
+        public DbSet<Company> Companies { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -33,6 +34,28 @@ namespace CourierConnect.DataAccess.Data
             new OfferEntityTypeConfiguration().Configure(builder.Entity<Offer>());
             new RequestEntityTypeConfiguration().Configure(builder.Entity<Request>());
             new DeliveryEntityTypeConfiguration().Configure(builder.Entity<Delivery>());
+            new CompanyEntityTypeConfiguration().Configure(builder.Entity<Company>());
+
+            builder.Entity<Company>().HasData(
+                new Company
+                {
+                    Id = 1,
+                    companyId = 0,
+                    Name = "CourierCompany"
+                },
+                new Company
+                {
+                    Id = 2,
+                    companyId = 1,
+                    Name = "Currier"
+                },
+                new Company
+                {
+                    Id = 3,
+                    companyId = 2,
+                    Name = "CourierHub"
+                }
+            );
         }
     }
 }

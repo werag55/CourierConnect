@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using CourierConnect.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using CourierConnectWeb.Services.Factory;
+using Microsoft.Data.SqlClient;
 
 namespace CourierConnectWeb.Controllers
 {
@@ -156,14 +157,31 @@ namespace CourierConnectWeb.Controllers
         #region Worker
 
         // [Authorize(Roles = SD.Role_User_Worker)]
-        public async Task<IActionResult> IndexAll()
+        public async Task<IActionResult> IndexAll(string sortOrder, string searchString)
         {
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+
             IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == 0).FirstOrDefault();
             var requestService = serviceFactory.createRequestService();
             var response = await requestService.GetAllAsync<APIResponse>();
             if (response != null && response.IsSuccess)
             {
                 List<RequestDto>? requestDto = JsonConvert.DeserializeObject<List<RequestDto>>(Convert.ToString(response.Result));
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    requestDto = requestDto.Where(s => s.requestStatus.ToString() == searchString).ToList();
+                }
+                switch (sortOrder)
+                {
+                    case "Date":
+                        requestDto = requestDto.OrderBy(s => s.decisionDeadline).ToList();
+                        break;
+                    default:
+                        requestDto = requestDto.OrderByDescending(s => s.decisionDeadline).ToList();
+                        break;
+                }
+
                 return View(requestDto);
             }
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)

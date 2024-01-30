@@ -91,8 +91,11 @@ namespace CourierConnectWeb.Controllers
         }
 
         //[Authorize(Roles = SD.Role_User_Worker)]
-        public async Task<IActionResult> IndexAll()
+        public async Task<IActionResult> IndexAll(string sortOrder, string searchString)
         {
+            ViewBag.PriceSortParm = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+
             //foreach (var serviceFactory in _serviceFactories)
             //{
                 IServiceFactory serviceFactory = _serviceFactories.FindAll(u => u.serviceId == 0).FirstOrDefault();
@@ -101,6 +104,30 @@ namespace CourierConnectWeb.Controllers
                 if (response != null && response.IsSuccess)
                 {
                     List<OfferDto>? offerDto = JsonConvert.DeserializeObject<List<OfferDto>>(Convert.ToString(response.Result));
+
+                    if (!String.IsNullOrEmpty(searchString))
+                    {
+                    offerDto = offerDto.Where(s => s.currency.ToString() == searchString).ToList();
+                    }
+                    switch (sortOrder)
+                    {
+                        case "Date":
+                            offerDto = offerDto.OrderBy(s => s.expirationDate).ToList();
+                            break;
+                        case "date_desc":
+                            offerDto = offerDto.OrderByDescending(s => s.expirationDate).ToList();
+                            break;
+                        case "Price":
+                            offerDto = offerDto.OrderBy(s => s.price).ToList();
+                            break;
+                        case "price_desc":
+                            offerDto = offerDto.OrderByDescending(s => s.price).ToList();
+                            break;
+                        default:
+                            offerDto = offerDto.OrderByDescending(s => s.creationDate).ToList();
+                            break;
+                    }
+
                     return View(offerDto);
                 }
                 if (response.StatusCode == System.Net.HttpStatusCode.NotFound)

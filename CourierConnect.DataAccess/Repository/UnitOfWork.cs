@@ -18,6 +18,7 @@ namespace CourierConnect.DataAccess.Repository
         public IOfferRepository Offer { get; private set; }
         public IRequestRepository Request { get; private set; }
         public IDeliveryRepository Delivery { get; private set; }
+        public ICompanyRepository Company { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
@@ -29,6 +30,7 @@ namespace CourierConnect.DataAccess.Repository
             Offer = new OfferRepository(_db);
             Request = new RequestRepository(_db);
             Delivery = new DeliveryRepository(_db);
+            Company = new CompanyRepository(_db);
         }
 
         public void Save()
