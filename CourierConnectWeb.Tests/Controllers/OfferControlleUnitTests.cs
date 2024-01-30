@@ -2,6 +2,7 @@
 using CourierConnect.DataAccess.Repository.IRepository;
 using CourierConnect.Models;
 using CourierConnectWeb.Controllers;
+using CourierConnectWeb.Services.Factory;
 using CourierConnectWeb.Services.IServices;
 using FakeItEasy;
 using FluentAssertions;
@@ -23,18 +24,23 @@ namespace CourierConnectWeb.Tests.Controllers
 
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IOfferService _offerService;
         private readonly IMapper _mapper;
+        private List<IServiceFactory> _serviceFactories;
 
         public OfferControlleUnitTests()
         {
             _unitOfWork = A.Fake<IUnitOfWork>();
-            _offerService = A.Fake<IOfferService>();
             _userManager = A.Fake<UserManager<IdentityUser>>();
             _mapper = A.Fake<IMapper>();
+            _serviceFactories = new List<IServiceFactory>();
+
+            OurServiceFactory ourServiceFactory = A.Fake<OurServiceFactory>();
+            CurrierServiceFactory currierServiceFactory = A.Fake<CurrierServiceFactory>();
+            CourierHubServiceFactory courierHubServiceFactory = A.Fake<CourierHubServiceFactory>();
 
             //SUT
-            _offerController = new OfferController(_unitOfWork, _offerService, _mapper, _userManager);
+            _offerController = new OfferController(_unitOfWork, ourServiceFactory, 
+                currierServiceFactory, courierHubServiceFactory, _mapper, _userManager);
         }
 
         [Fact]

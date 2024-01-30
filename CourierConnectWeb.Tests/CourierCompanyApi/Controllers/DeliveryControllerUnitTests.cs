@@ -34,10 +34,11 @@ namespace CourierConnectWeb.Tests.CourierCompanyApi.Controllers
         [Fact]
         public async void DeliveryController_GetDelivery_ReturnsOK()
         {
-            int deliveryId = 1;
+            string deliveryId = "1";
             var delivery = new Delivery()
             {
                 Id = 1,
+                GUID = "1",
                 courierId = 1,
                 courier = new Courier()
                 {
@@ -53,7 +54,7 @@ namespace CourierConnectWeb.Tests.CourierCompanyApi.Controllers
             };
             var deliveryDto = new DeliveryDto()
             {
-                companyDeliveryId = 1,
+                companyDeliveryId = "1",
                 courier = new CourierDto()
                 {
                     name = "John",
@@ -61,7 +62,7 @@ namespace CourierConnectWeb.Tests.CourierCompanyApi.Controllers
                 },
                 request = new RequestDto()
                 {
-                    isAccepted = false,
+                    requestStatus = RequestStatus.Pending
                 },
                 cancelationDeadline = DateTime.Now,
                 deliveryStatus = DeliveryStatus.Proccessing,
@@ -88,7 +89,7 @@ namespace CourierConnectWeb.Tests.CourierCompanyApi.Controllers
         [Fact]
         public async Task GetDelivery_ReturnsBadRequestWhenDeliveryNotFound()
         {
-            int deliveryId = 1;
+            string deliveryId = "1";
 
             A.CallTo(() => _unitOfWork.Delivery.GetAsync(
                 A<Expression<Func<Delivery, bool>>>.Ignored,
@@ -105,7 +106,7 @@ namespace CourierConnectWeb.Tests.CourierCompanyApi.Controllers
         [Fact]
         public async Task GetDelivery_ReturnsBadRequestOnException()
         {
-            int deliveryId = 1;
+            string deliveryId = "1";
 
             A.CallTo(() => _unitOfWork.Delivery.GetAsync(
                 A<Expression<Func<Delivery, bool>>>.Ignored,
@@ -116,9 +117,12 @@ namespace CourierConnectWeb.Tests.CourierCompanyApi.Controllers
             var result = await _controller.GetDelivery(deliveryId);
 
             result.Should().BeOfType<ActionResult<APIResponse>>();
-            var response = result.Value;
-            response.IsSuccess.Should().BeFalse();
-            response.ErrorMessages.Should().NotBeEmpty();
+            var response = result.Result as BadRequestObjectResult;
+            response?.StatusCode.Should().Be(400);
+            response?.Value.Should().NotBeNull();
+            var API = response.Value as APIResponse;
+            API?.IsSuccess.Should().BeFalse();
+            API?.ErrorMessages.Should().NotBeEmpty();
         }
     }
 }

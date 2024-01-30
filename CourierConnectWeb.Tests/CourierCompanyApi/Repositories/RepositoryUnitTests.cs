@@ -30,6 +30,7 @@ namespace CourierConnectWeb.Tests.CourierCompanyApi.Repositories
                     new Offer()
                     {
                         Id = i + 1,
+                        GUID = i.ToString() + 1,
                         inquiryId = i + 1,
                         inquiry = new Inquiry()
                         {

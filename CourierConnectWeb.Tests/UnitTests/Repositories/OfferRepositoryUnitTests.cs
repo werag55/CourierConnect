@@ -30,7 +30,7 @@ namespace CourierConnectWeb.Tests.UnitTests.Repositories
                     new Offer()
                     {
                         Id = i + 1,
-                        companyOfferId = i + 1,
+                        companyOfferId = i.ToString() + 1,
                         companyId = i + 1,
                         inquiryId = i + 1,
                         inquiry = new Inquiry()
@@ -60,7 +60,7 @@ namespace CourierConnectWeb.Tests.UnitTests.Repositories
             var updatedOffer = new Offer()
             {
                 Id = 1,
-                companyOfferId = 1,
+                companyOfferId = "1",
                 companyId = 1,
                 inquiryId = 1,
                 inquiry = new Inquiry() { },
