@@ -13,10 +13,9 @@
             <div class="col-6">
             </div>
             <div class="col-6 text-end">
-                @* <a asp-controller="Inquiry" asp-action="Create" class="btn btn-primary">
+                <a asp-controller="Inquiry" asp-action="Create" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i>  Create new Inquiry
-                </a> *@
-                @Html.ActionLink("Create new Inquiry", "Create", "Inquiry", null, new { @class = "btn btn-primary" })
+                </a>
             </div>
         </div>
 
@@ -25,6 +24,9 @@
                 <tr>
                     <th>Pickup date</th>
                     <th>Delivery date</th>
+                    <th>Priority</th>
+                    <th>Weekend delivery</th>
+                    <th>Company</th>
                     <th>Source address</th>
                     <th>Delivery address</th>
                     <th>Package details</th>
@@ -36,26 +38,99 @@
                 @foreach (var obj in Model)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(model => obj.Inquiry.pickupDate.Date)</td>
-                        <td>@Html.DisplayFor(model => obj.Inquiry.deliveryDate.Date)</td>
-                        <td>@Html.DisplayFor(model => obj.Inquiry.sourceAddress.ToString())</td>
-                        <td>@Html.DisplayFor(model => obj.Inquiry.destinationAddress.ToString())</td>
-                        <td>@Html.DisplayFor(model => obj.Inquiry.package.ToString())</td>
+                        <td>@obj.Inquiry.pickupDate.Date</td>
+                        <td>@obj.Inquiry.deliveryDate.Date</td>
+                        <td>
+                            @if (obj.Inquiry.isPriority)
+                            {
+                                <text>Yes</text>
+                            }
+                            else
+                            {
+                                <text>No</text>
+                            }
+                        </td>
+                        <td>
+                            @if (obj.Inquiry.weekendDelivery)
+                            {
+                                <text>Yes</text>
+                            }
+                            else
+                            {
+                                <text>No</text>
+                            }
+                        </td>
+                        <td>
+                            @if (obj.Inquiry.isCompany)
+                            {
+                                <text>Yes</text>
+                            }
+                            else
+                            {
+                                <text>No</text>
+                            }
+                        </td>
+                        <td>
+                            <span>
+                                @obj.Inquiry.sourceAddress.streetName
+                                @obj.Inquiry.sourceAddress.houseNumber
+                                @if (@obj.Inquiry.sourceAddress.flatNumber != null)
+                                {
+                                    <text>/</text>
+                                    @obj.Inquiry.sourceAddress.flatNumber
+                                }
+                            </span>
+                            <br />
+                            <span>
+                                @obj.Inquiry.sourceAddress.postcode
+                                @obj.Inquiry.sourceAddress.city
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                @obj.Inquiry.destinationAddress.streetName
+                                @obj.Inquiry.destinationAddress.houseNumber
+                                @if (@obj.Inquiry.destinationAddress.flatNumber != null)
+                                {
+                                    <text>/</text>
+                                    @obj.Inquiry.destinationAddress.flatNumber
+                                }
+                            </span>
+                            <br />
+                            <span>
+                                @obj.Inquiry.destinationAddress.postcode
+                                @obj.Inquiry.destinationAddress.city
+                            </span>
+
+                        </td>
+                        <td>
+                            <span>
+                                @obj.Inquiry.package.width
+                                x
+                                @obj.Inquiry.package.height
+                                x
+                                @obj.Inquiry.package.length
+                                @obj.Inquiry.package.dimensionsUnit.ToString()
+                            </span>
+                            <br />
+                            <span>
+                                @obj.Inquiry.package.weight
+                                @obj.Inquiry.package.weightUnit.ToString()
+                            </span>
+                        </td>
                         <td>
                             <div class="w-75 btn-group" role="group">
                                 @if (obj.hasDelivery)
                                 {
-                                     @* <a asp-controller="Category" asp-action="Edit" asp-route-id="@obj.Inquiry.Id" class="btn btn-primary mx-2">
+                                     <a asp-controller="Delivery" asp-action="Details" asp-route-id="@obj.Inquiry.Id" class="btn btn-primary mx-2">
                                         <i class="bi bi-pencil-square"></i> View delivery
-                                    </a> *@
-                                    @Html.ActionLink("View delivery", "Edit", "Inquiry", new { id = obj.Inquiry.Id }, new { @class = "btn btn-primary mx-2" })
+                                    </a>
                                 }
                                 else
                                 {
-                                    @* <a asp-controller="Offer" asp-action="Index" asp-route-id="@obj.Inquiry.Id" class="btn btn-outline-primary border  form-control">
+                                    <a asp-controller="Offer" asp-action="Index" asp-route-id="@obj.Inquiry.Id" class="btn btn-outline-primary border  form-control">
                                         View offers
-                                    </a> *@
-                                    @Html.ActionLink("View offers", "Index", "Offer", new { id = obj.Inquiry.Id }, new { @class = "btn btn-outline-primary border  form-control" })
+                                    </a>
                                 }
                                 </div>
                         </td>

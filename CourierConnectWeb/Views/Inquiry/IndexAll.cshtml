@@ -1,0 +1,119 @@
+﻿@model List<InquiryDto>
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Inquiry List</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.ActionLink("Pickup date", "IndexAll", new { sortOrder = ViewBag.PickUpDateSortParm })
+                    </th>
+                    <th>
+                        @Html.ActionLink("Delivery date", "IndexAll", new { sortOrder = ViewBag.DeliveryDateSortParm })
+                    </th>
+                    <th>Priority</th>
+                    <th>Weekend delivery</th>
+                    <th>Company</th>
+                    <th>Source address</th>
+                    <th>Delivery address</th>
+                    <th>Package details</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var obj in Model)
+                {
+                    <tr>
+                        <td>@obj.pickupDate.Date</td>
+                        <td>@obj.deliveryDate.Date</td>
+                        <td>
+                            @if (obj.isPriority)
+                            {
+                                <text>Yes</text>
+                            }
+                            else
+                            {
+                                <text>No</text>
+                            }
+                        </td>
+                        <td>
+                            @if (obj.weekendDelivery)
+                            {
+                                <text>Yes</text>
+                            }
+                            else
+                            {
+                                <text>No</text>
+                            }
+                        </td>
+                        <td>
+                            @if (obj.isCompany)
+                            {
+                                <text>Yes</text>
+                            }
+                            else
+                            {
+                                <text>No</text>
+                            }
+                        </td>
+                        <td>
+                            <span>
+                                @obj.sourceAddress.streetName
+                                @obj.sourceAddress.houseNumber
+                                @if (@obj.sourceAddress.flatNumber != null)
+                                {
+                                    <text>/</text>
+                                    @obj.sourceAddress.flatNumber
+                                }
+                            </span>
+                            <br />
+                            <span>
+                                @obj.sourceAddress.postcode
+                                @obj.sourceAddress.city
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                @obj.destinationAddress.streetName
+                                @obj.destinationAddress.houseNumber
+                                @if (@obj.destinationAddress.flatNumber != null)
+                                {
+                                    <text>/</text>
+                                    @obj.destinationAddress.flatNumber
+                                }
+                            </span>
+                            <br />
+                            <span>
+                                @obj.destinationAddress.postcode
+                                @obj.destinationAddress.city
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                @obj.package.width
+                                x
+                                @obj.package.height
+                                x
+                                @obj.package.length
+                                @obj.package.dimensionsUnit.ToString()
+                            </span>
+                            <br />
+                            <span>
+                                @obj.package.weight
+                                @obj.package.weightUnit.ToString()
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
