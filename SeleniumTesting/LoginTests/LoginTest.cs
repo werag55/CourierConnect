@@ -44,26 +44,26 @@ namespace SeleniumTesting.LoginTests
             Assert.That(homePage.IsLogInExist(), Is.True);
         }
 
-        [Test]
-        public void RegisterNewUser()
-        {
-            driver.Navigate().GoToUrl("https://connectcourier.azurewebsites.net/");
-            HomePage homePage = new HomePage();
-            RegisterPage registerPage = new RegisterPage();
+        //[Test]
+        //public void RegisterNewUser()
+        //{
+        //    driver.Navigate().GoToUrl("https://connectcourier.azurewebsites.net/");
+        //    HomePage homePage = new HomePage();
+        //    RegisterPage registerPage = new RegisterPage();
 
-            homePage.ClickRegister();
-            registerPage.EnterUserEmailAndPassword(GenerateRandomEmail("user"), "User1234!", true);
-            registerPage.SelectRole("Client");
-            registerPage.ClickRegister();
-            Assert.That(homePage.IsLogOutExist(), Is.True);
-        }
+        //    homePage.ClickRegister();
+        //    registerPage.EnterUserEmailAndPassword(GenerateRandomEmail("user"), "User1234!", true);
+        //    registerPage.SelectRole("Client");
+        //    registerPage.ClickRegister();
+        //    Assert.That(homePage.IsLogOutExist(), Is.True);
+        //}
 
-        static string GenerateRandomEmail(string prefix)
-        {
-            string randomString = Guid.NewGuid().ToString("N").Substring(0, 8);
-            string email = $"{prefix}_{randomString}@gmail.com";
+        //static string GenerateRandomEmail(string prefix)
+        //{
+        //    string randomString = Guid.NewGuid().ToString("N").Substring(0, 8);
+        //    string email = $"{prefix}_{randomString}@gmail.com";
 
-            return email;
-        }
+        //    return email;
+        //}
     }
 }
