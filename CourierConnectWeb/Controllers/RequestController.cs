@@ -156,7 +156,7 @@ namespace CourierConnectWeb.Controllers
 
         #region Worker
 
-        // [Authorize(Roles = SD.Role_User_Worker)]
+        [Authorize(Roles = SD.Role_User_Worker)]
         public async Task<IActionResult> IndexAll(string sortOrder, string searchString)
         {
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
@@ -167,6 +167,8 @@ namespace CourierConnectWeb.Controllers
             if (response != null && response.IsSuccess)
             {
                 List<RequestDto>? requestDto = JsonConvert.DeserializeObject<List<RequestDto>>(Convert.ToString(response.Result));
+                if (requestDto == null)
+                    requestDto = new List<RequestDto>();
 
                 if (!String.IsNullOrEmpty(searchString))
                 {
@@ -197,7 +199,7 @@ namespace CourierConnectWeb.Controllers
             return NotFound();
         }
 
-        //[Authorize(Roles = SD.Role_User_Worker)]
+        [Authorize(Roles = SD.Role_User_Worker)]
         public async Task<IActionResult> Accept(string id)
         {
 
@@ -218,7 +220,7 @@ namespace CourierConnectWeb.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = SD.Role_User_Worker)]
+        [Authorize(Roles = SD.Role_User_Worker)]
         public IActionResult Reject(string id)
         {
             RequestRejectVM requestRejectVM = new RequestRejectVM
@@ -229,7 +231,7 @@ namespace CourierConnectWeb.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = SD.Role_User_Worker)]
+        [Authorize(Roles = SD.Role_User_Worker)]
         public async Task<IActionResult> Reject(RequestRejectVM requestRejectVM)
         {
 

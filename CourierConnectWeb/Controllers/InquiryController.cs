@@ -1,6 +1,7 @@
 ﻿using CourierConnect.DataAccess.Data;
 using CourierConnect.DataAccess.Repository.IRepository;
 using CourierConnect.Models;
+using CourierConnect.Models.POCO;
 using CourierConnect.Models.Dto;
 using CourierConnect.Utility;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +12,7 @@ using ICSharpCode.Decompiler.CSharp.Syntax;
 using CourierConnectWeb.Services.Factory;
 using Newtonsoft.Json;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CourierConnectWeb.Controllers
 {
@@ -33,7 +35,7 @@ namespace CourierConnectWeb.Controllers
             _mapper = mapper;
         }
 
-        //[Authorize(Roles = SD.Role_User_Worker)]
+        [Authorize(Roles = SD.Role_User_Worker)]
         public async Task<IActionResult> IndexAll(string sortOrder)
         {
             ViewBag.PickUpDateSortParm = sortOrder == "PickUpDate" ? "pickup_date_desc" : "PickUpDate";
@@ -45,6 +47,8 @@ namespace CourierConnectWeb.Controllers
             if (response != null && response.IsSuccess)
             {
                 List<InquiryDto>? inquiryDto = JsonConvert.DeserializeObject<List<InquiryDto>>(Convert.ToString(response.Result));
+                if (inquiryDto == null)
+                    inquiryDto = new List<InquiryDto>();
 
                 switch (sortOrder)
                 {
@@ -93,7 +97,8 @@ namespace CourierConnectWeb.Controllers
                 return false;
             return true;
         }
-  
+
+        [Authorize(Roles = SD.Role_User_Client)]
         public IActionResult ClientInquiries()
         {
             var id = _userManager.GetUserId(User);
@@ -104,8 +109,9 @@ namespace CourierConnectWeb.Controllers
             List<ClientInquiryVM> objInquiryVMList = new List<ClientInquiryVM>();
             foreach (var inquiry in objInquiryList)
             {
+                InquiryPOCO inquiryPOCO = _mapper.Map<InquiryPOCO>(inquiry);
                 bool hasDelivery = this.hasDelivery(inquiry.Id);
-                objInquiryVMList.Add(new ClientInquiryVM(inquiry, hasDelivery));
+                objInquiryVMList.Add(new ClientInquiryVM(inquiryPOCO, hasDelivery));
             }
             return View(objInquiryVMList.OrderByDescending(s => s.Inquiry.creationDate).ToList());
         }
@@ -130,7 +136,6 @@ namespace CourierConnectWeb.Controllers
             
             if (sourceAddress == null)
             {
-
                 sourceAddress = obj.sourceAddress;
                 _context.Addresses.Add(sourceAddress);
             }

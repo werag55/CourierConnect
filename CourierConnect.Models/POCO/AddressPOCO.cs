@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CourierConnect.Models
+namespace CourierConnect.Models.POCO
 {
-    public class Address
+    public class AddressPOCO
     {
-        public int Id { get; set; }
-
         public string streetName { get; set; }
 
         public int houseNumber { get; set; }
@@ -21,6 +17,5 @@ namespace CourierConnect.Models
         public string postcode { get; set; }
 
         public string city { get; set; }
-
     }
 }

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using CourierConnect.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using CourierConnectWeb.Services;
+using CourierConnect.Models.POCO;
 
 namespace CourierConnectWeb.Controllers
 {
@@ -90,7 +91,7 @@ namespace CourierConnectWeb.Controllers
             return NotFound();
         }
 
-        //[Authorize(Roles = SD.Role_User_Worker)]
+        [Authorize(Roles = SD.Role_User_Worker)]
         public async Task<IActionResult> IndexAll(string sortOrder, string searchString)
         {
             ViewBag.PriceSortParm = sortOrder == "Price" ? "price_desc" : "Price";
@@ -103,7 +104,10 @@ namespace CourierConnectWeb.Controllers
                 var response = await offerService.GetAllAsync<APIResponse>();
                 if (response != null && response.IsSuccess)
                 {
-                    List<OfferDto>? offerDto = JsonConvert.DeserializeObject<List<OfferDto>>(Convert.ToString(response.Result));
+                    List<OfferPOCO>? offerDto = _mapper.Map<List<OfferPOCO>>(JsonConvert.DeserializeObject<List<OfferDto>>(Convert.ToString(response.Result)));
+
+                    if (offerDto == null)
+                        offerDto = new List<OfferPOCO>();
 
                     if (!String.IsNullOrEmpty(searchString))
                     {

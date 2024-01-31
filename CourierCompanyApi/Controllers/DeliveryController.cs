@@ -72,6 +72,7 @@ namespace CourierCompanyApi.Controllers
                     _response.ErrorMessages
                          = new List<string>() { "There was already a delivery made for that request" };
                     _response.StatusCode = HttpStatusCode.BadRequest;
+					_response.Result = exisitingDelivery;
                     return BadRequest(_response);
                 }
 
@@ -269,7 +270,7 @@ namespace CourierCompanyApi.Controllers
 
 				if (DeliveryList == null || DeliveryList.Count() == 0)
 				{
-					_response.IsSuccess = false;
+					_response.IsSuccess = true;
 					_response.StatusCode = HttpStatusCode.NotFound;
 					return NotFound(_response);
 				}
@@ -323,7 +324,7 @@ namespace CourierCompanyApi.Controllers
 
 				if (DeliveryList.Count() == 0)
 				{
-					_response.IsSuccess = false;
+					_response.IsSuccess = true;
 					_response.StatusCode = HttpStatusCode.NotFound;
 					return NotFound(_response);
 				}
@@ -383,7 +384,7 @@ namespace CourierCompanyApi.Controllers
                 delivery.pickUpDate = DateTime.Now;
 				await _unitOfWork.Delivery.UpdateAsync(delivery);
 				_response.StatusCode = HttpStatusCode.OK;
-                return BadRequest(_response);
+                return Ok(_response);
 
             }
             catch (Exception ex)
@@ -392,7 +393,7 @@ namespace CourierCompanyApi.Controllers
 				_response.ErrorMessages
 					 = new List<string>() { ex.ToString() };
 			}
-			return _response;
+			return BadRequest(_response);
 		}
 
 		/// <summary>

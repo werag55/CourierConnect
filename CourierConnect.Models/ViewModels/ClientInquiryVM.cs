@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CourierConnect.Models.POCO;
 
 namespace CourierConnect.Models.ViewModels
 {
     public class ClientInquiryVM
     {
-        public Inquiry Inquiry { get; set; }
+        public InquiryPOCO Inquiry { get; set; }
         public bool hasDelivery { get; set; }
 
-        public ClientInquiryVM(Inquiry inquiry, bool hasDelivery)
+        public ClientInquiryVM(InquiryPOCO inquiry, bool hasDelivery)
         {
             this.Inquiry = inquiry;
             this.hasDelivery = hasDelivery;

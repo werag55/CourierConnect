@@ -1,0 +1,27 @@
+﻿@model DeliveryVM
+
+<tr data-delivery-id="@Model.delivery.Id">
+    <td>@Model.deliveryDto.companyName</td>
+    <td>@Model.deliveryDto.request.offer.inquiry.pickupDate.Date</td>
+    <td>@Model.deliveryDto.request.offer.inquiry.deliveryDate.Date</td>
+    <td>@Model.deliveryDto.cancelationDeadline.Date</td>
+    <td>
+        <a asp-controller="Delivery" asp-action="Index" asp-route-id="@Model.delivery.Id" class="btn btn-primary mx-2">
+            <i class="bi bi-pencil-square"></i> View details
+        </a>
+    </td>
+    <td>@Model.deliveryDto.deliveryStatus</td>
+    <td>
+        <div class="w-75 btn-group" role="group">
+            @if (Model.deliveryDto.cancelationDeadline > DateTime.Now && @Model.deliveryDto.deliveryStatus == DeliveryStatus.Proccessing)
+            {
+                @*<a asp-controller="Delivery" asp-action="Cancel" asp-route-id="@Model.delivery.Id" class="btn btn-danger mx-2">
+                    <i class="bi bi-pencil-square"></i> Cancel
+                </a>  *@
+                <a href="#" class="btn btn-danger mx-2" onclick="cancelDelivery('@Model.delivery.Id')">
+                    <i class="bi bi-pencil-square"></i> Cancel
+                </a>
+            }
+        </div>
+    </td>
+</tr>

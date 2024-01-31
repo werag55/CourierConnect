@@ -63,9 +63,53 @@
                                 <text>No</text>
                             }
                         </td>
-                        <td>@obj.sourceAddress.ToString()</td>
-                        <td>@obj.destinationAddress.ToString()</td>
-                        <td>@obj.package.ToString()</td>
+                        <td>
+                            <span>
+                                @obj.sourceAddress.streetName
+                                @obj.sourceAddress.houseNumber
+                                @if (@obj.sourceAddress.flatNumber != null)
+                                {
+                                    <text>/</text>
+                                    @obj.sourceAddress.flatNumber
+                                }
+                            </span>
+                            <br />
+                            <span>
+                                @obj.sourceAddress.postcode
+                                @obj.sourceAddress.city
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                @obj.destinationAddress.streetName
+                                @obj.destinationAddress.houseNumber
+                                @if (@obj.destinationAddress.flatNumber != null)
+                                {
+                                    <text>/</text>
+                                    @obj.destinationAddress.flatNumber
+                                }
+                            </span>
+                            <br />
+                            <span>
+                                @obj.destinationAddress.postcode
+                                @obj.destinationAddress.city
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                @obj.package.width
+                                x
+                                @obj.package.height
+                                x
+                                @obj.package.length
+                                @obj.package.dimensionsUnit.ToString()
+                            </span>
+                            <br />
+                            <span>
+                                @obj.package.weight
+                                @obj.package.weightUnit.ToString()
+                            </span>
+                        </td>
                     </tr>
                 }
             </tbody>
