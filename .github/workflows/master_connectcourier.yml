@@ -28,9 +28,21 @@ jobs:
       - name: Test with the dotnet CLI
         run: dotnet test
 
-      - name: dotnet publish
+      - name: dotnet publish webapp
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/CourierConnectWeb
         working-directory: ./CourierConnectWeb
+
+      - name: dotnet publish data
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/CourierConnect.DataAccess
+        working-directory: ./CourierConnect.DataAccess
+
+      - name: dotnet publish models
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/CourierConnect.Models
+        working-directory: ./CourierConnect.Models
+
+      - name: dotnet publish utility
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/CourierConnect.Utility
+        working-directory: ./CourierConnect.Utility
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
