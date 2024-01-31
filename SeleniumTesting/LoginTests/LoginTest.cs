@@ -1,6 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Interactions;
 using SeleniumTesting.Pages;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,12 @@ namespace SeleniumTesting.LoginTests
         [SetUp]
         public void Setup()
         {
-            driver = new ChromeDriver();
+
+            ChromeOptions options = new ChromeOptions();
+            //options.EnableMobileEmulation(deviceName);
+            options.AddArgument("no-sandbox");
+            driver = new ChromeDriver(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromMinutes(3));
+            driver.Manage().Timeouts().PageLoad.Add(System.TimeSpan.FromSeconds(30));
         }
         [Test]
         public void Login() 
