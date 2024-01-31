@@ -91,7 +91,7 @@ namespace CourierConnectWeb.Controllers
             return NotFound();
         }
 
-        //[Authorize(Roles = SD.Role_User_Worker)]
+        [Authorize(Roles = SD.Role_User_Worker)]
         public async Task<IActionResult> IndexAll(string sortOrder, string searchString)
         {
             ViewBag.PriceSortParm = sortOrder == "Price" ? "price_desc" : "Price";

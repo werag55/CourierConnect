@@ -32,7 +32,8 @@ namespace CourierConnectWeb.Controllers
             _userManager = userManager;
         }
 
-		public async Task<IActionResult> IndexAll(string sortOrder, string searchString)
+        [Authorize(Roles = SD.Role_User_Client)]
+        public async Task<IActionResult> IndexAll(string sortOrder, string searchString)
         {
             //ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
@@ -161,6 +162,7 @@ namespace CourierConnectWeb.Controllers
 			return NotFound();
 		}
 
+        [Authorize(Roles = SD.Role_User_Client)]
         public async Task<IActionResult> Index(int id)
         {
             
@@ -185,6 +187,7 @@ namespace CourierConnectWeb.Controllers
             return NotFound();
         }
 
+        [Authorize(Roles = SD.Role_User_Client)]
         public IActionResult Details(int id)
         {
             Delivery delivery = _unitOfWork.Delivery.Get(u => u.request.offer.inquiryId == id);
@@ -199,12 +202,14 @@ namespace CourierConnectWeb.Controllers
             });
         }
 
+        [Authorize(Roles = SD.Role_User_Client)]
         [HttpGet]
         public IActionResult Add()
 		{
 			return View();
 		}
 
+        [Authorize(Roles = SD.Role_User_Client)]
         [HttpPost]
         public IActionResult Add(string id)
         {
@@ -228,6 +233,7 @@ namespace CourierConnectWeb.Controllers
 			return RedirectToAction("IndexAll");
 		}
 
+        [Authorize(Roles = SD.Role_User_Client)]
         [HttpPost]
         public async Task<IActionResult> Cancel(int id)
         {
@@ -267,7 +273,7 @@ namespace CourierConnectWeb.Controllers
 
         #region Courier
 
-        //[Authorize(Roles = SD.Role_User_Courier)]
+        [Authorize(Roles = SD.Role_User_Courier)]
         public async Task<IActionResult> IndexAllCourier(string sortOrder, string searchString)
         {
             ViewBag.PickUpDateSortParm = sortOrder == "PickUpDate" ? "pickup_date_desc" : "PickUpDate";
@@ -313,7 +319,7 @@ namespace CourierConnectWeb.Controllers
             return View(null);
         }
 
-        //[Authorize(Roles = SD.Role_User_Courier)]
+        [Authorize(Roles = SD.Role_User_Courier)]
         [HttpPost]
         public async Task<IActionResult> PickUp(string id)
         {
@@ -341,7 +347,7 @@ namespace CourierConnectWeb.Controllers
             return RedirectToAction("IndexAllCourier");
         }
 
-        //[Authorize(Roles = SD.Role_User_Courier)]
+        [Authorize(Roles = SD.Role_User_Courier)]
         [HttpPost]
         public async Task<IActionResult> Deliver(string id)
         {
@@ -371,7 +377,7 @@ namespace CourierConnectWeb.Controllers
 
 
         [HttpGet]
-        //[Authorize(Roles = SD.Role_User_Courier)]
+        [Authorize(Roles = SD.Role_User_Courier)]
         public IActionResult CannotDeliver(string id)
         {
             CannotDeliverVM cannotDeliverVM = new CannotDeliverVM
@@ -382,7 +388,7 @@ namespace CourierConnectWeb.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = SD.Role_User_Courier)]
+        [Authorize(Roles = SD.Role_User_Courier)]
         public async Task<IActionResult> CannotDeliver(CannotDeliverVM cannotDeliverVM)
         {
 

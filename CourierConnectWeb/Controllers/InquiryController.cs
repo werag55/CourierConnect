@@ -35,7 +35,7 @@ namespace CourierConnectWeb.Controllers
             _mapper = mapper;
         }
 
-        //[Authorize(Roles = SD.Role_User_Worker)]
+        [Authorize(Roles = SD.Role_User_Worker)]
         public async Task<IActionResult> IndexAll(string sortOrder)
         {
             ViewBag.PickUpDateSortParm = sortOrder == "PickUpDate" ? "pickup_date_desc" : "PickUpDate";
