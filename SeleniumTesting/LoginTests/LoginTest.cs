@@ -64,11 +64,19 @@ namespace SeleniumTesting.LoginTests
             RegisterPage registerPage = new RegisterPage();
 
             homePage.ClickRegister();
-            registerPage.EnterUserEmailAndPassword("alinkamalinka2@gmail.com", "Alinka12!", true);
+            registerPage.EnterUserEmailAndPassword(GenerateRandomEmail("user"), "User1234!", true);
             registerPage.SelectRole("Client");
             registerPage.ClickRegister();
             System.Threading.Thread.Sleep(4000);
             Assert.That(homePage.IsLogOutExist(), Is.True);
+        }
+
+        static string GenerateRandomEmail(string prefix)
+        {
+            string randomString = Guid.NewGuid().ToString("N").Substring(0, 8);
+            string email = $"{prefix}_{randomString}@gmail.com";
+
+            return email;
         }
     }
 }
