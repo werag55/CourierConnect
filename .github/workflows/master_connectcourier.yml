@@ -32,6 +32,10 @@ jobs:
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/CourierConnectWeb
         working-directory: ./CourierConnectWeb
 
+      - name: dotnet publish webapi
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/CourierCompanyApi
+        working-directory: ./CourierCompanyApi
+
       - name: dotnet publish data
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/CourierConnect.DataAccess
         working-directory: ./CourierConnect.DataAccess
