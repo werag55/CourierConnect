@@ -11,6 +11,9 @@ namespace SeleniumTesting.Pages
     public class HomePage : DriverHelper
     {
         IWebElement lnkLogin => driver.FindElement(By.LinkText("Login"));
+        IWebElement lnkLogOut => driver.FindElement(By.LinkText("Logout"));
         public void ClickLogin() => lnkLogin.Click();
+
+        public bool IsLogOutExist() => lnkLogOut.Displayed;
     }
 }

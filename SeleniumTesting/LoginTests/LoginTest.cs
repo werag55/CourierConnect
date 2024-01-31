@@ -26,7 +26,7 @@ namespace SeleniumTesting.LoginTests
             loginPage.EnterUserEmailAndPassword("alinkamalinka@gmail.com", "Alinka12!");
             loginPage.ClickLogin();
 
-            Assert.Pass();
+            Assert.That(homePage.IsLogOutExist(), Is.True);
         }
     }
 }
