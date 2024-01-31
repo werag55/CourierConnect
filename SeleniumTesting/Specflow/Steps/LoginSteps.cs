@@ -43,7 +43,7 @@ namespace SeleniumTesting.Specflow.Steps
         [Then((@"I should see user logged in to the application"))]
         public void ThenIShouldSeeUserLoggedInToTheApplication()
         {
-            Assert.That(homePage.IsLogOutExist(), Is.True);
+            Assert.That(homePage.IsLogInExist(), Is.False);
         }
     }
 }

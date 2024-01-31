@@ -13,12 +13,22 @@ namespace SeleniumTesting.Pages
         IWebElement txtPasswd => driver.FindElement(By.Name("Input.Password"));
         IWebElement btnLogin => driver.FindElement(By.Id("login-submit"));
 
+        IWebElement ForgotPassword => driver.FindElement(By.Id("forgot-password"));
+        IWebElement resendConfirmation => driver.FindElement(By.Id("resend-confirmation"));
         public void EnterUserEmailAndPassword(string email, string password)
         {
             txtEmail.Clear();
             txtPasswd.Clear();
             txtEmail.SendKeys(email);
             txtPasswd.SendKeys(password);
+        }
+        public void ClickForgotPassword()
+        {
+            ForgotPassword.Click();
+        }
+        public void ClickResentConfirmation()
+        {
+            resendConfirmation.Click();
         }
 
         public void ClickLogin()
