@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "CourierConnect
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{322DB43C-FDA4-44C5-B00A-8DE3B0B2A4F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeleniumTesting", "SeleniumTesting\SeleniumTesting.csproj", "{943697D8-59EC-426D-B016-88EA9E0ABFE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeleniumTesting", "SeleniumTesting\SeleniumTesting.csproj", "{943697D8-59EC-426D-B016-88EA9E0ABFE5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestsProject", "UnitTestsProject\UnitTestsProject.csproj", "{30D0059E-08B6-440B-B501-A7C87DFBF1BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{943697D8-59EC-426D-B016-88EA9E0ABFE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{943697D8-59EC-426D-B016-88EA9E0ABFE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{943697D8-59EC-426D-B016-88EA9E0ABFE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30D0059E-08B6-440B-B501-A7C87DFBF1BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30D0059E-08B6-440B-B501-A7C87DFBF1BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30D0059E-08B6-440B-B501-A7C87DFBF1BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30D0059E-08B6-440B-B501-A7C87DFBF1BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
