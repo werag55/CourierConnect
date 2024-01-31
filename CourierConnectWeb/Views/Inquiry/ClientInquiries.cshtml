@@ -70,9 +70,54 @@
                                 <text>No</text>
                             }
                         </td>
-                        <td>@obj.Inquiry.sourceAddress.ToString()</td>
-                        <td>@obj.Inquiry.destinationAddress.ToString()</td>
-                        <td>@obj.Inquiry.package.ToString()</td>
+                        <td>
+                            <span>
+                                @obj.Inquiry.sourceAddress.streetName
+                                @obj.Inquiry.sourceAddress.houseNumber
+                                @if (@obj.Inquiry.sourceAddress.flatNumber != null)
+                                {
+                                    <text>/</text>
+                                    @obj.Inquiry.sourceAddress.flatNumber
+                                }
+                            </span>
+                            <br />
+                            <span>
+                                @obj.Inquiry.sourceAddress.postcode
+                                @obj.Inquiry.sourceAddress.city
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                @obj.Inquiry.destinationAddress.streetName
+                                @obj.Inquiry.destinationAddress.houseNumber
+                                @if (@obj.Inquiry.destinationAddress.flatNumber != null)
+                                {
+                                    <text>/</text>
+                                    @obj.Inquiry.destinationAddress.flatNumber
+                                }
+                            </span>
+                            <br />
+                            <span>
+                                @obj.Inquiry.destinationAddress.postcode
+                                @obj.Inquiry.destinationAddress.city
+                            </span>
+
+                        </td>
+                        <td>
+                            <span>
+                                @obj.Inquiry.package.width
+                                x
+                                @obj.Inquiry.package.height
+                                x
+                                @obj.Inquiry.package.length
+                                @obj.Inquiry.package.dimensionsUnit.ToString()
+                            </span>
+                            <br />
+                            <span>
+                                @obj.Inquiry.package.weight
+                                @obj.Inquiry.package.weightUnit.ToString()
+                            </span>
+                        </td>
                         <td>
                             <div class="w-75 btn-group" role="group">
                                 @if (obj.hasDelivery)

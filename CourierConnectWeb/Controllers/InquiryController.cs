@@ -1,6 +1,7 @@
 ﻿using CourierConnect.DataAccess.Data;
 using CourierConnect.DataAccess.Repository.IRepository;
 using CourierConnect.Models;
+using CourierConnect.Models.POCO;
 using CourierConnect.Models.Dto;
 using CourierConnect.Utility;
 using Microsoft.AspNetCore.Identity;
@@ -104,8 +105,9 @@ namespace CourierConnectWeb.Controllers
             List<ClientInquiryVM> objInquiryVMList = new List<ClientInquiryVM>();
             foreach (var inquiry in objInquiryList)
             {
+                InquiryPOCO inquiryPOCO = _mapper.Map<InquiryPOCO>(inquiry);
                 bool hasDelivery = this.hasDelivery(inquiry.Id);
-                objInquiryVMList.Add(new ClientInquiryVM(inquiry, hasDelivery));
+                objInquiryVMList.Add(new ClientInquiryVM(inquiryPOCO, hasDelivery));
             }
             return View(objInquiryVMList.OrderByDescending(s => s.Inquiry.creationDate).ToList());
         }
@@ -130,7 +132,6 @@ namespace CourierConnectWeb.Controllers
             
             if (sourceAddress == null)
             {
-
                 sourceAddress = obj.sourceAddress;
                 _context.Addresses.Add(sourceAddress);
             }

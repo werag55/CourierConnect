@@ -38,14 +38,7 @@
                     <td>@Model.Id</td>
                     <td>@Model.courierName @Model.courierSurname</td>
                     <td>@Model.deliveryDate</td>
-                    @if(Model.deliveryStatus == DeliveryStatus.CannotDeliver)
-                    {
-                        <td>@Model.deliveryStatus.ToString(): @Model.reason</td>
-                    }
-                    else
-                    {
-                        <td>@Model.deliveryStatus.ToString()</td>
-                    }
+                    <td>@Model.deliveryStatus.ToString()</td>
                 </tr>
             </tbody>
         </table>

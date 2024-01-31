@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using CourierConnect.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using CourierConnectWeb.Services;
+using CourierConnect.Models.POCO;
 
 namespace CourierConnectWeb.Controllers
 {
@@ -103,7 +104,7 @@ namespace CourierConnectWeb.Controllers
                 var response = await offerService.GetAllAsync<APIResponse>();
                 if (response != null && response.IsSuccess)
                 {
-                    List<OfferDto>? offerDto = JsonConvert.DeserializeObject<List<OfferDto>>(Convert.ToString(response.Result));
+                    List<OfferPOCO>? offerDto = _mapper.Map<List<OfferPOCO>>(JsonConvert.DeserializeObject<List<OfferDto>>(Convert.ToString(response.Result)));
 
                     if (!String.IsNullOrEmpty(searchString))
                     {
