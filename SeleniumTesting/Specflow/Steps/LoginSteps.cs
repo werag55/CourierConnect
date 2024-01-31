@@ -1,4 +1,5 @@
-﻿using SeleniumTesting.Pages;
+﻿using OpenQA.Selenium.Chrome;
+using SeleniumTesting.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +13,16 @@ namespace SeleniumTesting.Specflow.Steps
     [Binding]
     public class LoginSteps : DriverHelper
     {
-        HomePage homePage = new HomePage();
-        LoginPage loginPage = new LoginPage();
+        HomePage homePage;
+        LoginPage loginPage;
+
+        [BeforeScenario]
+        public void BeforeScenario()
+        {
+            driver = new ChromeDriver();
+            homePage = new HomePage();
+            loginPage = new LoginPage();
+        }
 
         [Given(@"I navigate to application")]
         public void GivenINavigateToApplication()
@@ -43,7 +52,7 @@ namespace SeleniumTesting.Specflow.Steps
         [Then((@"I should see user logged in to the application"))]
         public void ThenIShouldSeeUserLoggedInToTheApplication()
         {
-            Assert.That(homePage.IsLogInExist(), Is.False);
+            Assert.That(homePage.IsLogOutExist(), Is.True);
         }
     }
 }
