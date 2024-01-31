@@ -15,11 +15,6 @@ namespace SeleniumTesting.LoginTests
         [SetUp]
         public void Setup()
         {
-            ChromeOptions options = new ChromeOptions();
-            options.AddArguments("start-maximized");
-            options.AddArguments("--disable-gpu");
-            options.AddArguments("--headless");
-
             driver = new ChromeDriver();
         }
         [Test]
@@ -32,8 +27,6 @@ namespace SeleniumTesting.LoginTests
             homePage.ClickLogin();
             loginPage.EnterUserEmailAndPassword("alinkamalinka@gmail.com", "Alinka12!");
             loginPage.ClickLogin();
-            System.Threading.Thread.Sleep(4000);
-            //Assert.That(homePage.IsLogInExist(), Is.False);
             Assert.That(homePage.IsLogOutExist(), Is.True);
         }
 
@@ -47,12 +40,7 @@ namespace SeleniumTesting.LoginTests
             homePage.ClickLogin();
             loginPage.EnterUserEmailAndPassword("alinkamalinka@gmail.com", "Alinka12!");
             loginPage.ClickLogin();
-            System.Threading.Thread.Sleep(4000);
             homePage.ClickLogout();
-
-
-            System.Threading.Thread.Sleep(4000);
-            //Assert.That(homePage.IsLoggedIn(), Is.False);
             Assert.That(homePage.IsLogInExist(), Is.True);
         }
 
@@ -67,7 +55,6 @@ namespace SeleniumTesting.LoginTests
             registerPage.EnterUserEmailAndPassword(GenerateRandomEmail("user"), "User1234!", true);
             registerPage.SelectRole("Client");
             registerPage.ClickRegister();
-            System.Threading.Thread.Sleep(4000);
             Assert.That(homePage.IsLogOutExist(), Is.True);
         }
 

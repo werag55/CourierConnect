@@ -10,7 +10,7 @@ namespace SeleniumTesting
         [SetUp]
         public void Setup()
         {
-            Driver = new FirefoxDriver();
+            Driver = new ChromeDriver();
         }
 
         [Test]

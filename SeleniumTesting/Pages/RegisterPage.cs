@@ -30,7 +30,6 @@ namespace SeleniumTesting.Pages
         {
             SelectElement select = new SelectElement(selectElement);
             select.SelectByText(role);
-            //IWebElement selectedOption = select.SelectedOption;
         }
         public void ClickRegister() => btnRegister.Click();
 
